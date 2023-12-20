@@ -40,7 +40,7 @@ def generate_launch_description():
 
     # Start webots driver node
     robotino_driver = WebotsController(
-        robot_name='robotino',
+        robot_name='robotinobase1',
         parameters=[
             {'robot_description': os.path.join(package_dir, 'urdf/robots', 'robotino3_description_plugin.urdf')},
         ],
@@ -53,6 +53,7 @@ def generate_launch_description():
         output='screen',
         parameters=[{'robot_description': load_file('robotino3_description.urdf')},
                     {'use_sim_time': True}],
+        namespace='robotinobase1'
     )
     
     # Joy node for joystick control 
@@ -61,6 +62,7 @@ def generate_launch_description():
         executable="joy_node",
         name="teleop_control",
         output="log",
+        namespace='robotinobase1'
     )
     
     # Laserscan republisher node
@@ -69,6 +71,7 @@ def generate_launch_description():
         executable="robotino3_laserscan_republisher",
         name ="robotino3_laserscan_republisher",
         output ="log",
+        namespace='robotinobase1'
     )
     
     # Irscan merge node
@@ -77,6 +80,7 @@ def generate_launch_description():
         executable="robotino3_irscanmerger",
         name ="robotino3_irscanmerger",
         output ="log", 
+        namespace='robotinobase1'
     )
     
     # node to enable the joyteleop
@@ -85,6 +89,7 @@ def generate_launch_description():
         executable="robotino3_joyteleop",
         name ="robotino3_joyteleop",
         output ="log", 
+        namespace='robotinobase1'
     )
     
     return LaunchDescription([

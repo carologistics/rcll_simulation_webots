@@ -18,7 +18,7 @@ robotino_base_radius = 0.225
 class Robotino3IrScanMerger(Node):
 
     def __init__(self):
-        super().__init__('robotino3_irscanmerger')
+        super().__init__('robotino3_irscanmerger', namespace='')
         
         self.Laserscan_qos_profile = QoSProfile(
                 reliability=QoSReliabilityPolicy.BEST_EFFORT,
@@ -27,14 +27,14 @@ class Robotino3IrScanMerger(Node):
         
         for i in range(num_ir_sensors):
             self.subscribers = [] 
-            self.topic = f"/robotino/ir{i+1}"
+            self.topic = self.get_namespace()+f"/ir{i+1}"
             self.callback_fcn = getattr(self, f"IrScan_cb_{i+1}")
             subscriber = self.create_subscription(Range, self.topic, self.callback_fcn, 10)
             self.subscribers.append(subscriber)
             self.get_logger().info(f"Subscriber {i} created for topic {self.topic}")
             # self.ir_scan_range_init = getattr(self, f"ir{i+1}_scan_range")
             # self.ir_scan_range_init = 0.0
-        self.publisher = self.create_publisher(LaserScan, '/robotino/ir_scan_merged', qos_profile=self.Laserscan_qos_profile)    
+        self.publisher = self.create_publisher(LaserScan, self.get_namespace()+'/ir_scan_merged', qos_profile=self.Laserscan_qos_profile)    
         self.ir1_scan_range = 0.0 
         self.ir2_scan_range = 0.0
         self.ir3_scan_range = 0.0

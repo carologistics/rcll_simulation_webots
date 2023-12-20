@@ -20,7 +20,7 @@ class Robotino3Driver:
     def init(self, webots_node, properties):
         # Initialize webots_node to initiate robot instance
         self.__robot = webots_node.robot
-        self.robotini3_node = self.__robot.getFromDef("robotino")
+        self.robotini3_node = self.__robot.getFromDef("robotinobase1")
         self.__robot.timestep = 32
         
         # Define motors for joints/ position sensors and set intitial position and velocity
@@ -76,9 +76,9 @@ class Robotino3Driver:
         self.tfb_ = TransformBroadcaster(self.drive_node)        
 
         # Initialize subscription:/cmd_vel and publishers:/odom & /joint_states
-        self.drive_node.create_subscription(Twist, '/cmd_vel', self.CmdVel_cb, 1)
-        self.odom_pub = self.drive_node.create_publisher(Odometry, '/odom', 1)
-        self.joint_state_pub = self.drive_node.create_publisher(JointState, '/joint_states', 1)
+        self.drive_node.create_subscription(Twist, '/robotinobase1/cmd_vel', self.CmdVel_cb, 1)
+        self.odom_pub = self.drive_node.create_publisher(Odometry, '/robotinobase1/odom', 1)
+        self.joint_state_pub = self.drive_node.create_publisher(JointState, '/robotinobase1/joint_states', 1)
         
         self.prev_wheel0_ticks = 0.0
         self.prev_wheel1_ticks = 0.0

@@ -8,10 +8,10 @@ class Robotino3ScanRemap(Node):
 
     def __init__(self):
         super().__init__('robotino3_laserscan_republisher')
-        self.create_subscription(LaserScan, '/robotino/SickLaser_Front', self.FrontScan_cb, 10)
-        self.create_subscription(LaserScan, '/robotino/SickLaser_Rear', self.RearScan_cb, 10)
-        self.Front_publisher= self.create_publisher(LaserScan, '/robotino/SickLaser_Front_Remaped', 10)
-        self.Rear_publisher= self.create_publisher(LaserScan, '/robotino/SickLaser_Rear_Remaped', 10)
+        self.create_subscription(LaserScan, self.get_namespace()+'/SickLaser_Front', self.FrontScan_cb, 10)
+        self.create_subscription(LaserScan, self.get_namespace()+'/SickLaser_Rear', self.RearScan_cb, 10)
+        self.Front_publisher= self.create_publisher(LaserScan, self.get_namespace()+'/SickLaser_Front_Remaped', 10)
+        self.Rear_publisher= self.create_publisher(LaserScan, self.get_namespace()+'/SickLaser_Rear_Remaped', 10)
         
     # callback function to publish data over cmd_vel topic based on joy_pad inputs
     def FrontScan_cb(self, msg):

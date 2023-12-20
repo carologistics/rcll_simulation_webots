@@ -1,9 +1,9 @@
 <?xml version="1.0" ?>
-<robot name="robotino">
+<robot name="robotinobase1">
     <webots>
         <plugin type="webots_ros2_driver::Ros2IMU">
             <enabled>true</enabled>
-            <topicName>/imu</topicName>
+            <topicName>/robotinobase1/imu</topicName>
             <alwaysOn>true</alwaysOn>
             <frameName>imu_link</frameName>
             <inertialUnitName>inertial unit</inertialUnitName>

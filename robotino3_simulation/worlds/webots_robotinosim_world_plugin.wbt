@@ -58,7 +58,7 @@ Wall {
 }
 Robotino3 {
   translation -5.5 3.65 -0.000443485
-  name "robotino"
+  name "robotinobase1"
   controller "<extern>"
   bodySlot [
     Robotino3Platform {

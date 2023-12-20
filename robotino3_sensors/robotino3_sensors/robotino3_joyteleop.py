@@ -11,9 +11,9 @@ import math
 class Robotino3Teleop(Node):
 
     def __init__(self):
-        super().__init__('robotino3_joyteleop')
-        self.subscription = self.create_subscription(Joy, '/joy', self.TeleopCallback, 10)
-        self.publisher= self.create_publisher(Twist, '/cmd_vel', 10)
+        super().__init__('robotino3_joyteleop', namespace='')
+        self.subscription = self.create_subscription(Joy, self.get_namespace()+'/joy', self.TeleopCallback, 10)
+        self.publisher= self.create_publisher(Twist, self.get_namespace()+'/cmd_vel', 10)
         self.declare_parameter('forward_axis_scalling', 1.0)
         self.declare_parameter('angular_axis_scalling', 1.0)
         
