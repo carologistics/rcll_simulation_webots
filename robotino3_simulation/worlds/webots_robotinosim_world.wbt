@@ -1,0 +1,47 @@
+#VRML_SIM R2023b utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/floors/protos/RectangleArena.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/festo/robotino3/protos/Robotino3.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/festo/robotino3/protos/Robotino3Platform.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/festo/robotino3/protos/Robotino3Webcam.proto"
+EXTERNPROTO "../protos/Machine_base.proto"
+EXTERNPROTO "../protos/Machine_cap.proto"
+EXTERNPROTO "../protos/Machine_delivery.proto"
+EXTERNPROTO "../protos/Machine_ring.proto"
+EXTERNPROTO "../protos/Machine_storage.proto"
+
+WorldInfo {
+}
+Viewpoint {
+  orientation 0.05254579154490571 0.11190382700422802 -0.9923288130920754 0.8838904661161037
+  position -0.985950742880206 0.8907228701837113 0.2141231378256526
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+RectangleArena {
+  floorSize 12 8
+  floorTileSize 0.4 0.4
+}
+Robotino3 {
+  translation 0.0005015956405024993 -0.0006194532761502475 -0.00044348546299869014
+  rotation 1.7003353908041012e-05 -0.00011588819622055044 0.999999993140406 3.1415926315214358
+  name "robotino"
+  controller "<extern>"
+  bodySlot [
+    Robotino3Platform {
+    }
+  ]
+  cameraSlot [
+    Robotino3Webcam {
+    }
+  ]
+}
+Robot {
+ name "Ros2Supervisor"
+ controller "<extern>"
+}
+
