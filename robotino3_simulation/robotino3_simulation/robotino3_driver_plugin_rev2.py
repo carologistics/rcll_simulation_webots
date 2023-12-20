@@ -120,16 +120,12 @@ class Robotino3Driver:
         w0 = wheel0_rad_s
         w1 = wheel1_rad_s
         w2 = wheel2_rad_s
+                
+        velocity = self.InverseKinematic_Calc(w0,w1,w2)
+        res_phi = self.prev_odom_omega + (velocity[2] * time_diff)
         
-        # Compute linear velocity component and angular velocity
-        vx = ((-w1+w2)/math.sqrt(3.0))*wheel_radius
-        vy = (((2/3)*w0) - ((1/3)*w1) - ((1/3)*w2))*wheel_radius
-        const = 3*wheel_distance
-        omega  = (-((1/const)*w0)-((1/const)*w1)-((1/const)*w2))*wheel_radius
-        res_phi = self.prev_odom_omega + (omega * time_diff)
-        
-        x = self.prev_odom_x + ((vx * cos(res_phi) - vy * sin(res_phi)) * time_diff)
-        y = self.prev_odom_y + ((vx * sin(res_phi) + vy * cos(res_phi)) * time_diff)
+        x = self.prev_odom_x + ((velocity[0] * cos(res_phi)) - (velocity[1] * sin(res_phi)) * time_diff)
+        y = self.prev_odom_y + ((velocity[0]  * sin(res_phi)) + (velocity[1] * cos(res_phi)) * time_diff)
         q = [0.0, 0.0, sin(res_phi/2), cos(res_phi/2)]
         
         self.prev_odom_x = x
@@ -142,9 +138,9 @@ class Robotino3Driver:
         msg.header.frame_id = 'odom'
         msg.child_frame_id = 'base_link'
         # Velocity
-        msg.twist.twist.linear.x = vx
-        msg.twist.twist.linear.y = vy
-        msg.twist.twist.angular.z = omega
+        msg.twist.twist.linear.x = velocity[0]
+        msg.twist.twist.linear.y = velocity[1]
+        msg.twist.twist.angular.z = velocity[2]
         #Position
         msg.pose.pose.position.x = x
         msg.pose.pose.position.y = y
@@ -330,13 +326,9 @@ class Robotino3Driver:
         tf.transform.rotation.z = float(self.imu_orientation[2])
         tf.transform.rotation.w = float(self.imu_orientation[3])
         self.tfb_.sendTransform(tf)
-
-    def step(self):
         
-        rclpy.spin_once(self.drive_node, timeout_sec=0)
-         
-        # Compute motor velocity based on linear and angular component of /cmd_vel 
-        # set individual motor velocity based on calculation 
+    def Kinematic_Calc(self):
+        # Algorithm1: Linear kinematic model for omniwheel drive (Angular velocity from linear velocity) 
         v_x = self.__target_twist.linear.x
         v_y = self.__target_twist.linear.y
         omega = self.__target_twist.angular.z
@@ -346,9 +338,29 @@ class Robotino3Driver:
         self._v_x = v_x
         self._omega = omega
         
-        self.motors[2].setVelocity(((math.sqrt(3)/2)* v_x) - (0.5* v_y) - omega)
-        self.motors[0].setVelocity(v_y - omega)
-        self.motors[1].setVelocity(-((math.sqrt(3)/2)* v_x) - (0.5* v_y) - omega)
+        m1=(((math.sqrt(3)/2)* v_x) - (0.5* v_y) - omega)
+        m2=(v_y - omega)
+        m3=(-((math.sqrt(3)/2)* v_x) - (0.5* v_y) - omega) 
+         
+        return[m1,m2,m3]
+    
+    def InverseKinematic_Calc(w0, w1, w2):
+        # Algorithm 1: Inverse kimeatic calculation (linear velocity from angular velocity)
+        vx = ((-w1+w2)/math.sqrt(3.0))*wheel_radius
+        vy = (((2/3)*w0) - ((1/3)*w1) - ((1/3)*w2))*wheel_radius
+        const = 3*wheel_distance
+        omega  = (-((1/const)*w0)-((1/const)*w1)-((1/const)*w2))*wheel_radius
+        return[vx, vy, omega]
+        
+    def step(self):
+        
+        rclpy.spin_once(self.drive_node, timeout_sec=0)
+    
+        angular_velocity = self.Kinematic_Calc()
+        
+        self.motors[2].setVelocity(angular_velocity[0])
+        self.motors[0].setVelocity(angular_velocity[1])
+        self.motors[1].setVelocity(angular_velocity[2])
         
         # Publish Transformation/ Odomebtry and and Joint_states 
         #self.TransformAndOdometry_wheelodom()

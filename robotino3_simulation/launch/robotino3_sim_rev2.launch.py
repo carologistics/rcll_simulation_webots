@@ -80,7 +80,7 @@ def generate_launch_description():
     )
     
     # node to enable the joyteleop
-    robotino3_joteleop_node = Node(
+    robotino3_joyteleop_node = Node(
         package="robotino3_sensors",
         executable="robotino3_joyteleop",
         name ="robotino3_joyteleop",
@@ -96,7 +96,7 @@ def generate_launch_description():
         joy_node,
         robotino3_lasercsnrepublish_node,
         robotino3_irscanmerege_node,
-        robotino3_joteleop_node,
+        robotino3_joyteleop_node,
         
         # Kill all the nodes when the driver node is shut down
         launch.actions.RegisterEventHandler(
