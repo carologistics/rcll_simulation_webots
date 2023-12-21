@@ -1,0 +1,167 @@
+#VRML_SIM R2023b utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/floors/protos/RectangleArena.proto"
+EXTERNPROTO "../protos/Robotino3.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/festo/robotino3/protos/Robotino3Platform.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/devices/sick/protos/SickLms291.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/apartment_structure/protos/Wall.proto"
+#EXTERNPROTO "../protos/Machine_base.proto"
+
+WorldInfo {
+}
+Viewpoint {
+  orientation 0.4849642341009622 0.25032834227702466 -0.8379411749614073 1.8762916532305556
+  position -4.258389385182237 12.024887352494277 13.389781652131953
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+RectangleArena {
+  floorSize 12 8
+  floorTileSize 0.4 0.4
+  wallHeight 0.5
+}
+Wall {
+  translation -5.3 3.25 0
+  rotation 0 0 1 1.57
+  name "team1_defaultpose_wall1"
+  size 0.04 1.4 0.5
+}
+Wall {
+  translation 5.3 3.25 0
+  rotation 0 0 1 1.57
+  name "team2_defaultpose_wall1"
+  size 0.04 1.4 0.5
+}
+Wall {
+  translation -3.7 3.6 0
+  name "team1_defaultpose_wall2"
+  size 0.04 0.8 0.5
+}
+Wall {
+  translation -2.9 -3.3 0
+  name "partition_wall1"
+  size 0.04 1.4 0.5
+}
+Wall {
+  translation 2.9 -3.3 0
+  name "partition_wall2"
+  size 0.04 1.4 0.5
+}
+Wall {
+  translation 3.7 3.6 0
+  name "team2_defaultpose_wall2"
+  size 0.04 0.8 0.5
+}
+Robotino3 {
+  translation -5.5 3.65 -0.000443485
+  name "robotinobase1"
+  controller "<extern>"
+  bodySlot [
+    Robotino3Platform {
+    }
+  ]
+  cameraSlot [
+    InertialUnit {
+      translation 0 -0.1 0.2
+      rotation 0 0 1 -1.570795
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0 0 1
+          }
+          geometry Box {
+            size 0.05 0.05 0.02
+          }
+        }
+      ]
+    }
+    SickLms291 {
+      translation 0 0.13 0.35
+      rotation 0 0 1 1.5719
+      name "SickLaser_Front"
+    }
+    SickLms291 {
+      translation 0 -0.12 0.3
+      rotation 0 0 1 -1.5719
+      name "SickLaser_Rear"
+    }
+  ]
+}
+Robotino3 {
+  translation -5.0 3.65 -0.000443485
+  name "robotinobase2"
+  controller "<extern>"
+  bodySlot [
+    Robotino3Platform {
+    }
+  ]
+  cameraSlot [
+    InertialUnit {
+      translation 0 -0.1 0.2
+      rotation 0 0 1 -1.570795
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0 0 1
+          }
+          geometry Box {
+            size 0.05 0.05 0.02
+          }
+        }
+      ]
+    }
+    SickLms291 {
+      translation 0 0.13 0.35
+      rotation 0 0 1 1.5719
+      name "SickLaser_Front"
+    }
+    SickLms291 {
+      translation 0 -0.12 0.3
+      rotation 0 0 1 -1.5719
+      name "SickLaser_Rear"
+    }
+  ]
+}
+Robotino3 {
+  translation -4.5 3.65 -0.000443485
+  name "robotinobase3"
+  controller "<extern>"
+  bodySlot [
+    Robotino3Platform {
+    }
+  ]
+  cameraSlot [
+    InertialUnit {
+      translation 0 -0.1 0.2
+      rotation 0 0 1 -1.570795
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0 0 1
+          }
+          geometry Box {
+            size 0.05 0.05 0.02
+          }
+        }
+      ]
+    }
+    SickLms291 {
+      translation 0 0.13 0.35
+      rotation 0 0 1 1.5719
+      name "SickLaser_Front"
+    }
+    SickLms291 {
+      translation 0 -0.12 0.3
+      rotation 0 0 1 -1.5719
+      name "SickLaser_Rear"
+    }
+  ]
+}
+Robot {
+  name "Ros2Supervisor"
+  controller "<extern>"
+}

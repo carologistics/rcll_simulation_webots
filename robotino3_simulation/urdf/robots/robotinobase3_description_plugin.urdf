@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<robot name="robotinobase3">
+    <webots>
+        <plugin type="webots_ros2_driver::Ros2IMU">
+            <enabled>true</enabled>
+            <topicName>/robotinobase3/imu</topicName>
+            <alwaysOn>true</alwaysOn>
+            <frameName>imu_link</frameName>
+            <inertialUnitName>inertial unit</inertialUnitName>
+            <gyroName>gyro</gyroName>
+            <accelerometerName>accelerometer</accelerometerName>
+        </plugin>
+        <plugin type="robotino3_simulation.robotinobase3_driver_plugin.Robotino3Driver" />
+    </webots>
+</robot>
