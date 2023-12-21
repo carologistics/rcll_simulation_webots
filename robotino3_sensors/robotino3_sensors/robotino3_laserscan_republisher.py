@@ -12,12 +12,13 @@ class Robotino3ScanRemap(Node):
         self.create_subscription(LaserScan, self.get_namespace()+'/SickLaser_Rear', self.RearScan_cb, 10)
         self.Front_publisher= self.create_publisher(LaserScan, self.get_namespace()+'/SickLaser_Front_Remaped', 10)
         self.Rear_publisher= self.create_publisher(LaserScan, self.get_namespace()+'/SickLaser_Rear_Remaped', 10)
+        self.declare_parameter('frame_prefix', 'robotinobase1')
         
     # callback function to publish data over cmd_vel topic based on joy_pad inputs
     def FrontScan_cb(self, msg):
         scan_f = LaserScan()
         scan_f.header.stamp = self.get_clock().now().to_msg()
-        scan_f.header.frame_id = msg.header.frame_id
+        scan_f.header.frame_id = self.get_parameter('frame_prefix').get_parameter_value().string_value+'/'+msg.header.frame_id
         scan_f.angle_min = (msg.angle_max)
         scan_f.angle_max = (msg.angle_min)
         scan_f.angle_increment = -(msg.angle_increment)
@@ -35,7 +36,7 @@ class Robotino3ScanRemap(Node):
     def RearScan_cb(self, msg_r):
         scan_r = LaserScan()
         scan_r.header.stamp = self.get_clock().now().to_msg()
-        scan_r.header.frame_id = msg_r.header.frame_id
+        scan_r.header.frame_id = self.get_parameter('frame_prefix').get_parameter_value().string_value+'/'+msg_r.header.frame_id
         scan_r.angle_min = (msg_r.angle_max)
         scan_r.angle_max = (msg_r.angle_min)
         scan_r.angle_increment =  -(msg_r.angle_increment)

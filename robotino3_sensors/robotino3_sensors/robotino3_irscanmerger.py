@@ -18,12 +18,14 @@ robotino_base_radius = 0.225
 class Robotino3IrScanMerger(Node):
 
     def __init__(self):
-        super().__init__('robotino3_irscanmerger', namespace='')
+        super().__init__('robotino3_irscanmerger', namespace='' )
         
         self.Laserscan_qos_profile = QoSProfile(
                 reliability=QoSReliabilityPolicy.BEST_EFFORT,
                 durability=QoSDurabilityPolicy.VOLATILE,
                 depth=5)
+        
+        self.declare_parameter('frame_prefix', 'robotinobase1')
         
         for i in range(num_ir_sensors):
             self.subscribers = [] 
@@ -75,7 +77,7 @@ class Robotino3IrScanMerger(Node):
         
     def On_Timer(self):
         msg = LaserScan()
-        msg.header.frame_id = 'irsensor_merge'
+        msg.header.frame_id = self.get_parameter('frame_prefix').get_parameter_value().string_value+'/'+'irsensor_merge'
         msg.header.stamp = self.get_clock().now().to_msg()
         msg.angle_min       = 0.0
         msg.angle_max       = 2 * math.pi

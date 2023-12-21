@@ -52,8 +52,9 @@ def generate_launch_description():
         executable='robot_state_publisher',
         output='screen',
         parameters=[{'robot_description': load_file('robotino3_description.urdf')},
-                    {'use_sim_time': True}],
-        namespace='robotinobase1'
+                    {'use_sim_time': True},
+                    {'frame_prefix':'robotinobase1/'}],
+        namespace='robotinobase1',
     )
     
     # Joy node for joystick control 
@@ -71,6 +72,7 @@ def generate_launch_description():
         executable="robotino3_laserscan_republisher",
         name ="robotino3_laserscan_republisher",
         output ="log",
+        parameters=[{'frame_prefix': 'robotinobase1'}],
         namespace='robotinobase1'
     )
     
@@ -80,6 +82,7 @@ def generate_launch_description():
         executable="robotino3_irscanmerger",
         name ="robotino3_irscanmerger",
         output ="log", 
+        parameters=[{'frame_prefix': 'robotinobase1'}],
         namespace='robotinobase1'
     )
     
