@@ -15,6 +15,9 @@ class Robotino3MpsSpawner(Node):
         
     def Define_Parameters(self):
         
+        # Parameter to spwan diefferent webots simulation for individual robotino
+        self.declare_parameter('webots_world', 'webots_robotinobase1_sim.wbt')
+        
         # Position of Team-Cyan mps machines(cartesian- x,y,z)
         self.declare_parameter('C-CS2-I_position', '0.40 2.0 0.4')
         self.declare_parameter('C-BS-O_position', '1.5 2.0 0.4')
@@ -90,11 +93,11 @@ class Robotino3MpsSpawner(Node):
         
         package_dir = get_package_share_directory('robotino3_simulation')
         
-        world = os.path.join(package_dir, 'worlds', 'webots_robotinosim_world_plugin.wbt')
+        world = os.path.join(package_dir, 'worlds', self.get_parameter('webots_world').get_parameter_value().string_value)
         with open(world, 'r') as f:
             world_txt = f.read()
             
-        modified_world = os.path.join(package_dir, 'worlds', 'modified_world.wbt')
+        modified_world = os.path.join(package_dir, 'worlds', 'modified_'+self.get_parameter('webots_world').get_parameter_value().string_value)
         with open(modified_world, 'w') as f:
             externproto_txt = ''
             #externproto_txt = externproto_txt + 'EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/factory/containers/protos/WoodenBox.proto"\n'
