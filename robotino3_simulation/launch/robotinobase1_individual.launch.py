@@ -21,28 +21,9 @@ from launch.event_handlers import (OnExecutionComplete, OnProcessExit,
 def generate_launch_description():
     package_dir = get_package_share_directory('robotino3_simulation')
 
-    
     def load_file(filename):
         return pathlib.Path(os.path.join(package_dir, 'urdf/robots', filename)).read_text()
     
-    mps_config = os.path.join(package_dir, 'config', 'mps_pose.yaml')
-    
-    robotino3_mpsspawner = Node(
-        package="robotino3_simulation",
-        executable="robotino3_mpspublisher",
-        name ="robotino3_mpspublisher",
-        parameters = [mps_config, 
-                      {'webots_world': 'webots_robotinobase1_sim.wbt'}],
-        output ="log",
-    )
-    
-    # Starts Webots simulation and superwisor nodes
-    webots = WebotsLauncher(
-        world=PathJoinSubstitution([package_dir, 'worlds', 'modified_webots_robotinobase1_sim.wbt']),
-        mode="realtime",
-        ros2_supervisor=True
-    )
-
     # Start webots driver node
     robotino_driver = WebotsController(
         robot_name='robotinobase1',
@@ -117,20 +98,17 @@ def generate_launch_description():
                                         }.items()
     )
     
-    return LaunchDescription([
-        robotino3_mpsspawner,
-        RegisterEventHandler(
-            OnProcessStart(
-                target_action=robotino3_mpsspawner,
-                on_start=[
-                    LogInfo(msg='Mpss spawn init, starting webots'),
-                    TimerAction(
-                        period=2.0,
-                        actions=[webots,webots._supervisor,],
-                    )
-                ]
-            )
-        ),
+    # Spawn Rviz2 node for visualization
+    rviz_config_dir = os.path.join(package_dir,'rviz', 'robotinobase1_rvizconfig.rviz')
+    robotino_rviz_node = Node(
+        package='rviz2',
+        executable='rviz2',
+        name='rviz2',
+        arguments=['-d', rviz_config_dir],
+        output='screen'
+    )
+    
+    return LaunchDescription([  
         robotino_driver,
         robot_state_publisher,
         joy_node,
@@ -138,6 +116,7 @@ def generate_launch_description():
         robotino_irscanmerege_node,
         robotino_joyteleop_node,
         robotino_laserscanmerge_node,
+        robotino_rviz_node,
         
         # Kill all the nodes when the driver node is shut down
         launch.actions.RegisterEventHandler(
