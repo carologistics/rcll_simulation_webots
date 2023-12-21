@@ -42,7 +42,7 @@ def generate_launch_description():
     robotino_driver = WebotsController(
         robot_name='robotinobase1',
         parameters=[
-            {'robot_description': os.path.join(package_dir, 'urdf/robots', 'robotino3_description_plugin.urdf')},
+            {'robot_description': os.path.join(package_dir, 'urdf/robots', 'robotinobase1_description_plugin.urdf')},
         ],
     )
     
