@@ -3,6 +3,10 @@
 import os
 import launch
 from ament_index_python.packages import get_package_share_directory
+from launch_ros.substitutions import FindPackageShare
+from launch.actions import IncludeLaunchDescription
+from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.substitutions import PathJoinSubstitution, TextSubstitution
 from launch import LaunchDescription
 from launch_ros.actions import Node
 from launch.substitutions.path_join_substitution import PathJoinSubstitution
@@ -27,13 +31,14 @@ def generate_launch_description():
         package="robotino3_simulation",
         executable="robotino3_mpspublisher",
         name ="robotino3_mpspublisher",
-        parameters = [mps_config],
+        parameters = [mps_config, 
+                      {'webots_world': 'webots_robotinobase1_sim.wbt'}],
         output ="log",
     )
     
     # Starts Webots simulation and superwisor nodes
     webots = WebotsLauncher(
-        world=PathJoinSubstitution([package_dir, 'worlds', 'modified_world.wbt']),
+        world=PathJoinSubstitution([package_dir, 'worlds', 'modified_webots_robotinobase1_sim.wbt']),
         mode="realtime",
         ros2_supervisor=True
     )
@@ -67,7 +72,7 @@ def generate_launch_description():
     )
     
     # Laserscan republisher node
-    robotino3_lasercsnrepublish_node = Node(
+    robotino_lasercsnrepublish_node = Node(
         package="robotino3_sensors",
         executable="robotino3_laserscan_republisher",
         name ="robotino3_laserscan_republisher",
@@ -77,7 +82,7 @@ def generate_launch_description():
     )
     
     # Irscan merge node
-    robotino3_irscanmerege_node = Node(
+    robotino_irscanmerege_node = Node(
         package="robotino3_sensors",
         executable="robotino3_irscanmerger",
         name ="robotino3_irscanmerger",
@@ -87,7 +92,7 @@ def generate_launch_description():
     )
     
     # node to enable the joyteleop
-    robotino3_joyteleop_node = Node(
+    robotino_joyteleop_node = Node(
         package="robotino3_sensors",
         executable="robotino3_joyteleop",
         name ="robotino3_joyteleop",
@@ -95,16 +100,44 @@ def generate_launch_description():
         namespace='robotinobase1'
     )
     
+    # Launch Integrate laserscan launch file 
+    robotino_laserscanmerge_node =  IncludeLaunchDescription(
+                                        PythonLaunchDescriptionSource([
+                                            PathJoinSubstitution([
+                                                FindPackageShare('laser_scan_integrator'),
+                                                'launch',
+                                                'integrated_scan.launch.py'
+                                            ])
+                                        ]),
+                                        launch_arguments={
+                                            'integratedTopic': '/robotinobase1/scan',
+                                            'integratedFrameId': 'robotinobase1/laser_link',
+                                            'scanTopic1': '/robotinobase1/SickLaser_Front_Remaped',
+                                            'scanTopic2': '/robotinobase1/SickLaser_Rear_Remaped',
+                                        }.items()
+    )
+    
     return LaunchDescription([
         robotino3_mpsspawner,
-        webots,
-        webots._supervisor,
+        RegisterEventHandler(
+            OnProcessStart(
+                target_action=robotino3_mpsspawner,
+                on_start=[
+                    LogInfo(msg='Mpss spawn init, starting webots'),
+                    TimerAction(
+                        period=2.0,
+                        actions=[webots,webots._supervisor,],
+                    )
+                ]
+            )
+        ),
         robotino_driver,
         robot_state_publisher,
         joy_node,
-        robotino3_lasercsnrepublish_node,
-        robotino3_irscanmerege_node,
-        robotino3_joyteleop_node,
+        robotino_lasercsnrepublish_node,
+        robotino_irscanmerege_node,
+        robotino_joyteleop_node,
+        robotino_laserscanmerge_node,
         
         # Kill all the nodes when the driver node is shut down
         launch.actions.RegisterEventHandler(
