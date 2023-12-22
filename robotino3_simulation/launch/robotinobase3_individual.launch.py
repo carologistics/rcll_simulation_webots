@@ -4,7 +4,7 @@ import os
 import launch
 from ament_index_python.packages import get_package_share_directory
 from launch_ros.substitutions import FindPackageShare
-from launch.actions import IncludeLaunchDescription
+from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import PathJoinSubstitution, TextSubstitution
 from launch import LaunchDescription
@@ -16,7 +16,8 @@ import pathlib
 from launch.actions import (LogInfo, RegisterEventHandler, TimerAction)
 from launch.event_handlers import (OnExecutionComplete, OnProcessExit,
                                 OnProcessIO, OnProcessStart, OnShutdown)
-
+from launch.conditions import IfCondition
+from launch.substitutions import PythonExpression, LaunchConfiguration
 
 def generate_launch_description():
     
@@ -101,12 +102,20 @@ def generate_launch_description():
     
     # Spawn Rviz2 node for visualization
     rviz_config_dir = os.path.join(package_dir,'rviz', 'robotinobase3_rvizconfig.rviz')
+    launch_rviz = LaunchConfiguration('launch_rviz')
+    
+    launch_rviz_argument = DeclareLaunchArgument(
+        'launch_rviz',
+        default_value='true'
+    )
+    
     robotino_rviz_node = Node(
         package='rviz2',
         executable='rviz2',
         name='rviz2',
         arguments=['-d', rviz_config_dir],
-        output='screen'
+        output='screen',
+        condition = IfCondition(launch_rviz),
     )
     
     return LaunchDescription([
