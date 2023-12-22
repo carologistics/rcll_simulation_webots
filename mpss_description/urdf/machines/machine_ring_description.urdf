@@ -7,10 +7,20 @@
   <!-- base_link -->
   <link name="machine_ring/base_link">
     <visual>
-      <origin rpy="0 0 1.570795" xyz="0.01 0 0"/>
+      <origin rpy="0 0 1.570795" xyz="-0.350 0.175 0.0"/>
       <geometry>
         <mesh filename="package://mpss_description/meshes/mps_ring/meshes/mps_ring_full.dae" scale="1.0 1.0 1.0"/>
       </geometry>
     </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0.0 0.0 0.4"/>
+      <geometry>
+        <box size="0.75 0.40 0.78"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="80"/>
+      <inertia ixx="1e-3" ixy="0.0" ixz="0.0" iyy="1e-3" iyz="0.0" izz="1e-3"/>
+    </inertial>
   </link>
 </robot>

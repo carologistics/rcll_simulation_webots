@@ -2,7 +2,7 @@
 # license: Apache License 2.0
 # license url: http://www.apache.org/licenses/LICENSE-2.0
 # This is a proto file for Webots for the Machine
-# Extracted from: /home/srb-jarvis/ros2_ws/ws_thesis/ws_simulation/src/mpss_description/urdf/machines/machine_cap_description.urdf
+# Extracted from: /home/srb-jarvis/ros2_ws/ws_thesis/simulation_ws/src/rcll_simulation_webots/mpss_description/urdf/machines/machine_cap_description.urdf
 
 PROTO Machine_cap [
   field  SFVec3f     translation     0 0 0
@@ -27,27 +27,44 @@ PROTO Machine_cap [
     selfCollision IS selfCollision
     children [
       Pose {
-        translation 0.010000 0.000000 0.000000
+        translation -0.350000 0.175000 0.000000
         rotation 0.000000 0.000000 1.000000 1.570795
         children [
           DEF mps_cap_full_visual CadShape {
-            url "/home/srb-jarvis/ros2_ws/ws_thesis/ws_simulation/src/mpss_description/meshes/mps_cap/meshes/mps_cap_full.dae"
+            url "/home/srb-jarvis/ros2_ws/ws_thesis/simulation_ws/src/rcll_simulation_webots/mpss_description/meshes/mps_cap/meshes/mps_cap_full.dae"
           }
         ]
       }
       Wall {
-        translation -0.000000 -0.170 0.075000
+        translation -0.350000 0.000 0.075000
         rotation 0 0 0 0
         name "mps_front_panel"
         size 0.005 0.340 0.700
       }
       Wall {
-        translation 0.700 -0.170 0.075000
+        translation 0.350 0.000 0.075000
         rotation 0 0 0 0
         name "mps_rear_panel"
         size 0.005 0.340 0.700
       }
     ]
     name IS name
+    boundingObject Pose {
+      translation 0.000000 0.000000 0.400000
+      children [
+        Box {
+           size 0.750000 0.400000 0.780000
+        }
+      ]
+    }
+    physics Physics {
+      density -1
+      mass 80.000000
+      centerOfMass [ 0.000000 0.000000 0.000000 ]
+      inertiaMatrix [
+        1.000000e-03 1.000000e-03 1.000000e-03
+        0.000000e+00 0.000000e+00 0.000000e+00
+      ]
+    }
   }
 }
