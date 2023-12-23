@@ -28,13 +28,13 @@ def generate_launch_description():
         executable="robotino3_mpspublisher",
         name ="robotino3_mpspublisher",
         parameters = [mps_config, 
-                      {'webots_world': 'webots_robotinobase1_sim.wbt'}],
+                      {'webots_world': 'webots_robotinobase3_sim.wbt'}],
         output ="log",
     )
     
     # Starts Webots simulation and superwisor nodes
     webots = WebotsLauncher(
-        world=PathJoinSubstitution([package_dir, 'worlds', 'modified_webots_robotinobase1_sim.wbt']),
+        world=PathJoinSubstitution([package_dir, 'worlds', 'modified_webots_robotinobase3_sim.wbt']),
         mode="realtime",
         ros2_supervisor=True
     )

@@ -51,7 +51,10 @@ def generate_launch_description():
         executable="joy_node",
         name="teleop_control",
         output="log",
-        namespace='robotinobase2'
+        namespace='robotinobase2',
+        parameters=[{'device_id': 2},
+                    #{'device_name': '/dev/input/js2'}
+        ]
     )
     
     # Laserscan republisher node

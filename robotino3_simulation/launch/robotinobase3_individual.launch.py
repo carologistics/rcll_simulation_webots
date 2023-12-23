@@ -51,7 +51,10 @@ def generate_launch_description():
         executable="joy_node",
         name="teleop_control",
         output="log",
-        namespace='robotinobase3'
+        namespace='robotinobase3',
+        parameters=[{'device_id': 0},
+                    #{'device_name': '/dev/input/js0'}
+        ]
     )
     
     # Laserscan republisher node
@@ -126,6 +129,7 @@ def generate_launch_description():
         robotino3_irscanmerege_node,
         robotino3_joyteleop_node,
         robotino_laserscanmerge_node,
+        launch_rviz_argument,
         robotino_rviz_node, 
         
         # Kill all the nodes when the driver node is shut down
