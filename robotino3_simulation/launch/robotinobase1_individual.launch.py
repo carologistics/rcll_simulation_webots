@@ -4,13 +4,12 @@ import os
 import launch
 from ament_index_python.packages import get_package_share_directory
 from launch_ros.substitutions import FindPackageShare
-from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument
+from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument, OpaqueFunction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import PathJoinSubstitution, TextSubstitution
+from launch.substitutions import PathJoinSubstitution
 from launch import LaunchDescription
 from launch_ros.actions import Node
 from launch.substitutions.path_join_substitution import PathJoinSubstitution
-from webots_ros2_driver.webots_launcher import WebotsLauncher
 from webots_ros2_driver.webots_controller import WebotsController
 import pathlib
 from launch.actions import (LogInfo, RegisterEventHandler, TimerAction)
@@ -22,6 +21,26 @@ from launch.substitutions import PythonExpression, LaunchConfiguration
 
 def generate_launch_description():
     package_dir = get_package_share_directory('robotino3_simulation')
+    
+    launch_rviz = LaunchConfiguration('launch_rviz')
+    launch_joynode = LaunchConfiguration('launch_joynode')
+    launch_teleopnode = LaunchConfiguration('launch_teleopnode')
+    
+    launch_rviz_argument = DeclareLaunchArgument(
+        'launch_rviz',
+        default_value='true', 
+        description= 'Wheather to start Rvizor not based on launch environment')
+    
+    launch_joynode_argument = DeclareLaunchArgument(
+        'launch_joynode',
+        default_value='true', 
+        description= 'Wheather to start Rvizor not based on launch environment')
+    
+    launch_teleopnode_argument = DeclareLaunchArgument(
+        'launch_teleopnode',
+        default_value='true', 
+        description= 'Wheather to start Rvizor not based on launch environment')
+    
 
     def load_file(filename):
         return pathlib.Path(os.path.join(package_dir, 'urdf/robots', filename)).read_text()
@@ -52,9 +71,20 @@ def generate_launch_description():
         name="teleop_control",
         output="log",
         namespace='robotinobase1',
-        parameters=[{'device_id': 1},
+        parameters=[{'device_id': 0},
                     #{'device_name': '/dev/input/js1'}
-        ]
+        ],
+        condition = IfCondition(launch_joynode),
+    )
+    
+    # node to enable the joyteleop
+    robotino_joyteleop_node = Node(
+        package="robotino3_sensors",
+        executable="robotino3_joyteleop",
+        name ="robotino3_joyteleop",
+        output ="log", 
+        namespace='robotinobase1',
+        condition = IfCondition(launch_teleopnode),
     )
     
     # Laserscan republisher node
@@ -77,15 +107,6 @@ def generate_launch_description():
         namespace='robotinobase1'
     )
     
-    # node to enable the joyteleop
-    robotino_joyteleop_node = Node(
-        package="robotino3_sensors",
-        executable="robotino3_joyteleop",
-        name ="robotino3_joyteleop",
-        output ="log", 
-        namespace='robotinobase1'
-    )
-    
     # Launch Integrate laserscan launch file 
     robotino_laserscanmerge_node =  IncludeLaunchDescription(
                                         PythonLaunchDescriptionSource([
@@ -105,12 +126,6 @@ def generate_launch_description():
     
     # Spawn Rviz2 node for visualization
     rviz_config_dir = os.path.join(package_dir,'rviz', 'robotinobase1_rvizconfig.rviz')
-    launch_rviz = LaunchConfiguration('launch_rviz')
-    
-    launch_rviz_argument = DeclareLaunchArgument(
-        'launch_rviz',
-        default_value='true'
-    )
     
     robotino_rviz_node = Node(
         package='rviz2',
@@ -124,10 +139,12 @@ def generate_launch_description():
     return LaunchDescription([  
         robotino_driver,
         robot_state_publisher,
+        launch_joynode_argument,
         joy_node,
+        launch_teleopnode_argument,
+        robotino_joyteleop_node,
         robotino_lasercsnrepublish_node,
         robotino_irscanmerege_node,
-        robotino_joyteleop_node,
         robotino_laserscanmerge_node,
         launch_rviz_argument,
         robotino_rviz_node,
