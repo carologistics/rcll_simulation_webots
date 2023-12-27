@@ -3,61 +3,73 @@
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import LaserScan
+from builtin_interfaces.msg import Time
+from rosgraph_msgs.msg import Clock
 
 class Robotino3ScanRemap(Node):
 
     def __init__(self):
         super().__init__('robotino3_laserscan_republisher')
         self.create_subscription(LaserScan, self.get_namespace()+'/SickLaser_Front', self.FrontScan_cb, 10)
+        self.create_subscription(Clock, '/clock', self.Timer_cb, 10)
         self.create_subscription(LaserScan, self.get_namespace()+'/SickLaser_Rear', self.RearScan_cb, 10)
         self.Front_publisher= self.create_publisher(LaserScan, self.get_namespace()+'/SickLaser_Front_Remaped', 10)
         self.Rear_publisher= self.create_publisher(LaserScan, self.get_namespace()+'/SickLaser_Rear_Remaped', 10)
         self.declare_parameter('frame_prefix', 'robotinobase1')
+        self.clock_received = False
+     
+    # callback function to get simulation time from clock     
+    def Timer_cb(self, clock_msg):
+        self.time_stamp = Time()
+        self.time_stamp = clock_msg.clock
+        self.clock_received = True 
         
     # callback function to publish data over cmd_vel topic based on joy_pad inputs
     def FrontScan_cb(self, msg):
-        scan_f = LaserScan()
-        scan_f.header.stamp = self.get_clock().now().to_msg()
-        scan_f.header.frame_id = self.get_parameter('frame_prefix').get_parameter_value().string_value+'/'+msg.header.frame_id
-        scan_f.angle_min = (msg.angle_max)
-        scan_f.angle_max = (msg.angle_min)
-        scan_f.angle_increment = -(msg.angle_increment)
-        scan_f.time_increment = msg.time_increment
-        scan_f.scan_time = msg.scan_time
-        scan_f.range_min = msg.range_min
-        scan_f.range_max = msg.range_max
-        scan_f.ranges = [float()]*180
-        var_len = len(msg.ranges)
-        #self.get_logger().info(f'range length: {var_len}')
-        for i in range(var_len):
-            scan_f.ranges[179-i] = msg.ranges[i]
-        self.Front_publisher.publish(scan_f)
+        if self.clock_received:
+            scan_f = LaserScan()
+            scan_f.header.stamp = self.time_stamp
+            scan_f.header.frame_id = self.get_parameter('frame_prefix').get_parameter_value().string_value+'/'+msg.header.frame_id
+            scan_f.angle_min = (msg.angle_max)
+            scan_f.angle_max = (msg.angle_min)
+            scan_f.angle_increment = -(msg.angle_increment)
+            scan_f.time_increment = msg.time_increment
+            scan_f.scan_time = msg.scan_time
+            scan_f.range_min = msg.range_min
+            scan_f.range_max = msg.range_max
+            scan_f.ranges = [float()]*180
+            var_len = len(msg.ranges)
+            #self.get_logger().info(f'range length: {var_len}')
+            for i in range(var_len):
+                scan_f.ranges[179-i] = msg.ranges[i]
+            self.Front_publisher.publish(scan_f)
         
     def RearScan_cb(self, msg_r):
-        scan_r = LaserScan()
-        scan_r.header.stamp = self.get_clock().now().to_msg()
-        scan_r.header.frame_id = self.get_parameter('frame_prefix').get_parameter_value().string_value+'/'+msg_r.header.frame_id
-        scan_r.angle_min = (msg_r.angle_max)
-        scan_r.angle_max = (msg_r.angle_min)
-        scan_r.angle_increment =  -(msg_r.angle_increment)
-        scan_r.time_increment = msg_r.time_increment
-        scan_r.scan_time = msg_r.scan_time
-        scan_r.range_min = msg_r.range_min
-        scan_r.range_max = msg_r.range_max
-        scan_r.ranges = [float()]*180
-        var_len = len(scan_r.ranges)
-        for i in range(var_len):
-            scan_r.ranges[179-i] = msg_r.ranges[i]
-        self.Rear_publisher.publish(scan_r)
+        if self.clock_received:
+            scan_r = LaserScan()
+            scan_r.header.stamp = self.time_stamp
+            scan_r.header.frame_id = self.get_parameter('frame_prefix').get_parameter_value().string_value+'/'+msg_r.header.frame_id
+            scan_r.angle_min = (msg_r.angle_max)
+            scan_r.angle_max = (msg_r.angle_min)
+            scan_r.angle_increment =  -(msg_r.angle_increment)
+            scan_r.time_increment = msg_r.time_increment
+            scan_r.scan_time = msg_r.scan_time
+            scan_r.range_min = msg_r.range_min
+            scan_r.range_max = msg_r.range_max
+            scan_r.ranges = [float()]*180
+            var_len = len(scan_r.ranges)
+            for i in range(var_len):
+                scan_r.ranges[179-i] = msg_r.ranges[i]
+            self.Rear_publisher.publish(scan_r)
 
 def main():
     rclpy.init()
-    teleop_node = Robotino3ScanRemap()
+    scan_republisher = Robotino3ScanRemap()
     try:
-        rclpy.spin(teleop_node)
+        rclpy.spin(scan_republisher)
     except KeyboardInterrupt:
         pass
-    teleop_node.destroy_node()
+    scan_republisher.destroy_node()
     rclpy.shutdown()
 
 if __name__ == '__main__':

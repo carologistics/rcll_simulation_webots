@@ -11,6 +11,8 @@ import numpy as np
 from sensor_msgs.msg import Range
 import math
 from rclpy.qos import QoSProfile, QoSReliabilityPolicy, QoSDurabilityPolicy
+from rosgraph_msgs.msg import Clock
+from builtin_interfaces.msg import Time
 
 num_ir_sensors = 9
 robotino_base_radius = 0.225
@@ -36,6 +38,7 @@ class Robotino3IrScanMerger(Node):
             self.get_logger().info(f"Subscriber {i} created for topic {self.topic}")
             # self.ir_scan_range_init = getattr(self, f"ir{i+1}_scan_range")
             # self.ir_scan_range_init = 0.0
+        self.create_subscription(Clock, '/clock', self.Timer_cb, 10)
         self.publisher = self.create_publisher(LaserScan, self.get_namespace()+'/ir_scan_merged', qos_profile=self.Laserscan_qos_profile)    
         self.ir1_scan_range = 0.0 
         self.ir2_scan_range = 0.0
@@ -47,6 +50,13 @@ class Robotino3IrScanMerger(Node):
         self.ir8_scan_range = 0.0
         self.ir9_scan_range = 0.0       
         self.timer = self.create_timer(0.0333 , self.On_Timer)
+        self.clock_received = False
+        
+    # callback function to get simulation time from clock     
+    def Timer_cb(self, clock_msg):
+        self.time_stamp = Time()
+        self.time_stamp = clock_msg.clock
+        self.clock_received = True
         
     def IrScan_cb_1(self, msg):
         self.ir1_scan_range = msg.range
@@ -76,18 +86,19 @@ class Robotino3IrScanMerger(Node):
         self.ir9_scan_range = data.range
         
     def On_Timer(self):
-        msg = LaserScan()
-        msg.header.frame_id = self.get_parameter('frame_prefix').get_parameter_value().string_value+'/'+'irsensor_merge'
-        msg.header.stamp = self.get_clock().now().to_msg()
-        msg.angle_min       = 0.0
-        msg.angle_max       = 2 * math.pi
-        msg.angle_increment = 0.6982
-        msg.range_min       = 0.02
-        msg.range_max       = 0.5+robotino_base_radius
-        for i in range(num_ir_sensors):
-            self.ir_scan_range = getattr(self, f"ir{i+1}_scan_range")
-            msg.ranges.append(self.ir_scan_range + robotino_base_radius)
-        self.publisher.publish(msg)
+        if self.clock_received:
+            msg = LaserScan()
+            msg.header.frame_id = self.get_parameter('frame_prefix').get_parameter_value().string_value+'/'+'irsensor_merge'
+            msg.header.stamp = self.time_stamp
+            msg.angle_min       = 0.0
+            msg.angle_max       = 2 * math.pi
+            msg.angle_increment = 0.6982
+            msg.range_min       = 0.02
+            msg.range_max       = 0.5+robotino_base_radius
+            for i in range(num_ir_sensors):
+                self.ir_scan_range = getattr(self, f"ir{i+1}_scan_range")
+                msg.ranges.append(self.ir_scan_range + robotino_base_radius)
+            self.publisher.publish(msg)
         
 def main():
     rclpy.init()
