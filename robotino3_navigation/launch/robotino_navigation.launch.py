@@ -137,8 +137,8 @@ def launch_nodes_withconfig(context, *args, **kwargs):
                 respawn_delay=2.0,
                 parameters=[configured_params],
                 arguments=['--ros-args', '--log-level', log_level],
-                remappings=remappings +
-                        [('cmd_vel', 'cmd_vel_nav'), ('cmd_vel_smoothed', 'cmd_vel')],
+                remappings=remappings + [('cmd_vel', 'cmd_vel_nav')],
+                        #[('cmd_vel', 'cmd_vel_nav'), ('cmd_vel_smoothed', 'cmd_vel')],
                 namespace=namespace),
             Node(
                 package='nav2_lifecycle_manager',
@@ -163,7 +163,7 @@ def generate_launch_description():
         'RCUTILS_LOGGING_BUFFERED_STREAM', '1')
 
     declare_namespace_cmd = DeclareLaunchArgument(
-        'namespace', default_value='robotinobase3',
+        'namespace', default_value='',
         description='Top-level namespace')
 
     declare_use_sim_time_cmd = DeclareLaunchArgument(
@@ -179,7 +179,7 @@ def generate_launch_description():
         description='Automatically startup the nav2 stack')
 
     declare_use_respawn_cmd = DeclareLaunchArgument(
-        'use_respawn', default_value='False',
+        'use_respawn', default_value='True',
         description='Whether to respawn if a node crashes. Applied when composition is disabled.')
 
     declare_log_level_cmd = DeclareLaunchArgument(
