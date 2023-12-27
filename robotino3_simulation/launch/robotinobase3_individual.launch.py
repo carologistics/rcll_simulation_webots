@@ -50,7 +50,9 @@ def generate_launch_description():
         robot_name='robotinobase3',
         parameters=[
             {'robot_description': os.path.join(package_dir, 'urdf/robots', 'robotinobase3_description_plugin.urdf')},
+            {'use_sim_time': True},
         ],
+        respawn=True
     )
     
     # Start Robot_state publisher for Rviz Vizualization 
