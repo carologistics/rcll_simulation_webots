@@ -9,6 +9,7 @@ import math
 from rclpy.node import Node
 from scipy.spatial.transform import Rotation as R
 from math import cos, dist, sin
+from builtin_interfaces.msg import Time
 
 wheel_distance = 0.1826
 wheel_radius = 0.063
@@ -86,7 +87,7 @@ class Robotino3Driver:
         self.prev_odom_x = 0.0
         self.prev_odom_y = 0.0
         self.prev_odom_omega = 0.0
-        self.last_odometry_sample_time = self.get_time()
+        self.last_odometry_sample_time = self.__robot.getTime()
     
     def get_time(self):
     # Time in seconds
@@ -98,7 +99,12 @@ class Robotino3Driver:
     def TransformAndOdometry_wheelodom(self):
         
         # Initialize time stamp and calaculate time dtep for odometry calculations 
-        time_stamp = self.drive_node.get_clock().now().to_msg()
+        current_time = self.__robot.getTime()
+        time_stamp = Time()
+        time_stamp.sec = int(current_time)
+        time_stamp.nanosec = int((current_time % 1) * 1e9)
+        
+        time_diff = current_time - self.last_odometry_sample_time
         time_diff = self.get_time() - self.last_odometry_sample_time
         self.last_odometry_sample_time = self.get_time()
         
@@ -184,7 +190,10 @@ class Robotino3Driver:
         imu = self.inertial_unit.getRollPitchYaw()
         gyro = self.gyro.getValues()
         
-        time_stamp = self.drive_node.get_clock().now().to_msg()
+        current_time = self.__robot.getTime()
+        time_stamp = Time()
+        time_stamp.sec = int(current_time)
+        time_stamp.nanosec = int((current_time % 1) * 1e9)
         
         # Compose and publish trnasform:odom
         tfs = TransformStamped()
@@ -266,7 +275,10 @@ class Robotino3Driver:
                                       [0, 0, 0.9063078, -0.4226183],
                                       [0, 0 , 0, 1]] 
         
-        time_stamp = self.drive_node.get_clock().now().to_msg()
+        current_time = self.__robot.getTime()
+        time_stamp = Time()
+        time_stamp.sec = int(current_time)
+        time_stamp.nanosec = int((current_time % 1) * 1e9)
         
         for i in range(len(self.ir_sensor_list)):
             tf = TransformStamped()
@@ -294,9 +306,14 @@ class Robotino3Driver:
                                   [0, 0, 1, 0],
                                   [0, 0, 0, 1]]#SickLaser_Front
         
+        current_time = self.__robot.getTime()
+        time_stamp = Time()
+        time_stamp.sec = int(current_time)
+        time_stamp.nanosec = int((current_time % 1) * 1e9)
+        
         for i in range(len(self.laser_sensor_list)):
             tf = TransformStamped()
-            tf.header.stamp = self.drive_node.get_clock().now().to_msg()
+            tf.header.stamp = time_stamp
             tf.header.frame_id= self.drive_node.get_namespace()+'/'+"base_link"
             tf._child_frame_id = self.drive_node.get_namespace()+'/'+self.laser_sensor_list[i]
             tf.transform.translation.x = float(self.lidar_pos[i][0])
@@ -314,8 +331,13 @@ class Robotino3Driver:
         self.imu_pose = [0.0, -0.1, 0.2]
         self.imu_orientation = [0, 0, 1, 0]
         
+        current_time = self.__robot.getTime()
+        time_stamp = Time()
+        time_stamp.sec = int(current_time)
+        time_stamp.nanosec = int((current_time % 1) * 1e9)
+        
         tf = TransformStamped()
-        tf.header.stamp = self.drive_node.get_clock().now().to_msg()
+        tf.header.stamp = time_stamp
         tf.header.frame_id= self.drive_node.get_namespace()+'/'+"base_link"
         tf._child_frame_id = self.drive_node.get_namespace()+'/'+self.imusensor
         tf.transform.translation.x = float(self.imu_pose[0])
