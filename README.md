@@ -22,6 +22,7 @@ Encouraging collaboration and contributions, the repository aims to serve as a r
 - Contributing to this repo
 - Research and References
 - Bugs and Issues
+- Way-forward
 
 ## Installation Premise
 This repository has been tested on [ROS2 Humble] and with webots 2023b. It is recommended to use the same versions to avoid any issues;
@@ -123,11 +124,11 @@ Once the robot is localized, use the 2D Nav Goal tool in Rviz2 to send a goal to
 
 For autonomous navigation, first launch the multiple instances of robotinobase in simulation as described above, then launch the NAV2 stack by running the following commands in different terminal instances from the root of your workspace:
 
-        ros2 launch robotino3_navigation robotino_bringup.launch.py namespace:=robotinobase1
+    ros2 launch robotino3_navigation robotino_bringup.launch.py namespace:=robotinobase1
 
-        ros2 launch robotino3_navigation robotino_bringup.launch.py namespace:=robotinobase2
+    ros2 launch robotino3_navigation robotino_bringup.launch.py namespace:=robotinobase2
 
-        ros2 launch robotino3_navigation robotino_bringup.launch.py namespace:=robotinobase3
+    ros2 launch robotino3_navigation robotino_bringup.launch.py namespace:=robotinobase3
 
 It will launch the map server, amcl, nav2_stack, collision monitor, and rviz2 with predefined configs for the corresponding robotinobase(1/2/3). Use Rviz2 to send a goal to the corresponding robotinobase(1/2/3).
 
@@ -141,7 +142,7 @@ To contribute to this package, you can either open an issue describing the desir
 
 ## Research and References
 - Omnidirectional robot kinematics and dynamics:
-  Moreno, J.; Clotet, E.; Lupiañez, R.; Tresanchez, M.; Martínez, D.; Pallejà, T.; Casanovas, J.; Palacín, J. Design, Implementation and Validation of the Three-Wheel Holonomic Motion System of the Assistant Personal Robot (APR). Sensors 2016, 16, 1658. [Google Scholar] [CrossRef][Green Version]
+  Moreno, J.; Clotet, E.; Lupiañez, R.; Tresanchez, M.; Martínez, D.; Pallejà, T.; Casanovas, J.; Palacín, J. Design, Implementation and Validation of the Three-Wheel Holonomic Motion System of the Assistant Personal Robot (APR). Sensors 2016, 16, 1658. [Google Scholar]
 
   Jordi Palacín; Elena Rubies; Eduard Clotet; and David Martínez; Evaluation of the Path-Tracking Accuracy of a Three-Wheeled Omnidirectional Mobile Robot Designed as a personal Assistant https://doi.org/10.3390/s21217216
 
