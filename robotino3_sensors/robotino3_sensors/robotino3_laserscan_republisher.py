@@ -9,12 +9,18 @@ from rosgraph_msgs.msg import Clock
 class Robotino3ScanRemap(Node):
 
     def __init__(self):
-        super().__init__('robotino3_laserscan_republisher')
+        super().__init__('robotino_laserscan_republisher')
+        
+        # Initialize subscribers for laser scan data
         self.create_subscription(LaserScan, self.get_namespace()+'/SickLaser_Front', self.FrontScan_cb, 10)
         self.create_subscription(Clock, '/clock', self.Timer_cb, 10)
         self.create_subscription(LaserScan, self.get_namespace()+'/SickLaser_Rear', self.RearScan_cb, 10)
+        
+        # Initialize publishers for laser scan data
         self.Front_publisher= self.create_publisher(LaserScan, self.get_namespace()+'/SickLaser_Front_Remaped', 10)
         self.Rear_publisher= self.create_publisher(LaserScan, self.get_namespace()+'/SickLaser_Rear_Remaped', 10)
+        
+        # Initialize parameters
         self.declare_parameter('frame_prefix', 'robotinobase1')
         self.clock_received = False
      
@@ -24,7 +30,7 @@ class Robotino3ScanRemap(Node):
         self.time_stamp = clock_msg.clock
         self.clock_received = True 
         
-    # callback function to publish data over cmd_vel topic based on joy_pad inputs
+    # callback functions to get range from laser scan data and republish it
     def FrontScan_cb(self, msg):
         if self.clock_received:
             scan_f = LaserScan()
@@ -44,6 +50,7 @@ class Robotino3ScanRemap(Node):
                 scan_f.ranges[179-i] = msg.ranges[i]
             self.Front_publisher.publish(scan_f)
         
+    # callback functions to get range from laser scan data and republish it
     def RearScan_cb(self, msg_r):
         if self.clock_received:
             scan_r = LaserScan()

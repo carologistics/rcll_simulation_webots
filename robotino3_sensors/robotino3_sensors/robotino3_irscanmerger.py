@@ -1,3 +1,24 @@
+# Author: Saurabh Borse(saurabh.borse@alumni.fh-aachen.de)
+
+#  MIT License
+#  Copyright (c) 2022 Saurabh Borse
+#  Permission is hereby granted, free of charge, to any person obtaining a copy
+#  of this software and associated documentation files (the "Software"), to deal
+#  in the Software without restriction, including without limitation the rights
+#  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#  copies of the Software, and to permit persons to whom the Software is
+#  furnished to do so, subject to the following conditions:
+
+#  The above copyright notice and this permission notice shall be included in all
+#  copies or substantial portions of the Software.
+
+#  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+#  SOFTWARE.
 
 #!/usr/bin/env python3
 import rclpy
@@ -20,15 +41,16 @@ robotino_base_radius = 0.225
 class Robotino3IrScanMerger(Node):
 
     def __init__(self):
-        super().__init__('robotino3_irscanmerger', namespace='' )
+        super().__init__('robotino_irscanmerger', namespace='' )
         
+        # Initialize QoS profile
         self.Laserscan_qos_profile = QoSProfile(
                 reliability=QoSReliabilityPolicy.BEST_EFFORT,
                 durability=QoSDurabilityPolicy.VOLATILE,
                 depth=5)
-        
         self.declare_parameter('frame_prefix', 'robotinobase1')
         
+        # Initialize subscribers for all ir sensors
         for i in range(num_ir_sensors):
             self.subscribers = [] 
             self.topic = self.get_namespace()+f"/ir{i+1}"
@@ -39,6 +61,8 @@ class Robotino3IrScanMerger(Node):
             # self.ir_scan_range_init = getattr(self, f"ir{i+1}_scan_range")
             # self.ir_scan_range_init = 0.0
         self.create_subscription(Clock, '/clock', self.Timer_cb, 10)
+        
+        # Initialize publisher for merged ir scan
         self.publisher = self.create_publisher(LaserScan, self.get_namespace()+'/ir_scan_merged', qos_profile=self.Laserscan_qos_profile)    
         self.ir1_scan_range = 0.0 
         self.ir2_scan_range = 0.0
@@ -58,6 +82,7 @@ class Robotino3IrScanMerger(Node):
         self.time_stamp = clock_msg.clock
         self.clock_received = True
         
+    # callback functions to get range from ir sensors
     def IrScan_cb_1(self, msg):
         self.ir1_scan_range = msg.range
         
@@ -85,6 +110,7 @@ class Robotino3IrScanMerger(Node):
     def IrScan_cb_9(self, data):
         self.ir9_scan_range = data.range
         
+    # callback function to publish merged ir scan
     def On_Timer(self):
         if self.clock_received:
             msg = LaserScan()
