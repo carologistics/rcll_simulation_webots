@@ -22,7 +22,6 @@ def launch_nodes_withconfig(context, *args, **kwargs):
 
     package_dir = get_package_share_directory('robotino3_simulation')
     
-
     use_sim_time = LaunchConfiguration('use_sim_time')
     mps_config = LaunchConfiguration('mps_config')
     launch_rviz = LaunchConfiguration('launch_rviz')
@@ -64,6 +63,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
             ]),
             launch_arguments={
                 'namespace': 'robotinobase1',
+                'joy_device_id': '1',
                 'use_sim_time': use_sim_time,
                 'launch_rviz': launch_rviz,
                 'launch_joynode': launch_joynode,
@@ -80,6 +80,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
             ]),
             launch_arguments={
                 'namespace': 'robotinobase2',
+                'joy_device_id': '2',
                 'use_sim_time': use_sim_time,
                 'launch_rviz': launch_rviz,
                 'launch_joynode': launch_joynode,
@@ -96,6 +97,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
             ]),
             launch_arguments={
                 'namespace': 'robotinobase3',
+                'joy_device_id': '0',
                 'use_sim_time': use_sim_time,
                 'launch_rviz': launch_rviz,
                 'launch_joynode': launch_joynode,

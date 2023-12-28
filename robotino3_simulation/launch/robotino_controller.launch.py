@@ -23,6 +23,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
     package_dir = get_package_share_directory('robotino3_simulation')
     
     namespace = LaunchConfiguration('namespace')
+    joy_device_id = LaunchConfiguration('joy_device_id')
     use_sim_time = LaunchConfiguration('use_sim_time')
     launch_rviz = LaunchConfiguration('launch_rviz')
     launch_joynode = LaunchConfiguration('launch_joynode')
@@ -63,7 +64,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
             name="joy_node",
             output="log",
             namespace=namespace,
-            parameters=[{'device_id': 0,
+            parameters=[{'device_id': joy_device_id,
                          'use_sim_time': use_sim_time,}],
             condition= IfCondition(launch_joynode)
         ),
@@ -126,6 +127,10 @@ def generate_launch_description():
     declare_namespace_argument = DeclareLaunchArgument(
         'namespace', default_value='',
         description='Top-level namespace')
+    
+    declare_namespace_argument = DeclareLaunchArgument(
+        'namespace', default_value='0',
+        description='Device ID of the joystick')
 
     declare_use_sim_time_argument = DeclareLaunchArgument(
         'use_sim_time', default_value='true',
