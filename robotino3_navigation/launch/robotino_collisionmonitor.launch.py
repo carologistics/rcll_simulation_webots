@@ -15,9 +15,7 @@
 # limitations under the License.
 
 import os
-
 from ament_index_python.packages import get_package_share_directory
-
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, OpaqueFunction
 from launch.substitutions import LaunchConfiguration
@@ -27,8 +25,7 @@ from nav2_common.launch import RewrittenYaml
 
 def launch_nodes_withconfig(context, *args, **kwargs):
 
-    # Launch arguments
-    # 1. Create the launch configuration variables
+    # Create the launch configuration variables
     namespace = LaunchConfiguration('namespace')
     use_sim_time = LaunchConfiguration('use_sim_time')
     params_file = LaunchConfiguration('params_file')

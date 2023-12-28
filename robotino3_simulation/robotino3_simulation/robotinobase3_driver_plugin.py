@@ -1,3 +1,24 @@
+# Author: Saurabh Borse(saurabh.borse@alumni.fh-aachen.de)
+
+#  MIT License
+#  Copyright (c) 2023 Saurabh Borse
+#  Permission is hereby granted, free of charge, to any person obtaining a copy
+#  of this software and associated documentation files (the "Software"), to deal
+#  in the Software without restriction, including without limitation the rights
+#  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#  copies of the Software, and to permit persons to whom the Software is
+#  furnished to do so, subject to the following conditions:
+
+#  The above copyright notice and this permission notice shall be included in all
+#  copies or substantial portions of the Software.
+
+#  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+#  SOFTWARE.
 
 import rclpy
 from nav_msgs.msg import Odometry
@@ -183,6 +204,7 @@ class Robotino3Driver:
         self.joint_state_pub.publish(joint_state)
         
     def TransformAndOdometry_imugps(self):
+        
         #Initilize gps/imu and gyro sensor
         gps = self.gps_sensor.getValues()
         linear_twist = self.gps_sensor.getSpeedVector()
@@ -295,6 +317,7 @@ class Robotino3Driver:
             
     def TrnsformLaserSensor(self):
         
+        # Publish transform for Laser_sensor w.r.t to base link
         self.laser_sensor_list = ["SickLaser_Rear", "SickLaser_Front", "laser_link"]
         
         self.lidar_pos = [[0.12, 0, 0.3],#SickLaser_Rear
@@ -325,7 +348,8 @@ class Robotino3Driver:
             self.tfb_.sendTransform(tf)
     
     def TransformImuSensor(self):
-     
+        
+        # Publish transform for Imu_sensor w.r.t to base link
         self.imusensor = "Inertial_Unit"
         self.imu_pose = [0.0, -0.1, 0.2]
         self.imu_orientation = [0, 0, 1, 0]
@@ -349,6 +373,7 @@ class Robotino3Driver:
         self.tfb_.sendTransform(tf)
         
     def Kinematic_Calc(self):
+        
         # Algorithm1: Linear kinematic model for omniwheel drive (Angular velocity from linear velocity) 
         v_x = self.__target_twist.linear.x
         v_y = self.__target_twist.linear.y
@@ -366,6 +391,7 @@ class Robotino3Driver:
         return[m1,m2,m3]
     
     def InverseKinematic_Calc(w0, w1, w2):
+        
         # Algorithm 1: Inverse kimeatic calculation (linear velocity from angular velocity)
         vx = ((-w1+w2)/math.sqrt(3.0))*wheel_radius
         vy = (((2/3)*w0) - ((1/3)*w1) - ((1/3)*w2))*wheel_radius

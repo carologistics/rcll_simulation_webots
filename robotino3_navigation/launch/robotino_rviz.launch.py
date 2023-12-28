@@ -24,6 +24,7 @@ from launch_ros.actions import Node
 from nav2_common.launch import ReplaceString
 
 def launch_nodes_withconfig(context, *args, **kwargs):
+    # Get the launch directory
     bringup_dir = get_package_share_directory('robotino3_navigation')
     
     # Create the launch configuration variables

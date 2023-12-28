@@ -16,6 +16,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
 
     bringup_dir = get_package_share_directory('robotino3_navigation')
     
+    # Create the launch configuration variables
     namespace = LaunchConfiguration('namespace')
     map_yaml_file = LaunchConfiguration('map')
     use_sim_time = LaunchConfiguration('use_sim_time')
@@ -27,7 +28,6 @@ def launch_nodes_withconfig(context, *args, **kwargs):
     launch_mapserver = LaunchConfiguration('launch_mapserver')
     
     lifecycle_nodes = ['map_server', 'amcl']
-    
     
     # Create our own temporary YAML files that include substitutions
     param_substitutions = {
@@ -46,12 +46,14 @@ def launch_nodes_withconfig(context, *args, **kwargs):
     for argname, argval in context.launch_configurations.items():
         launch_configuration[argname] = argval
     
+    # Create the remappings for the nodes
     remappings = [('/'+launch_configuration['namespace']+'/tf', '/tf'),
                   ('/'+launch_configuration['namespace']+'/tf_static', '/tf_static'),
                   ('/'+launch_configuration['namespace']+'/map','/map')]
     
     rviz_config_dir = os.path.join(bringup_dir,'rviz', 'robotino_localization.rviz')
     
+    # Create list of nodes to launch
     load_nodes = GroupAction(
         actions=[
             Node(
@@ -107,6 +109,7 @@ def generate_launch_description():
     
     bringup_dir = get_package_share_directory('robotino3_navigation')
 
+    # Declare the launch arguments
     stdout_linebuf_envvar = SetEnvironmentVariable(
         'RCUTILS_LOGGING_BUFFERED_STREAM', '1')
     
@@ -149,7 +152,7 @@ def generate_launch_description():
         default_value='false', 
         description= 'Wheather to launch map server or not')
 
-     # Create the launch description and populate
+    # Create the launch description and populate
     ld = LaunchDescription()
 
     # Set environment variables

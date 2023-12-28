@@ -1,6 +1,6 @@
+# Parameters to set the position and orientation of the mps machines
 
-# offsetin +x direction = 0.35, -ve x direction = -0.35 
-# offsetin +y direction = 0.175 -ve y direction = -0.175
+# Origin: please refer the origin of game field from webots world for mpss location in the world
 /robotino3_mpspublisher:
   ros__parameters:
   # Position of Team-Cyan mps machines(cartesian- x,y,z)
@@ -38,4 +38,4 @@
     M-SS-I_orientation: 0 0 1 0
     M-SS-I_position: -5.15 0.0 0.0
     
-    use_sim_time: false
+    use_sim_time: true

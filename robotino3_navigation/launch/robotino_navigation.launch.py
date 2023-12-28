@@ -25,6 +25,7 @@ from nav2_common.launch import RewrittenYaml
 
 def launch_nodes_withconfig(context, *args, **kwargs):
     
+    # create the launch configuration variables
     namespace = LaunchConfiguration('namespace')
     use_sim_time = LaunchConfiguration('use_sim_time')
     autostart = LaunchConfiguration('autostart')
@@ -32,6 +33,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
     use_respawn = LaunchConfiguration('use_respawn')
     log_level = LaunchConfiguration('log_level')
 
+    # Create list of lifecycle nodes to launch
     lifecycle_nodes = ['controller_server',
                        'smoother_server',
                        'planner_server',
@@ -61,6 +63,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
             convert_types=True),
         allow_substs=True)
     
+    # Create the list of nodes to start
     load_nodes = GroupAction(
         actions=[
             Node(
@@ -159,6 +162,7 @@ def generate_launch_description():
     # Get the launch directory
     package_dir = get_package_share_directory('robotino3_navigation')
 
+    # Declare the launch arguments
     stdout_linebuf_envvar = SetEnvironmentVariable(
         'RCUTILS_LOGGING_BUFFERED_STREAM', '1')
 

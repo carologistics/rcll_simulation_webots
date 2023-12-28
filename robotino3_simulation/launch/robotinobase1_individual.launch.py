@@ -1,3 +1,25 @@
+# Author: Saurabh Borse(saurabh.borse@alumni.fh-aachen.de)
+
+#  MIT License
+#  Copyright (c) 2023 Saurabh Borse
+#  Permission is hereby granted, free of charge, to any person obtaining a copy
+#  of this software and associated documentation files (the "Software"), to deal
+#  in the Software without restriction, including without limitation the rights
+#  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#  copies of the Software, and to permit persons to whom the Software is
+#  furnished to do so, subject to the following conditions:
+
+#  The above copyright notice and this permission notice shall be included in all
+#  copies or substantial portions of the Software.
+
+#  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+#  SOFTWARE.
+
 #!/usr/bin/env python
 
 import os
@@ -12,20 +34,19 @@ from launch_ros.actions import Node
 from launch.substitutions.path_join_substitution import PathJoinSubstitution
 from webots_ros2_driver.webots_controller import WebotsController
 import pathlib
-from launch.actions import (LogInfo, RegisterEventHandler, TimerAction)
-from launch.event_handlers import (OnExecutionComplete, OnProcessExit,
-                                OnProcessIO, OnProcessStart, OnShutdown)
 from launch.conditions import IfCondition
-from launch.substitutions import PythonExpression, LaunchConfiguration
+from launch.substitutions import LaunchConfiguration
 
 
 def generate_launch_description():
     package_dir = get_package_share_directory('robotino3_simulation')
     
+    # Declare launch configuration variables
     launch_rviz = LaunchConfiguration('launch_rviz')
     launch_joynode = LaunchConfiguration('launch_joynode')
     launch_teleopnode = LaunchConfiguration('launch_teleopnode')
     
+    # Declare launch arguments
     launch_rviz_argument = DeclareLaunchArgument(
         'launch_rviz',
         default_value='true', 
@@ -41,11 +62,11 @@ def generate_launch_description():
         default_value='true', 
         description= 'Wheather to start Rvizor not based on launch environment')
     
-
+    # Load robot description file
     def load_file(filename):
         return pathlib.Path(os.path.join(package_dir, 'urdf/robots', filename)).read_text()
     
-    # Start webots driver node
+    # Start Webots Controller
     robotino_driver = WebotsController(
         robot_name='robotinobase1',
         parameters=[
@@ -55,7 +76,7 @@ def generate_launch_description():
         respawn=True
     )
     
-    # Start Robot_state publisher for Rviz Vizualization 
+    # Robot state publisher node 
     robot_state_publisher = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
@@ -66,7 +87,7 @@ def generate_launch_description():
         namespace='robotinobase1',
     )
     
-    # Joy node for joystick control 
+    # Joy node to enable joystick teleop  
     joy_node = Node(
         package="joy",
         executable="joy_node",
@@ -79,7 +100,7 @@ def generate_launch_description():
         condition = IfCondition(launch_joynode),
     )
     
-    # node to enable the joyteleop
+    # Joy teleop node
     robotino_joyteleop_node = Node(
         package="robotino3_sensors",
         executable="robotino3_joyteleop",
@@ -139,6 +160,7 @@ def generate_launch_description():
     )
     
     return LaunchDescription([  
+        # Launch nodes
         robotino_driver,
         robot_state_publisher,
         launch_joynode_argument,

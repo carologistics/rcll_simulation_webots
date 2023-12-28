@@ -1,11 +1,29 @@
+# Author: Saurabh Borse(saurabh.borse@alumni.fh-aachen.de)
+
+#  MIT License
+#  Copyright (c) 2023 Saurabh Borse
+#  Permission is hereby granted, free of charge, to any person obtaining a copy
+#  of this software and associated documentation files (the "Software"), to deal
+#  in the Software without restriction, including without limitation the rights
+#  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#  copies of the Software, and to permit persons to whom the Software is
+#  furnished to do so, subject to the following conditions:
+
+#  The above copyright notice and this permission notice shall be included in all
+#  copies or substantial portions of the Software.
+
+#  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+#  SOFTWARE.
+
 #!/usr/bin/env python
 
 import os
-import launch
 from ament_index_python.packages import get_package_share_directory
-from launch_ros.substitutions import FindPackageShare
-from launch.actions import IncludeLaunchDescription
-from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import PathJoinSubstitution, TextSubstitution
 from launch import LaunchDescription
 from launch_ros.actions import Node
@@ -14,15 +32,15 @@ from webots_ros2_driver.webots_launcher import WebotsLauncher
 from webots_ros2_driver.webots_controller import WebotsController
 import pathlib
 from launch.actions import (LogInfo, RegisterEventHandler, TimerAction)
-from launch.event_handlers import (OnExecutionComplete, OnProcessExit,
-                                OnProcessIO, OnProcessStart, OnShutdown)
-
+from launch.event_handlers import OnProcessStart
 
 def generate_launch_description():
     package_dir = get_package_share_directory('robotino3_simulation')
     
+    # Declare launch configuration variables
     mps_config = os.path.join(package_dir, 'config', 'mps_pose.yaml')
     
+    # Initialize robotino3_mpsspawner node
     robotino3_mpsspawner = Node(
         package="robotino3_simulation",
         executable="robotino3_mpspublisher",
@@ -32,7 +50,7 @@ def generate_launch_description():
         output ="log",
     )
     
-    # Starts Webots simulation and superwisor nodes
+    # Start Webots simulation and supervisor nodes
     webots = WebotsLauncher(
         world=PathJoinSubstitution([package_dir, 'worlds', 'modified_webots_robotinobase3_sim.wbt']),
         mode="realtime",
@@ -41,6 +59,8 @@ def generate_launch_description():
     
     return LaunchDescription([
         robotino3_mpsspawner,
+        
+        # Register an event handler
         RegisterEventHandler(
             OnProcessStart(
                 target_action=robotino3_mpsspawner,

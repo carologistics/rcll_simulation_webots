@@ -1,3 +1,24 @@
+# Author: Saurabh Borse(saurabh.borse@alumni.fh-aachen.de)
+
+#  MIT License
+#  Copyright (c) 2023 Saurabh Borse
+#  Permission is hereby granted, free of charge, to any person obtaining a copy
+#  of this software and associated documentation files (the "Software"), to deal
+#  in the Software without restriction, including without limitation the rights
+#  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#  copies of the Software, and to permit persons to whom the Software is
+#  furnished to do so, subject to the following conditions:
+
+#  The above copyright notice and this permission notice shall be included in all
+#  copies or substantial portions of the Software.
+
+#  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+#  SOFTWARE.
 
 import rclpy
 from rclpy.time import Time
@@ -11,6 +32,7 @@ from rclpy.node import Node
 from scipy.spatial.transform import Rotation as R
 from math import cos, dist, sin
 
+# Define robot parameters
 wheel_distance = 0.1826
 wheel_radius = 0.063
 gear_ratio = 1
@@ -38,7 +60,7 @@ class Robotino3Driver:
             motor.setPosition(float('inf'))
             motor.setVelocity(0.0)
                 
-        # INitialize ROS2_Node and list the no.of devices
+        # Initialize ROS2_Node and list the no.of devices
         rclpy.init(args=None)
         self.drive_node = rclpy.create_node('robotino3_driver_plugin')
         n_devices = self.__robot.getNumberOfDevices()
@@ -93,8 +115,7 @@ class Robotino3Driver:
         self.__target_twist = msg
         
     def TransformAndOdometry_wheelodom(self):
-        
-        # Initialze, calculate wheel odometry
+        # Initialze, calculate and publidh wheel odometry
         time_stamp = self.drive_node.get_clock().now().to_msg()      
         time_diff = self.get_time() - self.last_odometry_sample_time
         

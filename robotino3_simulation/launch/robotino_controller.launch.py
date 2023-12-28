@@ -1,7 +1,28 @@
+# Author: Saurabh Borse(saurabh.borse@alumni.fh-aachen.de)
+
+#  MIT License
+#  Copyright (c) 2023 Saurabh Borse
+#  Permission is hereby granted, free of charge, to any person obtaining a copy
+#  of this software and associated documentation files (the "Software"), to deal
+#  in the Software without restriction, including without limitation the rights
+#  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#  copies of the Software, and to permit persons to whom the Software is
+#  furnished to do so, subject to the following conditions:
+
+#  The above copyright notice and this permission notice shall be included in all
+#  copies or substantial portions of the Software.
+
+#  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+#  SOFTWARE.
+
 #!/usr/bin/env python
 
 import os
-import launch
 from ament_index_python.packages import get_package_share_directory
 from launch_ros.substitutions import FindPackageShare
 from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument, OpaqueFunction, GroupAction
@@ -10,18 +31,15 @@ from launch.substitutions import PathJoinSubstitution, LaunchConfiguration
 from launch import LaunchDescription
 from launch_ros.actions import Node
 from launch.substitutions.path_join_substitution import PathJoinSubstitution
-from webots_ros2_driver.webots_launcher import WebotsLauncher
 from webots_ros2_driver.webots_controller import WebotsController
 import pathlib
-from launch.actions import (LogInfo, RegisterEventHandler, TimerAction)
 from launch.conditions import IfCondition
-from launch.event_handlers import  OnProcessStart
-
 
 def launch_nodes_withconfig(context, *args, **kwargs):
 
     package_dir = get_package_share_directory('robotino3_simulation')
     
+    # Declare launch configuration variables
     namespace = LaunchConfiguration('namespace')
     joy_device_id = LaunchConfiguration('joy_device_id')
     use_sim_time = LaunchConfiguration('use_sim_time')
@@ -33,12 +51,15 @@ def launch_nodes_withconfig(context, *args, **kwargs):
     for argname, argval in context.launch_configurations.items():
         launch_configuration[argname] = argval#
     
+    # Load robot description file
     def load_file(filename):
         return pathlib.Path(os.path.join(package_dir, 'urdf/robots', filename)).read_text()
 
+    # Create a list of nodes to launch
     load_nodes = GroupAction(
         actions=[
-        # Start webots driver node
+        
+        # Start Webots Controller
         WebotsController(
             robot_name=launch_configuration['namespace'],
             parameters=[
@@ -48,7 +69,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
             respawn=True
         ),
         
-        # Start Robot_state publisher for Rviz Vizualization 
+        # Robot state publisher node 
         Node(package='robot_state_publisher',
             executable='robot_state_publisher',
             output='screen',
@@ -58,7 +79,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
             namespace=namespace,
         ),
         
-        # Joy node for joystick control 
+        # Joy node to enable joystick teleop 
         Node(package="joy",
             executable="joy_node",
             name="joy_node",
@@ -69,7 +90,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
             condition= IfCondition(launch_joynode)
         ),
         
-        # node to enable the joyteleop
+        # Joy teleop node to enable joystick teleop
         Node(package="robotino3_sensors",
             executable="robotino3_joyteleop",
             name ="robotino3_joyteleop",
@@ -124,6 +145,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
 
 def generate_launch_description():
     
+    # Declare launch configuration variables
     declare_namespace_argument = DeclareLaunchArgument(
         'namespace', default_value='',
         description='Top-level namespace')
@@ -151,7 +173,7 @@ def generate_launch_description():
         default_value='true', 
         description= 'Wheather to start Rvizor not based on launch environment')
     
-     # Create the launch description and populate
+    # Create the launch description and populate
     ld = LaunchDescription()
 
     # Declare the launch options
@@ -161,7 +183,7 @@ def generate_launch_description():
     ld.add_action(declare_launch_joynode_argument)
     ld.add_action(declare_launch_teleopnode_argument)
 
-    # Add the actions to launch all of the localiztion nodes
+    # Add the actions to launch all nodes
     ld.add_action(OpaqueFunction(function=launch_nodes_withconfig))
     
     return ld

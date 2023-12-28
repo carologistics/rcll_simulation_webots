@@ -14,19 +14,12 @@
 # limitations under the License.
 
 import os
-
 from ament_index_python.packages import get_package_share_directory
-
 from launch import LaunchDescription
 from launch.actions import (DeclareLaunchArgument, GroupAction, OpaqueFunction,
                             IncludeLaunchDescription, SetEnvironmentVariable)
-from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration, PythonExpression
-from launch_ros.actions import Node
-from launch_ros.actions import PushRosNamespace
-from launch_ros.descriptions import ParameterFile
-from nav2_common.launch import RewrittenYaml, ReplaceString
+from launch.substitutions import LaunchConfiguration
 
 def launch_nodes_withconfig(context, *args, **kwargs):
     
@@ -104,6 +97,7 @@ def generate_launch_description():
     # Get the launch directory
     bringup_dir = get_package_share_directory('robotino3_navigation')
 
+    # Declare the launch arguments
     stdout_linebuf_envvar = SetEnvironmentVariable(
         'RCUTILS_LOGGING_BUFFERED_STREAM', '1')
 
@@ -153,16 +147,16 @@ def generate_launch_description():
     
     declare_launchmapserver_cmd = DeclareLaunchArgument(
         'launch_mapserver', default_value='true',
-        description='log level')
+        description='whether to launch map server or not')
     
     declare_launchrviz_cmd = DeclareLaunchArgument(
         'launch_rviz', default_value='false',
-        description='log level')
+        description='whether to launch rviz or not')
     
     declare_rvizconfig_cmd = DeclareLaunchArgument(
         'rviz_config', 
         default_value='',
-        description='log level')
+        description='Full path to the RVIZ config file to use for all launched nodes')
 
     # Create the launch description and populate
     ld = LaunchDescription()

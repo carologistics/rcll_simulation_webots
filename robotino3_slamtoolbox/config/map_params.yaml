@@ -9,7 +9,7 @@ slam_toolbox:
     ceres_dogleg_type: TRADITIONAL_DOGLEG
     ceres_loss_function: None
 
-    # ROS Parameters
+    # ROS Parameters: Chnage the link and topic name based on which robotinobase is being used for slam
     odom_frame: robotinobase3/odom
     map_frame: map
     base_frame: robotinobase3/base_link
