@@ -1,3 +1,4 @@
+# Copyright 2018 Open Source Robotics Foundation, Inc.
 # Copyright 2019 Samsung Research America
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,14 +17,26 @@ from launch import LaunchDescription
 from ament_index_python.packages import get_package_share_directory
 import launch_ros.actions
 import os
+from launch.actions import DeclareLaunchArgument
+from launch.substitutions import LaunchConfiguration
+
 
 def generate_launch_description():
+    use_sim_time = LaunchConfiguration('use_sim_time', default='true')
+    
     return LaunchDescription([
+        
+        DeclareLaunchArgument(
+        'use_sim_time',
+        default_value='true',
+        description='Use simulation (Gazebo) clock if true'),
+
         launch_ros.actions.Node(
             package='robot_localization',
-            executable='navsat_transform_node',
-            name='navsat_transform_node',
+            executable='ekf_node',
+            name='ekf_filter_node',
             output='screen',
-            parameters=[os.path.join(get_package_share_directory("robotino3_sensors"), 'params', 'navsat_transform.yaml')],
+            parameters=[os.path.join(get_package_share_directory("robotino3_sensors"), 'config', 'ekf.yaml'),
+            {'use_sim_time': use_sim_time }]
            ),
 ])
