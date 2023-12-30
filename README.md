@@ -41,6 +41,10 @@ After installing ROS2 and creating the workspace, clone this repository in your 
     cd ~/simulation_ws/src
     git clone -b robot_cluster https://github.com/borsesaurabh2022/rcll_simulation_webots.git
 
+
+    cd ~/simulation_ws/src/rcll_simulation_webots
+    git clone -b main https://github.com/borsesaurabh2022/laser_scan_integrator.git
+
 Install the binary dependencies by running the following command in the root of your workspace:
 
     cd ~/simulation_ws
@@ -76,7 +80,7 @@ Then, source the workspace by running the following command:
 ### Spawning simulation with one instance of robot
 
      
-    ros2 launch robotino3_simulation robotino_simulation.launch.py namespace:=robotinobas1 launch_rviz:=true
+    ros2 launch robotino3_simulation robotino_simulation.launch.py namespace:=robotinobase1 launch_rviz:=true
  
 
 - namespace: It's a launch configuration used to spawn the corresponding robotinobase(1/2/3), its controllers, and node parameters 
