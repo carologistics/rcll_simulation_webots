@@ -1,3 +1,24 @@
+# Author: Saurabh Borse(saurabh.borse@alumni.fh-aachen.de)
+
+#  MIT License
+#  Copyright (c) 2023 Saurabh Borse
+#  Permission is hereby granted, free of charge, to any person obtaining a copy
+#  of this software and associated documentation files (the "Software"), to deal
+#  in the Software without restriction, including without limitation the rights
+#  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#  copies of the Software, and to permit persons to whom the Software is
+#  furnished to do so, subject to the following conditions:
+
+#  The above copyright notice and this permission notice shall be included in all
+#  copies or substantial portions of the Software.
+
+#  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+#  SOFTWARE.
 
 import rclpy
 from nav_msgs.msg import Odometry
@@ -9,6 +30,7 @@ import math
 from rclpy.node import Node
 from scipy.spatial.transform import Rotation as R
 from math import cos, dist, sin
+from builtin_interfaces.msg import Time
 
 wheel_distance = 0.1826
 wheel_radius = 0.063
@@ -86,7 +108,7 @@ class Robotino3Driver:
         self.prev_odom_x = 0.0
         self.prev_odom_y = 0.0
         self.prev_odom_omega = 0.0
-        self.last_odometry_sample_time = self.get_time()
+        self.last_odometry_sample_time = self.__robot.getTime()
     
     def get_time(self):
     # Time in seconds
@@ -98,7 +120,12 @@ class Robotino3Driver:
     def TransformAndOdometry_wheelodom(self):
         
         # Initialize time stamp and calaculate time dtep for odometry calculations 
-        time_stamp = self.drive_node.get_clock().now().to_msg()
+        current_time = self.__robot.getTime()
+        time_stamp = Time()
+        time_stamp.sec = int(current_time)
+        time_stamp.nanosec = int((current_time % 1) * 1e9)
+        
+        time_diff = current_time - self.last_odometry_sample_time
         time_diff = self.get_time() - self.last_odometry_sample_time
         self.last_odometry_sample_time = self.get_time()
         
@@ -178,13 +205,17 @@ class Robotino3Driver:
         self.joint_state_pub.publish(joint_state)
         
     def TransformAndOdometry_imugps(self):
+        
         #Initilize gps/imu and gyro sensor
         gps = self.gps_sensor.getValues()
         linear_twist = self.gps_sensor.getSpeedVector()
         imu = self.inertial_unit.getRollPitchYaw()
         gyro = self.gyro.getValues()
         
-        time_stamp = self.drive_node.get_clock().now().to_msg()
+        current_time = self.__robot.getTime()
+        time_stamp = Time()
+        time_stamp.sec = int(current_time)
+        time_stamp.nanosec = int((current_time % 1) * 1e9)
         
         # Compose and publish trnasform:odom
         tfs = TransformStamped()
@@ -266,7 +297,10 @@ class Robotino3Driver:
                                       [0, 0, 0.9063078, -0.4226183],
                                       [0, 0 , 0, 1]] 
         
-        time_stamp = self.drive_node.get_clock().now().to_msg()
+        current_time = self.__robot.getTime()
+        time_stamp = Time()
+        time_stamp.sec = int(current_time)
+        time_stamp.nanosec = int((current_time % 1) * 1e9)
         
         for i in range(len(self.ir_sensor_list)):
             tf = TransformStamped()
@@ -284,6 +318,7 @@ class Robotino3Driver:
             
     def TrnsformLaserSensor(self):
         
+        # Publish transform for Laser_sensor w.r.t to base link
         self.laser_sensor_list = ["SickLaser_Rear", "SickLaser_Front", "laser_link"]
         
         self.lidar_pos = [[0.12, 0, 0.3],#SickLaser_Rear
@@ -294,9 +329,14 @@ class Robotino3Driver:
                                   [0, 0, 1, 0],
                                   [0, 0, 0, 1]]#SickLaser_Front
         
+        current_time = self.__robot.getTime()
+        time_stamp = Time()
+        time_stamp.sec = int(current_time)
+        time_stamp.nanosec = int((current_time % 1) * 1e9)
+        
         for i in range(len(self.laser_sensor_list)):
             tf = TransformStamped()
-            tf.header.stamp = self.drive_node.get_clock().now().to_msg()
+            tf.header.stamp = time_stamp
             tf.header.frame_id= self.drive_node.get_namespace()+'/'+"base_link"
             tf._child_frame_id = self.drive_node.get_namespace()+'/'+self.laser_sensor_list[i]
             tf.transform.translation.x = float(self.lidar_pos[i][0])
@@ -310,12 +350,18 @@ class Robotino3Driver:
     
     def TransformImuSensor(self):
      
+        # Publish transform for Imu_sensor w.r.t to base link
         self.imusensor = "Inertial_Unit"
         self.imu_pose = [0.0, -0.1, 0.2]
         self.imu_orientation = [0, 0, 1, 0]
         
+        current_time = self.__robot.getTime()
+        time_stamp = Time()
+        time_stamp.sec = int(current_time)
+        time_stamp.nanosec = int((current_time % 1) * 1e9)
+        
         tf = TransformStamped()
-        tf.header.stamp = self.drive_node.get_clock().now().to_msg()
+        tf.header.stamp = time_stamp
         tf.header.frame_id= self.drive_node.get_namespace()+'/'+"base_link"
         tf._child_frame_id = self.drive_node.get_namespace()+'/'+self.imusensor
         tf.transform.translation.x = float(self.imu_pose[0])
@@ -328,6 +374,7 @@ class Robotino3Driver:
         self.tfb_.sendTransform(tf)
         
     def Kinematic_Calc(self):
+        
         # Algorithm1: Linear kinematic model for omniwheel drive (Angular velocity from linear velocity) 
         v_x = self.__target_twist.linear.x
         v_y = self.__target_twist.linear.y
@@ -345,6 +392,7 @@ class Robotino3Driver:
         return[m1,m2,m3]
     
     def InverseKinematic_Calc(w0, w1, w2):
+        
         # Algorithm 1: Inverse kimeatic calculation (linear velocity from angular velocity)
         vx = ((-w1+w2)/math.sqrt(3.0))*wheel_radius
         vy = (((2/3)*w0) - ((1/3)*w1) - ((1/3)*w2))*wheel_radius

@@ -141,7 +141,8 @@
     <parent link="base_link"/>
     <child link="anglebracketusb_link"/>
   </joint>
-  <link name="ir1_link">
+</robot>
+  <!-- <link name="ir1_link">
     <inertial>
       <mass value="0.00001"/>
       <origin xyz="0 0 0"/>
@@ -153,11 +154,11 @@
         <mesh filename="package://robotino_description/meshes/sensors/Sharp_IR_Sensor_GP2Y0A41SK0F.dae" scale="0.001 0.001 0.001"/>
       </geometry>
     </visual>
-  </link>
-  <joint name="ir1_joint" type="fixed">
+  </link> -->
+  <!-- <joint name="ir1_joint" type="fixed">
     <origin rpy="3.14159 1.570795 1.570795" xyz="0 -0.1865 0.0566"/>
-    <!-- <xacro:insert_block name="axis"/> -->
-    <parent link="base_link"/>
+    <! <xacro:insert_block name="axis"/> -->
+    <!-- <parent link="base_link"/>
     <child link="ir1_link"/>
-  </joint>
-</robot>
+  </joint> 
+</robot> -->
