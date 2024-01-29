@@ -30,7 +30,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
     # Create the launch configuration variables
     namespace = LaunchConfiguration('namespace')
     use_namespace = LaunchConfiguration('use_namespace')
-    use_composition = LaunchConfiguration('use_namespace')
+    use_composition = LaunchConfiguration('use_composition')
     map_yaml_file = LaunchConfiguration('map')
     use_sim_time = LaunchConfiguration('use_sim_time')
     params_file = LaunchConfiguration('params_file')
