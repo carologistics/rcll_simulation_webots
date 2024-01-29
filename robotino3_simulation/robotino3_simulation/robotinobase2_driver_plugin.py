@@ -220,8 +220,8 @@ class Robotino3Driver:
         # Compose and publish trnasform:odom
         tfs = TransformStamped()
         tfs.header.stamp = time_stamp
-        tfs.header.frame_id= self.drive_node.get_namespace()+'/'+"odom"
-        tfs._child_frame_id = self.drive_node.get_namespace()+'/'+"base_link"
+        tfs.header.frame_id= self.drive_node.get_namespace()+"/odom"
+        tfs._child_frame_id = self.drive_node.get_namespace()+"/base_link"
         tfs.transform.translation.x = gps[0] + robotino_spwanpose_x
         tfs.transform.translation.y = gps[1] - robotino_spawanpose_y
         tfs.transform.translation.z = gps[2]
@@ -234,9 +234,9 @@ class Robotino3Driver:
 
         # Compose and publish Odometry
         odom = Odometry()
-        odom.header.frame_id = 'odom'
+        odom.header.frame_id = self.drive_node.get_namespace()+"/odom"
         odom.header.stamp = time_stamp
-        odom.child_frame_id = 'base_link'
+        odom.child_frame_id = self.drive_node.get_namespace()+"/base_link"
         odom.pose.pose.position.x = gps[0]
         odom.pose.pose.position.y = gps[1]
         odom.pose.pose.position.z = gps[2]
