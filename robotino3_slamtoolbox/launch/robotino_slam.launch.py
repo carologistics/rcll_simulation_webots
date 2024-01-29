@@ -19,42 +19,89 @@
 #  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 #  SOFTWARE.
-
+    
 import os
-from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
+from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument, OpaqueFunction, GroupAction
+from launch.substitutions import PathJoinSubstitution, LaunchConfiguration
 from launch import LaunchDescription
-from launch.substitutions import LaunchConfiguration
+from launch_ros.actions import Node
+from launch.conditions import IfCondition
 
-def generate_launch_description():
+
+def launch_nodes_withconfig(context, *args, **kwargs):
     
     # Declare launch configuration variables
-    use_sim_time = LaunchConfiguration('use_sim_time', default=True)
+    namespace = LaunchConfiguration('namespace')
+    use_sim_time = LaunchConfiguration('use_sim_time')
+    launch_rviz = LaunchConfiguration('launch_rviz')
+    
+    launch_configuration = {}
+    for argname, argval in context.launch_configurations.items():
+        launch_configuration[argname] = argval#
+    
+    slam_rviz_config = os.path.join(get_package_share_directory('robotino3_slamtoolbox'), 'rviz', launch_configuration['namespace']+'_slam.rviz')
 
-    # Initialize SLAM Toolbox node in asynchronous mode
-    slam_toolbox = Node(
-        parameters=[
-            get_package_share_directory("robotino3_slamtoolbox") + '/config/map_params.yaml',
-            {'use_sim_time': use_sim_time},
-            ],
-        package='slam_toolbox',
-        executable='async_slam_toolbox_node',
-        name='slam_toolbox',
-        output='screen',
-    )
+    # Create a list of nodes to launch
+    load_nodes = GroupAction(
+        actions=[
+        
+        # Initialize SLAM Toolbox node in asynchronous mode
+        Node(
+            parameters=[
+                get_package_share_directory("robotino3_slamtoolbox") + '/config/map_params.yaml',
+                {'use_sim_time': use_sim_time, 
+                'odom_frame': launch_configuration['namespace']+'/odom',
+                'base_frame': launch_configuration['namespace']+'/base_link',
+                'scan_topic': launch_configuration['namespace']+'/scan',}
+                ],
+            package='slam_toolbox',
+            executable='async_slam_toolbox_node',
+            name='slam_toolbox',
+            output='screen',
+            #namespace=namespace,
+        ),  
+        
+        # Initialize rviz2
+        Node(
+            package='rviz2',
+            executable='rviz2',
+            output='screen',
+            arguments=['--display-config=' + slam_rviz_config],
+            #namespace=namespace,
+            parameters=[{'use_sim_time': use_sim_time}],
+            condition = IfCondition(launch_rviz)
+        )
+        
+        ])
+    return[load_nodes]
+
+def generate_launch_description():
+    package_dir = get_package_share_directory('robotino3_simulation')
     
-    # Initialize rviz2
-    slam_rviz_config = os.path.join(get_package_share_directory('robotino3_slamtoolbox'), 'rviz', 'robotino3_slam.rviz')
-    slam_rviz = Node(
-        package='rviz2',
-        executable='rviz2',
-        output='screen',
-        arguments=['--display-config=' + slam_rviz_config],
-        parameters=[{'use_sim_time': use_sim_time}],
-    )
+    # Declare launch configuration variables
+    declare_namespace_argument = DeclareLaunchArgument(
+        'namespace', default_value='',
+        description='Top-level namespace')
+
+    declare_use_sim_time_argument = DeclareLaunchArgument(
+        'use_sim_time', default_value='true',
+        description='Use simulation clock if true')
     
-    return LaunchDescription([
-        # launch nodes
-        slam_toolbox,
-        slam_rviz,
-    ])
+    declare_launch_rviz_argument = DeclareLaunchArgument(
+        'launch_rviz',
+        default_value='true', 
+        description= 'Wheather to start Rvizor not based on launch environment')
+    
+    # Create the launch description and populate
+    ld = LaunchDescription()
+
+    # Declare the launch options
+    ld.add_action(declare_namespace_argument)
+    ld.add_action(declare_use_sim_time_argument)
+    ld.add_action(declare_launch_rviz_argument)
+
+    # Add the actions to launch all nodes
+    ld.add_action(OpaqueFunction(function=launch_nodes_withconfig))
+    
+    return ld
