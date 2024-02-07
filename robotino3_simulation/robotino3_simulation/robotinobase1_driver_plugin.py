@@ -81,6 +81,7 @@ class Robotino3Driver:
         rclpy.init(args=None)
         self.ros_clock = Clock()
         self.drive_node = Node('robotinobase1_driver_plugin', namespace='robotinobase1')
+        self.drive_node.declare_parameter('tf_prefix', 'robotinobase1')
         
         self.device_names = self.__robot.devices
         self.drive_node.get_logger().info(f'num_devices: {self.device_names}')
@@ -180,8 +181,8 @@ class Robotino3Driver:
         # Compose and publish trnasform:odom
         tfs = TransformStamped()
         tfs.header.stamp = time_stamp
-        tfs.header.frame_id= self.drive_node.get_namespace()+'/'+"odom"
-        tfs._child_frame_id = self.drive_node.get_namespace()+'/'+"base_link"
+        tfs.header.frame_id= self.drive_node.get_parameter('tf_prefix').get_parameter_value().string_value+'/'+"odom"
+        tfs._child_frame_id = self.drive_node.get_parameter('tf_prefix').get_parameter_value().string_value+'/'+"base_link"
         tfs.transform.translation.x = x
         tfs.transform.translation.y = y
         tfs.transform.translation.z = 0.0
@@ -218,8 +219,8 @@ class Robotino3Driver:
         # Compose and publish trnasform:odom
         tfs = TransformStamped()
         tfs.header.stamp = time_stamp
-        tfs.header.frame_id= self.drive_node.get_namespace()+"/odom"
-        tfs._child_frame_id = self.drive_node.get_namespace()+"/base_link"
+        tfs.header.frame_id= self.drive_node.get_parameter('tf_prefix').get_parameter_value().string_value+"/odom"
+        tfs._child_frame_id = self.drive_node.get_parameter('tf_prefix').get_parameter_value().string_value+"/base_link"
         tfs.transform.translation.x = gps[0] + robotino_spwanpose_x
         tfs.transform.translation.y = gps[1] - robotino_spawanpose_y
         tfs.transform.translation.z = gps[2]
@@ -232,9 +233,9 @@ class Robotino3Driver:
 
         # Compose and publish Odometry
         odom = Odometry()
-        odom.header.frame_id = self.drive_node.get_namespace()+"/odom"
+        odom.header.frame_id = self.drive_node.get_parameter('tf_prefix').get_parameter_value().string_value+"/odom"
         odom.header.stamp = time_stamp
-        odom.child_frame_id = self.drive_node.get_namespace()+"/base_link"
+        odom.child_frame_id = self.drive_node.get_parameter('tf_prefix').get_parameter_value().string_value+"/base_link"
         odom.pose.pose.position.x = gps[0]
         odom.pose.pose.position.y = gps[1]
         odom.pose.pose.position.z = gps[2]
@@ -303,8 +304,8 @@ class Robotino3Driver:
         for i in range(len(self.ir_sensor_list)):
             tf = TransformStamped()
             tf.header.stamp = time_stamp
-            tf.header.frame_id= self.drive_node.get_namespace()+'/'+"base_link"
-            tf._child_frame_id = self.drive_node.get_namespace()+'/'+self.ir_sensor_list[i]
+            tf.header.frame_id= self.drive_node.get_parameter('tf_prefix').get_parameter_value().string_value+"/base_link"
+            tf._child_frame_id = self.drive_node.get_parameter('tf_prefix').get_parameter_value().string_value+'/'+self.ir_sensor_list[i]
             tf.transform.translation.x = float(self.ir_sensor_pos[i][0])
             tf.transform.translation.y = float(self.ir_sensor_pos[i][1])
             tf.transform.translation.z = float(self.ir_sensor_pos[i][2])
@@ -334,8 +335,8 @@ class Robotino3Driver:
         for i in range(len(self.laser_sensor_list)):
             tf = TransformStamped()
             tf.header.stamp = time_stamp
-            tf.header.frame_id= self.drive_node.get_namespace()+'/'+"base_link"
-            tf._child_frame_id = self.drive_node.get_namespace()+'/'+self.laser_sensor_list[i]
+            tf.header.frame_id= self.drive_node.get_parameter('tf_prefix').get_parameter_value().string_value+"/base_link"
+            tf._child_frame_id = self.drive_node.get_parameter('tf_prefix').get_parameter_value().string_value+'/'+self.laser_sensor_list[i]
             tf.transform.translation.x = float(self.lidar_pos[i][0])
             tf.transform.translation.y = float(self.lidar_pos[i][1])
             tf.transform.translation.z = float(self.lidar_pos[i][2])
@@ -348,7 +349,7 @@ class Robotino3Driver:
     def TransformImuSensor(self):
         
         # Publish transform for imu sensor w.r.t to base link
-        self.imusensor = "Inertial_Unit"
+        self.imusensor = "imu_link"
         self.imu_pose = [0.0, -0.1, 0.2]
         self.imu_orientation = [0, 0, 1, 0]
         
@@ -359,8 +360,8 @@ class Robotino3Driver:
         
         tf = TransformStamped()
         tf.header.stamp = time_stamp
-        tf.header.frame_id= self.drive_node.get_namespace()+'/'+"base_link"
-        tf._child_frame_id = self.drive_node.get_namespace()+'/'+self.imusensor
+        tf.header.frame_id= self.drive_node.get_parameter('tf_prefix').get_parameter_value().string_value+"/base_link"
+        tf._child_frame_id = self.drive_node.get_parameter('tf_prefix').get_parameter_value().string_value+'/'+self.imusensor
         tf.transform.translation.x = float(self.imu_pose[0])
         tf.transform.translation.y = float(self.imu_pose[1])
         tf.transform.translation.z = float(self.imu_pose[2])
