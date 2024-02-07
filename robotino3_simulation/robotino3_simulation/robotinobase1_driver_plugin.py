@@ -162,8 +162,8 @@ class Robotino3Driver:
         # Pack & publish odometry
         msg = Odometry()
         msg.header.stamp = time_stamp
-        msg.header.frame_id = 'odom'
-        msg.child_frame_id = 'base_link'
+        msg.header.frame_id = self.drive_node.get_parameter('tf_prefix').get_parameter_value().string_value+"/odom"
+        msg.child_frame_id = self.drive_node.get_parameter('tf_prefix').get_parameter_value().string_value+"/base_link"
         # Velocity
         msg.twist.twist.linear.x = velocity[0]
         msg.twist.twist.linear.y = velocity[1]
@@ -217,19 +217,19 @@ class Robotino3Driver:
         time_stamp.nanosec = int((current_time % 1) * 1e9)
         
         # Compose and publish trnasform:odom
-        tfs = TransformStamped()
-        tfs.header.stamp = time_stamp
-        tfs.header.frame_id= self.drive_node.get_parameter('tf_prefix').get_parameter_value().string_value+"/odom"
-        tfs._child_frame_id = self.drive_node.get_parameter('tf_prefix').get_parameter_value().string_value+"/base_link"
-        tfs.transform.translation.x = gps[0] + robotino_spwanpose_x
-        tfs.transform.translation.y = gps[1] - robotino_spawanpose_y
-        tfs.transform.translation.z = gps[2]
-        r = R.from_euler('xyz',[imu[0],imu[1],imu[2]])
-        tfs.transform.rotation.x = r.as_quat()[0]
-        tfs.transform.rotation.y = r.as_quat()[1]
-        tfs.transform.rotation.z = r.as_quat()[2]
-        tfs.transform.rotation.w = r.as_quat()[3]
-        self.tfb_.sendTransform(tfs)
+        # tfs = TransformStamped()
+        # tfs.header.stamp = time_stamp
+        # tfs.header.frame_id= self.drive_node.get_parameter('tf_prefix').get_parameter_value().string_value+"/odom"
+        # tfs._child_frame_id = self.drive_node.get_parameter('tf_prefix').get_parameter_value().string_value+"/base_link"
+        # tfs.transform.translation.x = gps[0] + robotino_spwanpose_x
+        # tfs.transform.translation.y = gps[1] - robotino_spawanpose_y
+        # tfs.transform.translation.z = gps[2]
+        # r = R.from_euler('xyz',[imu[0],imu[1],imu[2]])
+        # tfs.transform.rotation.x = r.as_quat()[0]
+        # tfs.transform.rotation.y = r.as_quat()[1]
+        # tfs.transform.rotation.z = r.as_quat()[2]
+        # tfs.transform.rotation.w = r.as_quat()[3]
+        # self.tfb_.sendTransform(tfs)
 
         # Compose and publish Odometry
         odom = Odometry()
@@ -389,7 +389,7 @@ class Robotino3Driver:
          
         return[m1,m2,m3]
     
-    def InverseKinematic_Calc(w0, w1, w2):
+    def InverseKinematic_Calc(self, w0, w1, w2):
         
         # Algorithm 1: Inverse kimeatic calculation (linear velocity from angular velocity)
         vx = ((-w1+w2)/math.sqrt(3.0))*wheel_radius
