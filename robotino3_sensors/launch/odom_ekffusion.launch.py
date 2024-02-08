@@ -85,7 +85,7 @@ def generate_launch_description():
     
     declare_launch_ekf_cmd = DeclareLaunchArgument(
         'launch_ekf',
-        default_value='false',
+        default_value='true',
         description='Weather to use ekf_fusion for odometry')
 
     # Create the launch description and populate
