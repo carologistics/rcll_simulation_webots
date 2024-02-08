@@ -45,7 +45,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
     autostart = LaunchConfiguration('autostart')
     use_respawn = LaunchConfiguration('use_respawn')
     launch_mapserver = LaunchConfiguration('launch_mapserver')
-    launch_rviz = LaunchConfiguration('launch_rviz')
+    launch_nav2rviz = LaunchConfiguration('launch_nav2rviz')
     rviz_config = LaunchConfiguration('rviz_config')
     
     launch_configuration = {}
@@ -93,7 +93,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(os.path.join(launch_dir, 'robotino_rviz.launch.py')),
             launch_arguments={'namespace': namespace,
-                              'use_namespace': launch_rviz,
+                              'launch_rviz': launch_nav2rviz,
                               'rviz_config': rviz_config,
                               }.items()),
     ])
@@ -116,7 +116,7 @@ def generate_launch_description():
     
     declare_launch_rviz_cmd = DeclareLaunchArgument(
         'launch_rviz',
-        default_value='true',
+        default_value='false',
         description='Weather to use namespace or not')
 
     declare_use_composition_cmd = DeclareLaunchArgument(
@@ -158,7 +158,7 @@ def generate_launch_description():
         description='whether to launch map server or not')
     
     declare_launchrviz_cmd = DeclareLaunchArgument(
-        'launch_rviz', default_value='false',
+        'launch_nav2rviz', default_value='true',
         description='whether to launch rviz or not')
     
     declare_rvizconfig_cmd = DeclareLaunchArgument(
