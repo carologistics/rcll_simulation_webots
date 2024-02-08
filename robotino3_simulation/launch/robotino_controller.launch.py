@@ -131,6 +131,21 @@ def launch_nodes_withconfig(context, *args, **kwargs):
             }.items()
         ),
         
+        # Launch Integrate laserscan launch file 
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource([
+                PathJoinSubstitution([
+                    FindPackageShare('robotino3_sensors'),
+                    'launch',
+                    'odom_ekffusion.launch.py'
+                ])
+            ]),
+            launch_arguments={
+                'namespace': namespace,
+                'use_sim_time': use_sim_time,
+            }.items()
+        ),
+        
         # Spawn Rviz2 node for visualization
         Node(
             package='rviz2',
