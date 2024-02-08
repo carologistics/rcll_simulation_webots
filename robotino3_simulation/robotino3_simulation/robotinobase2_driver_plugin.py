@@ -219,19 +219,19 @@ class Robotino3Driver:
         time_stamp.nanosec = int((current_time % 1) * 1e9)
         
         # Compose and publish trnasform:odom
-        tfs = TransformStamped()
-        tfs.header.stamp = time_stamp
-        tfs.header.frame_id= self.drive_node.get_parameter('tf_prefix').get_parameter_value().string_value+"/odom"
-        tfs._child_frame_id = self.drive_node.get_parameter('tf_prefix').get_parameter_value().string_value+"/base_link"
-        tfs.transform.translation.x = gps[0] + robotino_spwanpose_x
-        tfs.transform.translation.y = gps[1] - robotino_spawanpose_y
-        tfs.transform.translation.z = gps[2]
-        r = R.from_euler('xyz',[imu[0],imu[1],imu[2]])
-        tfs.transform.rotation.x = r.as_quat()[0]
-        tfs.transform.rotation.y = r.as_quat()[1]
-        tfs.transform.rotation.z = r.as_quat()[2]
-        tfs.transform.rotation.w = r.as_quat()[3]
-        self.tfb_.sendTransform(tfs)
+        # tfs = TransformStamped()
+        # tfs.header.stamp = time_stamp
+        # tfs.header.frame_id= self.drive_node.get_parameter('tf_prefix').get_parameter_value().string_value+"/odom"
+        # tfs._child_frame_id = self.drive_node.get_parameter('tf_prefix').get_parameter_value().string_value+"/base_link"
+        # tfs.transform.translation.x = gps[0] + robotino_spwanpose_x
+        # tfs.transform.translation.y = gps[1] - robotino_spawanpose_y
+        # tfs.transform.translation.z = gps[2]
+        # r = R.from_euler('xyz',[imu[0],imu[1],imu[2]])
+        # tfs.transform.rotation.x = r.as_quat()[0]
+        # tfs.transform.rotation.y = r.as_quat()[1]
+        # tfs.transform.rotation.z = r.as_quat()[2]
+        # tfs.transform.rotation.w = r.as_quat()[3]
+        # self.tfb_.sendTransform(tfs)
 
         # Compose and publish Odometry
         odom = Odometry()
