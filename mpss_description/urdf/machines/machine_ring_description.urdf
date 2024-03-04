@@ -9,7 +9,7 @@
     <visual>
       <origin rpy="0 0 1.570795" xyz="-0.350 0.175 0.0"/>
       <geometry>
-        <mesh filename="package://mpss_description/meshes/mps_ring/meshes/mps_ring_full.dae" scale="1.0 1.0 1.0"/>
+        <mesh filename="package://mps_description/meshes/mps_ring/meshes/mps_ring_full.dae" scale="1.0 1.0 1.0"/>
       </geometry>
     </visual>
     <collision>

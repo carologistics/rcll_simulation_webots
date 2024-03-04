@@ -27,7 +27,7 @@ from launch.substitutions import Command
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 
-package_name = "mpss_description"
+package_name = "mps_description"
 
 
 def generate_launch_description():

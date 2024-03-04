@@ -36,8 +36,8 @@ def generate_launch_description():
     # Declare launch configuration variables
     mps_config = os.path.join(package_dir, "config", "mps_pose.yaml")
 
-    # Initialize robotino3_mpsspawner node
-    robotino3_mpsspawner = Node(
+    # Initialize robotino3_mpspawner node
+    robotino3_mpspawner = Node(
         package="robotino3_simulation",
         executable="robotino3_mpspublisher",
         name="robotino3_mpspublisher",
@@ -54,11 +54,11 @@ def generate_launch_description():
 
     return LaunchDescription(
         [
-            robotino3_mpsspawner,
+            robotino3_mpspawner,
             # Register an event handler
             RegisterEventHandler(
                 OnProcessStart(
-                    target_action=robotino3_mpsspawner,
+                    target_action=robotino3_mpspawner,
                     on_start=[
                         LogInfo(msg="Mpss spawned, starting webots"),
                         TimerAction(

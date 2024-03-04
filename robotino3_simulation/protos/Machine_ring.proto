@@ -2,7 +2,7 @@
 # license: Apache License 2.0
 # license url: http://www.apache.org/licenses/LICENSE-2.0
 # This is a proto file for Webots for the Machine
-# Extracted from: /home/srb-jarvis/ros2_ws/ws_thesis/simulation_ws/src/rcll_simulation_webots/mpss_description/urdf/machines/machine_ring_description.urdf
+# Extracted from: /home/srb-jarvis/ros2_ws/ws_thesis/simulation_ws/src/rcll_simulation_webots/mps_description/urdf/machines/machine_ring_description.urdf
 
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/apartment_structure/protos/Wall.proto"
 
@@ -33,7 +33,7 @@ PROTO Machine_ring [
         rotation 0.000000 0.000000 1.000000 1.570795
         children [
           DEF mps_ring_full_visual CadShape {
-            url "/home/srb-jarvis/ros2_ws/ws_thesis/simulation_ws/src/rcll_simulation_webots/mpss_description/meshes/mps_ring/meshes/mps_ring_full.dae"
+            url "/home/srb-jarvis/ros2_ws/ws_thesis/simulation_ws/src/rcll_simulation_webots/mps_description/meshes/mps_ring/meshes/mps_ring_full.dae"
           }
         ]
       }

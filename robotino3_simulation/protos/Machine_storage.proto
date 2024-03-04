@@ -2,7 +2,7 @@
 # license: Apache License 2.0
 # license url: http://www.apache.org/licenses/LICENSE-2.0
 # This is a proto file for Webots for the Machine
-# Extracted from: /home/srb-jarvis/ros2_ws/ws_thesis/simulation_ws/src/rcll_simulation_webots/mpss_description/urdf/machines/machine_storage_description.urdf
+# Extracted from: /home/srb-jarvis/ros2_ws/ws_thesis/simulation_ws/src/rcll_simulation_webots/mps_description/urdf/machines/machine_storage_description.urdf
 
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/apartment_structure/protos/Wall.proto"
 
@@ -33,7 +33,7 @@ PROTO Machine_storage [
         rotation 0.000000 0.000000 1.000000 1.570795
         children [
           DEF mps_storage_visual CadShape {
-            url "/home/srb-jarvis/ros2_ws/ws_thesis/simulation_ws/src/rcll_simulation_webots/mpss_description/meshes/mps_storage/meshes/mps_storage.dae"
+            url "/home/srb-jarvis/ros2_ws/ws_thesis/simulation_ws/src/rcll_simulation_webots/mps_description/meshes/mps_storage/meshes/mps_storage.dae"
           }
         ]
       }

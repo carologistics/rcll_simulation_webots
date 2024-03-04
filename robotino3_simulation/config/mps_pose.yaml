@@ -1,6 +1,6 @@
 # Parameters to set the position and orientation of the mps machines
 
-# Origin: please refer the origin of game field from webots world for mpss location in the world
+# Origin: please refer the origin of game field from webots world for mps location in the world
 /robotino3_mpspublisher:
   ros__parameters:
   # Position of Team-Cyan mps machines(cartesian- x,y,z)

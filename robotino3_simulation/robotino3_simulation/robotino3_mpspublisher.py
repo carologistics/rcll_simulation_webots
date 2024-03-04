@@ -307,12 +307,12 @@ name \"machine"""
 
 def main():
     rclpy.init()
-    mpsspawnwer_node = Robotino3MpsSpawner()
+    mpspawnwer_node = Robotino3MpsSpawner()
     try:
-        rclpy.spin_once(mpsspawnwer_node)
+        rclpy.spin_once(mpspawnwer_node)
     except KeyboardInterrupt:
         pass
-    mpsspawnwer_node.destroy_node()
+    mpspawnwer_node.destroy_node()
     rclpy.shutdown()
 
 
