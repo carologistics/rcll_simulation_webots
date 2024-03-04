@@ -38,7 +38,7 @@ setup(
         "console_scripts": [
             "robotino_driver = robotino_simulation.robotino_driver:main",
             "robotino_teleopctrl = robotino_simulation.robotino_teleopctrl:main",
-            "robotino_mpspublisher = robotino_simulation.robotino_mpspublisher:main",
+            "mps_publisher = robotino_simulation.mps_publisher:main",
             "robotino_joyteleop = robotino_simulation.robotino_joyteleop:main",
             "robotino_laserscan_republisher = robotino_simulation.robotino_laserscan_republisher:main",
         ],

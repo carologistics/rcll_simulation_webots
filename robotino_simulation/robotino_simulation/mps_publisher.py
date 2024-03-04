@@ -27,7 +27,7 @@ from rclpy.node import Node
 class Robotino3MpsSpawner(Node):
 
     def __init__(self):
-        super().__init__("robotino_mpspublisher")
+        super().__init__("mps_publisher")
         self.Define_Parameters()
         self.SpawnMps_cb()
 

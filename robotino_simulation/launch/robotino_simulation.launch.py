@@ -57,10 +57,10 @@ def launch_nodes_withconfig(context, *args, **kwargs):
         launch_configuration[argname] = argval  #
 
     # Load mps spawn node
-    robotino_mpspawner = Node(
+    mpspawner = Node(
         package="robotino_simulation",
-        executable="robotino_mpspublisher",
-        name="robotino_mpspublisher",
+        executable="mps_publisher",
+        name="mps_publisher",
         parameters=[mps_config, {"webots_world": "webots_" + launch_configuration["namespace"] + "_sim.wbt"}],
         output="log",
     )
@@ -190,11 +190,11 @@ def launch_nodes_withconfig(context, *args, **kwargs):
         ]
     )
     return [
-        robotino_mpspawner,
+        mpspawner,
         # Register event handler to start webots and load nodes
         RegisterEventHandler(
             OnProcessStart(
-                target_action=robotino_mpspawner,
+                target_action=mpspawner,
                 on_start=[
                     LogInfo(msg="Mpss spawn init, starting webots"),
                     TimerAction(
