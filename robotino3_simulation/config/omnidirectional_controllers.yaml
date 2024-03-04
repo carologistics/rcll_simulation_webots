@@ -11,12 +11,12 @@ controller_manager:
 
 omnidirectional_controller:
   ros__parameters:
-    wheel_names: 
+    wheel_names:
       - wheel0_joint
       - wheel1_joint
       - wheel2_joint
 
-    
+
     robot_radius: 0.1826
     wheel_radius: 0.060
     gamma: 30.0 # angle between body fixed y axis and the normal of wheel3

@@ -34,7 +34,7 @@
         </material>
         <cast_shadows>false</cast_shadows>
       </visual>
-      
+
       <!-- Collision Elements: -->
       <collision name="collision_conveyor_belt">
         <pose>0.025 0 0.88 0 0 0 </pose>

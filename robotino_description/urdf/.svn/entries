@@ -25,7 +25,7 @@ suraj
 
 
 4ed1f212-482f-4fe5-ac21-7313b7a48e9d
-
+
 robotino_parts.urdf.xacro
 file
 
@@ -59,7 +59,7 @@ suraj
 
 
 4448
-
+
 robotino_platform.urdf
 file
 
@@ -93,7 +93,7 @@ suraj
 
 
 6679
-
+
 robotino_body.urdf.xacro
 file
 
@@ -127,7 +127,7 @@ suraj
 
 
 2846
-
+
 robotino.urdf.xacro
 file
 
@@ -161,7 +161,7 @@ suraj
 
 
 293
-
+
 robotino_platform_kinect.urdf.xacro
 file
 
@@ -195,7 +195,7 @@ suraj
 
 
 685
-
+
 robotino_platform.urdf.xacro
 file
 
@@ -229,7 +229,7 @@ suraj
 
 
 440
-
+
 robotino.urdf
 file
 
@@ -263,7 +263,7 @@ suraj
 
 
 5962
-
+
 robotino_platform_kinect.urdf
 file
 
@@ -297,7 +297,6 @@ suraj
 
 
 8988
-
+
 sensors
 dir
-

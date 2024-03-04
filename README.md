@@ -4,7 +4,7 @@ This Git repository encompasses a comprehensive collection of code files designe
 
 Encouraging collaboration and contributions, the repository aims to serve as a reliable resource for researchers, developers, and enthusiasts in the fields of robotics and simulation. Regular updates ensure compatibility with evolving dependencies, making it a sustainable and valuable tool for the robotics community.
 
-## Table of content 
+## Table of content
 - Installation Premise
 - Installation
     - Dependencies
@@ -15,10 +15,10 @@ Encouraging collaboration and contributions, the repository aims to serve as a r
     - Spawning simulation with multiple instances
     - Testing the simulation
 - Launch SLAM toolbox
-- Launch NAV2 stack  
+- Launch NAV2 stack
     - Navigation with a single instance of robotinobase
-    - Navigation with multiple instances of robotinobases   
-- Nodes and Topics to look into 
+    - Navigation with multiple instances of robotinobases
+- Nodes and Topics to look into
 - Contributing to this repo
 - Research and References
 - Bugs and Issues
@@ -32,7 +32,7 @@ These instructions assume that you have already installed ROS2 Humble on your ma
 Create a ros2 workspace, Once you have created the workspace, clone this repository in the source folder of your workspace.
 
 ## Installation
-    
+
 ### Installing from source:
 ATTENTION: These commands assume that you have created a workspace called "simulation_ws" in your home folder. If you used a different directory or name, please adjust the commands accordingly.
 
@@ -50,11 +50,11 @@ Install the binary dependencies by running the following command in the root of 
     cd ~/simulation_ws
     rosdep init
     rosdep update
-   
+
     sudo apt update
-   
+
     rosdep install --from-paths src/rcll_simulation_webots --ignore-src -r -y --rosdistro humble
-    
+
 
 If all dependencies are already installed, you should see the message "All required rosdeps installed successfully."
 
@@ -79,12 +79,12 @@ Then, source the workspace by running the following command:
 
 ### Spawning simulation with one instance of robot
 
-     
-    ros2 launch robotino3_simulation robotino_simulation.launch.py namespace:=robotinobase1 launch_rviz:=true
- 
 
-- namespace: It's a launch configuration used to spawn the corresponding robotinobase(1/2/3), its controllers, and node parameters 
-- launch_rviz: It's a launch configuration for starting the Rviz2 with the predefined config file, parse 'false' when using nav2_stack 
+    ros2 launch robotino3_simulation robotino_simulation.launch.py namespace:=robotinobase1 launch_rviz:=true
+
+
+- namespace: It's a launch configuration used to spawn the corresponding robotinobase(1/2/3), its controllers, and node parameters
+- launch_rviz: It's a launch configuration for starting the Rviz2 with the predefined config file, parse 'false' when using nav2_stack
 
 ### Spawn simulation with multiple instances
 
@@ -98,7 +98,7 @@ Then, source the workspace by running the following command:
 - by default:
     - robotinobase1: device_id = 1
     - robotinobase2: device_id = 2
-    - robotinobase3: device_id = 0 
+    - robotinobase3: device_id = 0
 
 ## Launch SLAM toolbox
 
@@ -118,7 +118,7 @@ Map the environment using the joystick, once the map is ready, save the map by r
 For autonomous navigation, first launch the single instance of robotinobase in simulation as described above, then launch the NAV2 stack by running the following command in the root of your workspace:
 
     ros2 launch robotino3_navigation robotino_bringup.launch.py namespace:=robotinobase1
-        
+
 - namespace: It's a launch configuration used to spawn the map server, amcl, nav2_stack, collision monitor, and rviz2 with predefined configs for corresponding robotinobase(1/2/3)
 - Initial pose id being set from 'robotinobase(1/2/3)_nav2_params.yaml'param file
 
@@ -155,7 +155,7 @@ To contribute to this package, you can either open an issue describing the desir
 - [Webots](https://cyberbotics.com/)
 
 - [ROS2](https://docs.ros.org/en/foxy/index.html)
-    
+
 - [Navigation2](https://navigation.ros.org/)
 
 ## Bugs and Issues

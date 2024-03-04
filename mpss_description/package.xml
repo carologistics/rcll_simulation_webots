@@ -6,14 +6,10 @@
   <description>"Package to create mpss description"</description>
   <maintainer email="saurabh.borse@alumni.fh-aachen.de">saurabh-borse</maintainer>
   <license>TODO: License declaration</license>
-
   <buildtool_depend>ament_cmake</buildtool_depend>
-
   <depend>rclpy</depend>
-
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
-
   <export>
     <build_type>ament_cmake</build_type>
   </export>
