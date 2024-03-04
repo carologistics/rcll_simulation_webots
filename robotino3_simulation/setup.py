@@ -4,7 +4,7 @@ from glob import glob
 from setuptools import find_packages
 from setuptools import setup
 
-package_name = "robotino3_simulation"
+package_name = "robotino_simulation"
 
 setup(
     name=package_name,
@@ -36,11 +36,11 @@ setup(
     tests_require=["pytest"],
     entry_points={
         "console_scripts": [
-            "robotino3_driver = robotino3_simulation.robotino3_driver:main",
-            "robotino3_teleopctrl = robotino3_simulation.robotino3_teleopctrl:main",
-            "robotino3_mpspublisher = robotino3_simulation.robotino3_mpspublisher:main",
-            "robotino3_joyteleop = robotino3_simulation.robotino3_joyteleop:main",
-            "robotino3_laserscan_republisher = robotino3_simulation.robotino3_laserscan_republisher:main",
+            "robotino_driver = robotino_simulation.robotino_driver:main",
+            "robotino_teleopctrl = robotino_simulation.robotino_teleopctrl:main",
+            "robotino_mpspublisher = robotino_simulation.robotino_mpspublisher:main",
+            "robotino_joyteleop = robotino_simulation.robotino_joyteleop:main",
+            "robotino_laserscan_republisher = robotino_simulation.robotino_laserscan_republisher:main",
         ],
     },
 )

@@ -4,7 +4,7 @@ from glob import glob
 from setuptools import find_packages
 from setuptools import setup
 
-package_name = "robotino3_slamtoolbox"
+package_name = "robotino_slamtoolbox"
 
 setup(
     name=package_name,

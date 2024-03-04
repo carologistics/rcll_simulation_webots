@@ -4,7 +4,7 @@ from glob import glob
 from setuptools import find_packages
 from setuptools import setup
 
-package_name = "robotino3_sensors"
+package_name = "robotino_sensors"
 
 setup(
     name=package_name,
@@ -26,10 +26,10 @@ setup(
     tests_require=["pytest"],
     entry_points={
         "console_scripts": [
-            "robotino3_joyteleop = robotino3_sensors.robotino3_joyteleop:main",
-            "robotino3_laserscan_republisher = robotino3_sensors.robotino3_laserscan_republisher:main",
-            "robotino3_laserscanmerger = robotino3_sensors.robotino3_laserscanmerger:main",
-            "robotino3_irscanmerger = robotino3_sensors.robotino3_irscanmerger:main",
+            "robotino_joyteleop = robotino_sensors.robotino_joyteleop:main",
+            "robotino_laserscan_republisher = robotino_sensors.robotino_laserscan_republisher:main",
+            "robotino_laserscanmerger = robotino_sensors.robotino_laserscanmerger:main",
+            "robotino_irscanmerger = robotino_sensors.robotino_irscanmerger:main",
         ],
     },
 )

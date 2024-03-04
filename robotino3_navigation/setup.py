@@ -4,7 +4,7 @@ from glob import glob
 from setuptools import find_packages
 from setuptools import setup
 
-package_name = "robotino3_navigation"
+package_name = "robotino_navigation"
 
 setup(
     name=package_name,
@@ -27,7 +27,7 @@ setup(
     tests_require=["pytest"],
     entry_points={
         "console_scripts": [
-            "robotinobase_initial_pose = robotino3_navigation.robotinobase_initial_pose:main",
+            "robotinobase_initial_pose = robotino_navigation.robotinobase_initial_pose:main",
         ],
     },
 )

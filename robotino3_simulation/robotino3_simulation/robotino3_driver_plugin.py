@@ -58,7 +58,7 @@ class Robotino3Driver:
 
         # Initialize ROS2_Node and list the no.of devices
         rclpy.init(args=None)
-        self.drive_node = rclpy.create_node("robotino3_driver_plugin")
+        self.drive_node = rclpy.create_node("robotino_driver_plugin")
         n_devices = self.__robot.getNumberOfDevices()
         self.drive_node.get_logger().info(f"num_devices: {n_devices}")
         index = 0

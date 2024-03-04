@@ -80,7 +80,7 @@ Then, source the workspace by running the following command:
 ### Spawning simulation with one instance of robot
 
 
-    ros2 launch robotino3_simulation robotino_simulation.launch.py namespace:=robotinobase1 launch_rviz:=true
+    ros2 launch robotino_simulation robotino_simulation.launch.py namespace:=robotinobase1 launch_rviz:=true
 
 
 - namespace: It's a launch configuration used to spawn the corresponding robotinobase(1/2/3), its controllers, and node parameters
@@ -88,7 +88,7 @@ Then, source the workspace by running the following command:
 
 ### Spawn simulation with multiple instances
 
-    ros2 launch robotino3_simulation robotinocluster_simulation.launch.py launch_rviz:=true
+    ros2 launch robotino_simulation robotinocluster_simulation.launch.py launch_rviz:=true
 
 - launch_rviz: Its a launch configuration for starting the Rviz2 with the predefined config file, parse 'false' when using nav2_stack
 
@@ -104,12 +104,12 @@ Then, source the workspace by running the following command:
 
 For mapping the environment, first launch the single instance of robotinobase in simulation, ensure the joystick device is connected with correct device ID (by default, device_id=0), then launch the SLAM toolbox by running the following command in the root of your workspace:
 
-    ros2 launch robotino3_slamtoolbox robotino_slam.launch.py
+    ros2 launch robotino_slamtoolbox robotino_slam.launch.py
 
 Map the environment using the joystick, once the map is ready, save the map by running the following command in the root of your workspace:
 
 
-    ros2 run nav2_map_server map_saver_cli -f ~/simulation_ws/src/rcll_simulation_webots/robotino3_navigation/map/map
+    ros2 run nav2_map_server map_saver_cli -f ~/simulation_ws/src/rcll_simulation_webots/robotino_navigation/map/map
 
 ## Launch NAV2 stack
 
@@ -117,7 +117,7 @@ Map the environment using the joystick, once the map is ready, save the map by r
 
 For autonomous navigation, first launch the single instance of robotinobase in simulation as described above, then launch the NAV2 stack by running the following command in the root of your workspace:
 
-    ros2 launch robotino3_navigation robotino_bringup.launch.py namespace:=robotinobase1
+    ros2 launch robotino_navigation robotino_bringup.launch.py namespace:=robotinobase1
 
 - namespace: It's a launch configuration used to spawn the map server, amcl, nav2_stack, collision monitor, and rviz2 with predefined configs for corresponding robotinobase(1/2/3)
 - Initial pose id being set from 'robotinobase(1/2/3)_nav2_params.yaml'param file
@@ -128,11 +128,11 @@ Once the robot is localized, use the 2D Nav Goal tool in Rviz2 to send a goal to
 
 For autonomous navigation, first launch the multiple instances of robotinobase in simulation as described above, then launch the NAV2 stack by running the following commands in different terminal instances from the root of your workspace:
 
-    ros2 launch robotino3_navigation robotino_bringup.launch.py namespace:=robotinobase1
+    ros2 launch robotino_navigation robotino_bringup.launch.py namespace:=robotinobase1
 
-    ros2 launch robotino3_navigation robotino_bringup.launch.py namespace:=robotinobase2
+    ros2 launch robotino_navigation robotino_bringup.launch.py namespace:=robotinobase2
 
-    ros2 launch robotino3_navigation robotino_bringup.launch.py namespace:=robotinobase3
+    ros2 launch robotino_navigation robotino_bringup.launch.py namespace:=robotinobase3
 
 It will launch the map server, amcl, nav2_stack, collision monitor, and rviz2 with predefined configs for the corresponding robotinobase(1/2/3). Use Rviz2 to send a goal to the corresponding robotinobase(1/2/3).
 

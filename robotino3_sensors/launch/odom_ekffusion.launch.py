@@ -30,7 +30,7 @@ from launch_ros.actions import Node
 def launch_nodes_withconfig(context, *args, **kwargs):
 
     # Get the launch directory
-    bringup_dir = get_package_share_directory("robotino3_sensors")
+    bringup_dir = get_package_share_directory("robotino_sensors")
 
     # Create the launch configuration variables
     namespace = LaunchConfiguration("namespace")

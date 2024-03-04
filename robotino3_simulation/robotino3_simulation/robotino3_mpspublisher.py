@@ -27,7 +27,7 @@ from rclpy.node import Node
 class Robotino3MpsSpawner(Node):
 
     def __init__(self):
-        super().__init__("robotino3_mpspublisher")
+        super().__init__("robotino_mpspublisher")
         self.Define_Parameters()
         self.SpawnMps_cb()
 
@@ -193,7 +193,7 @@ class Robotino3MpsSpawner(Node):
             .string_value,
         }
 
-        package_dir = get_package_share_directory("robotino3_simulation")
+        package_dir = get_package_share_directory("robotino_simulation")
 
         world = os.path.join(
             package_dir, "worlds", self.get_parameter("webots_world").get_parameter_value().string_value

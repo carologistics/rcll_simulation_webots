@@ -146,7 +146,7 @@ Visualization Manager:
         Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /robotino3base1/scan
+        Value: /robotinobase1/scan
       Use Fixed Frame: true
       Use rainbow: true
       Value: true

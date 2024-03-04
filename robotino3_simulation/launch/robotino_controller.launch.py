@@ -37,7 +37,7 @@ from webots_ros2_driver.webots_controller import WebotsController
 
 def launch_nodes_withconfig(context, *args, **kwargs):
 
-    package_dir = get_package_share_directory("robotino3_simulation")
+    package_dir = get_package_share_directory("robotino_simulation")
 
     # Declare launch configuration variables
     namespace = LaunchConfiguration("namespace")
@@ -77,7 +77,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
                 executable="robot_state_publisher",
                 output="screen",
                 parameters=[
-                    {"robot_description": load_file("robotino3_description.urdf")},
+                    {"robot_description": load_file("robotino_description.urdf")},
                     {"use_sim_time": use_sim_time},
                     {"frame_prefix": launch_configuration["namespace"] + "/"},
                 ],
@@ -100,27 +100,27 @@ def launch_nodes_withconfig(context, *args, **kwargs):
             ),
             # Joy teleop node to enable joystick teleop
             Node(
-                package="robotino3_sensors",
-                executable="robotino3_joyteleop",
-                name="robotino3_joyteleop",
+                package="robotino_sensors",
+                executable="robotino_joyteleop",
+                name="robotino_joyteleop",
                 output="log",
                 namespace=namespace,
                 condition=IfCondition(launch_teleopnode),
             ),
             # Laserscan republisher node
             Node(
-                package="robotino3_sensors",
-                executable="robotino3_laserscan_republisher",
-                name="robotino3_laserscan_republisher",
+                package="robotino_sensors",
+                executable="robotino_laserscan_republisher",
+                name="robotino_laserscan_republisher",
                 output="log",
                 parameters=[{"frame_prefix": namespace}],
                 namespace=namespace,
             ),
             # Irscan merge node
             Node(
-                package="robotino3_sensors",
-                executable="robotino3_irscanmerger",
-                name="robotino3_irscanmerger",
+                package="robotino_sensors",
+                executable="robotino_irscanmerger",
+                name="robotino_irscanmerger",
                 output="log",
                 parameters=[{"frame_prefix": namespace}],
                 namespace=namespace,
@@ -143,7 +143,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
                 PythonLaunchDescriptionSource(
                     [
                         PathJoinSubstitution(
-                            [FindPackageShare("robotino3_sensors"), "launch", "odom_ekffusion.launch.py"]
+                            [FindPackageShare("robotino_sensors"), "launch", "odom_ekffusion.launch.py"]
                         )
                     ]
                 ),

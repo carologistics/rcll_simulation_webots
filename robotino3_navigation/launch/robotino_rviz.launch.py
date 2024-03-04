@@ -28,7 +28,7 @@ from launch_ros.actions import Node
 
 def launch_nodes_withconfig(context, *args, **kwargs):
     # Get the launch directory
-    bringup_dir = get_package_share_directory("robotino3_navigation")
+    bringup_dir = get_package_share_directory("robotino_navigation")
 
     # Create the launch configuration variables
     namespace = LaunchConfiguration("namespace")
@@ -70,7 +70,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
 
 def generate_launch_description():
 
-    bringup_dir = get_package_share_directory("robotino3_navigation")
+    bringup_dir = get_package_share_directory("robotino_navigation")
 
     # Declare the launch arguments
     declare_namespace_cmd = DeclareLaunchArgument(

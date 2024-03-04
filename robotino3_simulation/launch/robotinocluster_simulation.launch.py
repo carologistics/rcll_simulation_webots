@@ -40,7 +40,7 @@ from webots_ros2_driver.webots_launcher import WebotsLauncher
 
 def launch_nodes_withconfig(context, *args, **kwargs):
 
-    package_dir = get_package_share_directory("robotino3_simulation")
+    package_dir = get_package_share_directory("robotino_simulation")
 
     # Declare launch configuration variables
     use_sim_time = LaunchConfiguration("use_sim_time")
@@ -53,11 +53,11 @@ def launch_nodes_withconfig(context, *args, **kwargs):
     for argname, argval in context.launch_configurations.items():
         launch_configuration[argname] = argval  #
 
-    # Initialize robotino3_mpspawner node
-    robotino3_mpspawner = Node(
-        package="robotino3_simulation",
-        executable="robotino3_mpspublisher",
-        name="robotino3_mpspublisher",
+    # Initialize robotino_mpspawner node
+    robotino_mpspawner = Node(
+        package="robotino_simulation",
+        executable="robotino_mpspublisher",
+        name="robotino_mpspublisher",
         parameters=[mps_config, {"webots_world": "webots_robotinocluster_sim.wbt"}],
         output="log",
     )
@@ -81,7 +81,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
                 PythonLaunchDescriptionSource(
                     [
                         PathJoinSubstitution(
-                            [FindPackageShare("robotino3_simulation"), "launch", "robotino_controller.launch.py"]
+                            [FindPackageShare("robotino_simulation"), "launch", "robotino_controller.launch.py"]
                         )
                     ]
                 ),
@@ -99,7 +99,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
                 PythonLaunchDescriptionSource(
                     [
                         PathJoinSubstitution(
-                            [FindPackageShare("robotino3_simulation"), "launch", "robotino_controller.launch.py"]
+                            [FindPackageShare("robotino_simulation"), "launch", "robotino_controller.launch.py"]
                         )
                     ]
                 ),
@@ -117,7 +117,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
                 PythonLaunchDescriptionSource(
                     [
                         PathJoinSubstitution(
-                            [FindPackageShare("robotino3_simulation"), "launch", "robotino_controller.launch.py"]
+                            [FindPackageShare("robotino_simulation"), "launch", "robotino_controller.launch.py"]
                         )
                     ]
                 ),
@@ -134,11 +134,11 @@ def launch_nodes_withconfig(context, *args, **kwargs):
     )
 
     return [
-        robotino3_mpspawner,
+        robotino_mpspawner,
         # Register event handler to start webots and load nodes
         RegisterEventHandler(
             OnProcessStart(
-                target_action=robotino3_mpspawner,
+                target_action=robotino_mpspawner,
                 on_start=[
                     LogInfo(msg="Mpss spawn init, starting webots"),
                     TimerAction(
@@ -156,7 +156,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
 
 
 def generate_launch_description():
-    package_dir = get_package_share_directory("robotino3_simulation")
+    package_dir = get_package_share_directory("robotino_simulation")
 
     # Declare launch configuration variables
     declare_namespace_argument = DeclareLaunchArgument("namespace", default_value="", description="Top-level namespace")

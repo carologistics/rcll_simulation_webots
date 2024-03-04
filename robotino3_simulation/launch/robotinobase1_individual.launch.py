@@ -35,7 +35,7 @@ from webots_ros2_driver.webots_controller import WebotsController
 
 
 def generate_launch_description():
-    package_dir = get_package_share_directory("robotino3_simulation")
+    package_dir = get_package_share_directory("robotino_simulation")
 
     # Declare launch configuration variables
     launch_rviz = LaunchConfiguration("launch_rviz")
@@ -77,7 +77,7 @@ def generate_launch_description():
         executable="robot_state_publisher",
         output="screen",
         parameters=[
-            {"robot_description": load_file("robotino3_description.urdf")},
+            {"robot_description": load_file("robotino_description.urdf")},
             {"use_sim_time": True},
             {"frame_prefix": "robotinobase1/"},
         ],
@@ -100,9 +100,9 @@ def generate_launch_description():
 
     # Joy teleop node
     robotino_joyteleop_node = Node(
-        package="robotino3_sensors",
-        executable="robotino3_joyteleop",
-        name="robotino3_joyteleop",
+        package="robotino_sensors",
+        executable="robotino_joyteleop",
+        name="robotino_joyteleop",
         output="log",
         namespace="robotinobase1",
         condition=IfCondition(launch_teleopnode),
@@ -110,9 +110,9 @@ def generate_launch_description():
 
     # Laserscan republisher node
     robotino_lasercsnrepublish_node = Node(
-        package="robotino3_sensors",
-        executable="robotino3_laserscan_republisher",
-        name="robotino3_laserscan_republisher",
+        package="robotino_sensors",
+        executable="robotino_laserscan_republisher",
+        name="robotino_laserscan_republisher",
         output="log",
         parameters=[{"frame_prefix": "robotinobase1"}],
         namespace="robotinobase1",
@@ -120,9 +120,9 @@ def generate_launch_description():
 
     # Irscan merge node
     robotino_irscanmerege_node = Node(
-        package="robotino3_sensors",
-        executable="robotino3_irscanmerger",
-        name="robotino3_irscanmerger",
+        package="robotino_sensors",
+        executable="robotino_irscanmerger",
+        name="robotino_irscanmerger",
         output="log",
         parameters=[{"frame_prefix": "robotinobase1"}],
         namespace="robotinobase1",

@@ -31,16 +31,16 @@ from webots_ros2_driver.webots_launcher import WebotsLauncher
 
 
 def generate_launch_description():
-    package_dir = get_package_share_directory("robotino3_simulation")
+    package_dir = get_package_share_directory("robotino_simulation")
 
     # Declare launch configuration variables
     mps_config = os.path.join(package_dir, "config", "mps_pose.yaml")
 
-    # Initialize robotino3_mpspawner node
-    robotino3_mpspawner = Node(
-        package="robotino3_simulation",
-        executable="robotino3_mpspublisher",
-        name="robotino3_mpspublisher",
+    # Initialize robotino_mpspawner node
+    robotino_mpspawner = Node(
+        package="robotino_simulation",
+        executable="robotino_mpspublisher",
+        name="robotino_mpspublisher",
         parameters=[mps_config, {"webots_world": "webots_robotinobase3_sim.wbt"}],
         output="log",
     )
@@ -54,11 +54,11 @@ def generate_launch_description():
 
     return LaunchDescription(
         [
-            robotino3_mpspawner,
+            robotino_mpspawner,
             # Register an event handler
             RegisterEventHandler(
                 OnProcessStart(
-                    target_action=robotino3_mpspawner,
+                    target_action=robotino_mpspawner,
                     on_start=[
                         LogInfo(msg="Mpss spawn init, starting webots"),
                         TimerAction(

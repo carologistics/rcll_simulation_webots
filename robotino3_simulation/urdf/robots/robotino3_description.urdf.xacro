@@ -5,14 +5,14 @@
     <plugin type="webots_ros2_control::Ros2Control"/>
   </webots>
   <!-- ros2 control include -->
-  <xacro:include filename="$(find robotino3_simulation)/urdf/robots/robotino3_ros2control.ros2_control.xacro"/>
+  <xacro:include filename="$(find robotino_simulation)/urdf/robots/robotino_ros2control.ros2_control.xacro"/>
   <!-- ros2 control instance -->
   <xacro:ros2control_wheeljoint name="WebotsControl"/>
   <!-- Instanciate and include the robotino_body -->
-  <xacro:include filename="$(find robotino3_simulation)/urdf/components/robotino_body.urdf.xacro"/>
+  <xacro:include filename="$(find robotino_simulation)/urdf/components/robotino_body.urdf.xacro"/>
   <xacro:robotino_body/>
   <!-- Instanciate and include the robotino_parts -->
-  <xacro:include filename="$(find robotino3_simulation)/urdf/components/robotino_parts.urdf.xacro"/>
+  <xacro:include filename="$(find robotino_simulation)/urdf/components/robotino_parts.urdf.xacro"/>
   <xacro:wheel name="wheel0" parent="base_link">
     <origin xyz="0.065 0.11 0.04" rpy="0 0 1.04719666667"/>
     <axis xyz="-1 0 0"/>

@@ -31,7 +31,7 @@ def generate_launch_description():
     robotinobase1 = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             [
-                os.path.join(get_package_share_directory("robotino3_simulation"), "launch"),
+                os.path.join(get_package_share_directory("robotino_simulation"), "launch"),
                 "/robotinobase1_individual.launch.py",
             ]
         )
@@ -41,7 +41,7 @@ def generate_launch_description():
     robotinobase2 = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             [
-                os.path.join(get_package_share_directory("robotino3_simulation"), "launch"),
+                os.path.join(get_package_share_directory("robotino_simulation"), "launch"),
                 "/robotinobase2_individual.launch.py",
             ]
         )
@@ -51,7 +51,7 @@ def generate_launch_description():
     robotinobase3 = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             [
-                os.path.join(get_package_share_directory("robotino3_simulation"), "launch"),
+                os.path.join(get_package_share_directory("robotino_simulation"), "launch"),
                 "/robotinobase3_individual.launch.py",
             ]
         )
