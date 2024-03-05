@@ -56,7 +56,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
     # Initialize mpspawner node
     mpspawner = Node(
         package="robotino_simulation",
-        executable="mps_publisher",
+        executable="mps_publisher.py",
         name="mps_publisher",
         parameters=[mps_config, {"webots_world": "webots_robotinocluster_sim.wbt"}],
         output="log",

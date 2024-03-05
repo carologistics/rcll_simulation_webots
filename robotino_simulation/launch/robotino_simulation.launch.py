@@ -19,7 +19,6 @@
 #  SOFTWARE.
 import os
 import pathlib
-import xacro
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
@@ -58,20 +57,6 @@ def launch_nodes_withconfig(context, *args, **kwargs):
     for argname, argval in context.launch_configurations.items():
         launch_configuration[argname] = argval
 
-    # Define the path to the Xacro file
-    xacro_file_path = os.path.join(
-        get_package_share_directory('rto_description'), 'urdf', 'robots', 'rto_description_plugin.xacro'
-    )
-
-    # Convert the Xacro file to URDF using xacro command
-    urdf_file_path = os.path.join(
-        get_package_share_directory('rto_description'), 'urdf', 'robots', 'robotino_' + namespace_str + '_description_plugin.urdf'
-    )
-    robot_description = xacro.process_file(xacro_file_path,mappings={'namespace': namespace_str})
-    # Write the robot_description to the URDF file
-    with open(urdf_file_path, 'w') as urdf_file:
-        urdf_file.write(robot_description.toxml())
-
     # Load mps spawn node
     mpspawner = Node(
         package="robotino_simulation",
@@ -97,107 +82,23 @@ def launch_nodes_withconfig(context, *args, **kwargs):
     # Create a list of nodes to launch
     load_nodes = GroupAction(
         actions=[
-            # Start Webots Controller
-            WebotsController(
-                robot_name=launch_configuration["namespace"],
-                parameters=[
-                    {"robot_description": urdf_file_path},
-                    {"use_sim_time": True},
-                ],
-                respawn=True,
-            ),
-            # Robot state publisher node
-            Node(
-                package="robot_state_publisher",
-                executable="robot_state_publisher",
-                output="screen",
-                parameters=[
-                    {"robot_description": load_file("robotino_description.urdf")},
-                    {"use_sim_time": use_sim_time},
-                    {"frame_prefix": launch_configuration["namespace"] + "/"},
-                ],
-                namespace=namespace,
-            ),
-            # Joy node to enable joystick teleop
-            Node(
-                package="joy",
-                executable="joy_node",
-                name="joy_node",
-                output="log",
-                namespace=namespace,
-                parameters=[
-                    {
-                        "device_id": 0,
-                        "use_sim_time": use_sim_time,
-                    }
-                ],
-                condition=IfCondition(launch_joynode),
-            ),
-            # Joy teleop node to enable joystick teleop
-            Node(
-                package="robotino_sensors",
-                executable="robotino_joyteleop",
-                name="robotino_joyteleop",
-                output="log",
-                namespace=namespace,
-                condition=IfCondition(launch_teleopnode),
-            ),
-            # Laserscan republisher node
-            Node(
-                package="robotino_sensors",
-                executable="robotino_laserscan_republisher",
-                name="robotino_laserscan_republisher",
-                output="log",
-                parameters=[{"frame_prefix": namespace}],
-                namespace=namespace,
-            ),
-            # Irscan merge node
-            Node(
-                package="robotino_sensors",
-                executable="robotino_irscanmerger",
-                name="robotino_irscanmerger",
-                output="log",
-                parameters=[{"frame_prefix": namespace}],
-                namespace=namespace,
-            ),
-            # Launch Integrate laserscan launch file
+            # Launch robotinobase1 controller
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(
                     [
                         PathJoinSubstitution(
-                            [FindPackageShare("laser_scan_integrator"), "launch", "integrated_scan.launch.py"]
+                            [FindPackageShare("robotino_simulation"), "launch", "robotino_controller.launch.py"]
                         )
                     ]
                 ),
                 launch_arguments={
-                    "namespace": namespace,
-                }.items(),
-            ),
-            # Launch Integrate laserscan launch file
-            IncludeLaunchDescription(
-                PythonLaunchDescriptionSource(
-                    [
-                        PathJoinSubstitution(
-                            [FindPackageShare("robotino_sensors"), "launch", "odom_ekffusion.launch.py"]
-                        )
-                    ]
-                ),
-                launch_arguments={
-                    "namespace": namespace,
+                    "namespace": "robotinobase1",
+                    "joy_device_id": "1",
                     "use_sim_time": use_sim_time,
+                    "launch_rviz": launch_rviz,
+                    "launch_joynode": launch_joynode,
+                    "launch_teleopnode": launch_teleopnode,
                 }.items(),
-            ),
-            # Spawn Rviz2 node for visualization
-            Node(
-                package="rviz2",
-                executable="rviz2",
-                name="rviz2",
-                arguments=[
-                    "-d",
-                    os.path.join(package_dir, "rviz", launch_configuration["namespace"] + "_rvizconfig.rviz"),
-                ],
-                output="screen",
-                condition=IfCondition(launch_rviz),
             ),
         ]
     )
