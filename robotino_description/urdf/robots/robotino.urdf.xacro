@@ -1,6 +1,0 @@
-<?xml version="1.0"?>
-<robot xmlns:xacro="http://wiki.ros.org/xacro" name="robotino">
-  <xacro:include filename="$(find robotino_description)/urdf/robotino_body.urdf.xacro"/>
-  <xacro:include filename="$(find robotino_description)/urdf/robotino_parts.urdf.xacro"/>
-  <xacro:robotino_body/>
-</robot>

@@ -19,6 +19,7 @@
 #  SOFTWARE.
 import os
 import pathlib
+import xacro
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
@@ -39,13 +40,14 @@ from launch_ros.substitutions import FindPackageShare
 from webots_ros2_driver.webots_controller import WebotsController
 from webots_ros2_driver.webots_launcher import WebotsLauncher
 
-
 def launch_nodes_withconfig(context, *args, **kwargs):
 
     package_dir = get_package_share_directory("robotino_simulation")
+    description_dir = get_package_share_directory("rto_description")
 
     # Declare launch configuration variables
     namespace = LaunchConfiguration("namespace")
+    namespace_str = namespace.perform(context)
     use_sim_time = LaunchConfiguration("use_sim_time")
     mps_config = LaunchConfiguration("mps_config")
     launch_rviz = LaunchConfiguration("launch_rviz")
@@ -54,12 +56,26 @@ def launch_nodes_withconfig(context, *args, **kwargs):
 
     launch_configuration = {}
     for argname, argval in context.launch_configurations.items():
-        launch_configuration[argname] = argval  #
+        launch_configuration[argname] = argval
+
+    # Define the path to the Xacro file
+    xacro_file_path = os.path.join(
+        get_package_share_directory('rto_description'), 'urdf', 'robots', 'rto_description_plugin.xacro'
+    )
+
+    # Convert the Xacro file to URDF using xacro command
+    urdf_file_path = os.path.join(
+        get_package_share_directory('rto_description'), 'urdf', 'robots', 'robotino_' + namespace_str + '_description_plugin.urdf'
+    )
+    robot_description = xacro.process_file(xacro_file_path,mappings={'namespace': namespace_str})
+    # Write the robot_description to the URDF file
+    with open(urdf_file_path, 'w') as urdf_file:
+        urdf_file.write(robot_description.toxml())
 
     # Load mps spawn node
     mpspawner = Node(
         package="robotino_simulation",
-        executable="mps_publisher",
+        executable="mps_publisher.py",
         name="mps_publisher",
         parameters=[mps_config, {"webots_world": "webots_" + launch_configuration["namespace"] + "_sim.wbt"}],
         output="log",
@@ -76,7 +92,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
 
     # Load robot description file
     def load_file(filename):
-        return pathlib.Path(os.path.join(package_dir, "urdf/robots", filename)).read_text()
+        return pathlib.Path(os.path.join(description_dir, "urdf/robots", filename)).read_text()
 
     # Create a list of nodes to launch
     load_nodes = GroupAction(
@@ -85,11 +101,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
             WebotsController(
                 robot_name=launch_configuration["namespace"],
                 parameters=[
-                    {
-                        "robot_description": os.path.join(
-                            package_dir, "urdf/robots", launch_configuration["namespace"] + "_description_plugin.urdf"
-                        )
-                    },
+                    {"robot_description": urdf_file_path},
                     {"use_sim_time": True},
                 ],
                 respawn=True,
