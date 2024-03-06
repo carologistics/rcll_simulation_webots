@@ -4,6 +4,7 @@ project(robotino_simulation)
 # Find packages
 find_package(ament_cmake_auto REQUIRED)
 find_package(rclpy REQUIRED)
+find_package(mps_description REQUIRED)
 ament_auto_find_build_dependencies()
 ament_python_install_package(${PROJECT_NAME})
 
@@ -20,7 +21,11 @@ install(
   robotino_simulation/robotino_driver_plugin.py
   DESTINATION lib/${PROJECT_NAME}
 )
-
+execute_process(
+    COMMAND ${CMAKE_COMMAND} -E create_symlink
+	${mps_description_DIR}/../meshes
+    ${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}/mps_meshes
+)
 ament_export_dependencies(rclpy)
 
 ament_package()
