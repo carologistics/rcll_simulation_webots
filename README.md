@@ -118,14 +118,14 @@ ros2 run nav2_map_server map_saver_cli -f <path-where-to-store-file>
 For autonomous navigation, first launch the single instance of robotinobase in simulation as described above, then launch the NAV2 stack by running the following command in the root of your workspace:
 
 ```bash
-ros2 launch robotino_navigation robotino_bringup.launch.py namespace:=robotinobase1 use_sim_time:=true host_suffix:=_webots launch_nav2rviz:=true
+ros2 launch robotino_navigation robotino_bringup.launch.py namespace:=robotinobase1 use_sim_time:=true launch_nav2rviz:=true map:=map_webots.yaml
 ```
 
 - namespace: It's a launch configuration used to spawn the map server, amcl, nav2_stack, collision monitor, and rviz2 with predefined configs for corresponding robotinobase(1/2/3)
 - use_sim_time: to use sim time instead of system time
 - host_suffix: the robotino_navigation stack is configured for the robotino and will laut parameters accordingly. However, further adaptations may be required, usually topic and frame names might differ based on configuration. The package comes with pre-defined configurations for this project using the namespaces robotinobase(1/2/3) and suffix `_webots`
 - launch_nav2rviz: whether to launch an rviz to visualize the navigation, including tools for localization and to send poses.
--
+- map: yaml file for the map, if a relative path is given the map directory of the robotino_navigation package is also searched
 
 Once the robot is localized, use the 2D Nav Goal tool in Rviz2 to send a goal to the robot.
 ## Advanced Usage with multiple Robots
