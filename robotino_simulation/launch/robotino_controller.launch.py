@@ -113,7 +113,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
             # Joy teleop node to enable joystick teleop
             Node(
                 package="robotino_sensors",
-                executable="robotino_joyteleop",
+                executable="robotino_joyteleop.py",
                 name="robotino_joyteleop",
                 output="log",
                 namespace=namespace,
@@ -122,7 +122,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
             # Laserscan republisher node
             Node(
                 package="robotino_sensors",
-                executable="robotino_laserscan_republisher",
+                executable="robotino_laserscan_republisher.py",
                 name="robotino_laserscan_republisher",
                 output="log",
                 parameters=[{"frame_prefix": namespace}],
@@ -131,7 +131,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
             # Irscan merge node
             Node(
                 package="robotino_sensors",
-                executable="robotino_irscanmerger",
+                executable="robotino_irscanmerger.py",
                 name="robotino_irscanmerger",
                 output="log",
                 parameters=[{"frame_prefix": namespace}],
@@ -155,7 +155,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
                 PythonLaunchDescriptionSource(
                     [
                         PathJoinSubstitution(
-                            [FindPackageShare("robotino_sensors"), "launch", "odom_ekffusion.launch.py"]
+                            [FindPackageShare("robotino_sensors"), "launch", "robotino_ekffusion.launch.py"]
                         )
                     ]
                 ),
