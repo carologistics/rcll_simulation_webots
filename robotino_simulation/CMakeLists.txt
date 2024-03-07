@@ -21,6 +21,8 @@ install(
   robotino_simulation/robotino_driver_plugin.py
   DESTINATION lib/${PROJECT_NAME}
 )
+
+file(MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}")
 execute_process(
     COMMAND ${CMAKE_COMMAND} -E create_symlink
 	${mps_description_DIR}/../meshes
