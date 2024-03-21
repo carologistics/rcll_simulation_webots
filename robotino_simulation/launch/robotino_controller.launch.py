@@ -19,8 +19,8 @@
 #  SOFTWARE.
 import os
 import pathlib
-import xacro
 
+import xacro
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
@@ -55,16 +55,19 @@ def launch_nodes_withconfig(context, *args, **kwargs):
         launch_configuration[argname] = argval
     # Define the path to the Xacro file
     xacro_file_path = os.path.join(
-        get_package_share_directory('rto_description'), 'urdf', 'robots', 'robotino_description_plugin.xacro'
+        get_package_share_directory("rto_description"), "urdf", "robots", "robotino_description_plugin.xacro"
     )
 
     # Convert the Xacro file to URDF using xacro command
     urdf_file_path = os.path.join(
-        get_package_share_directory('rto_description'), 'urdf', 'robots', 'robotino_' + namespace_str + '_description_plugin.urdf'
+        get_package_share_directory("rto_description"),
+        "urdf",
+        "robots",
+        "robotino_" + namespace_str + "_description_plugin.urdf",
     )
-    robot_description = xacro.process_file(xacro_file_path,mappings={'namespace': namespace_str})
+    robot_description = xacro.process_file(xacro_file_path, mappings={"namespace": namespace_str})
     # Write the robot_description to the URDF file
-    with open(urdf_file_path, 'w') as urdf_file:
+    with open(urdf_file_path, "w") as urdf_file:
         urdf_file.write(robot_description.toxml())
 
     # Load robot description file

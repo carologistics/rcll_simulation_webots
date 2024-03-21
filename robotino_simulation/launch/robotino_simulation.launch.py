@@ -29,15 +29,14 @@ from launch.actions import LogInfo
 from launch.actions import OpaqueFunction
 from launch.actions import RegisterEventHandler
 from launch.actions import TimerAction
-from launch.conditions import IfCondition
 from launch.event_handlers import OnProcessStart
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 from launch.substitutions import PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
-from webots_ros2_driver.webots_controller import WebotsController
 from webots_ros2_driver.webots_launcher import WebotsLauncher
+
 
 def launch_nodes_withconfig(context, *args, **kwargs):
 
@@ -46,7 +45,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
 
     # Declare launch configuration variables
     namespace = LaunchConfiguration("namespace")
-    namespace_str = namespace.perform(context)
+    namespace.perform(context)
     use_sim_time = LaunchConfiguration("use_sim_time")
     mps_config = LaunchConfiguration("mps_config")
     launch_rviz = LaunchConfiguration("launch_rviz")
