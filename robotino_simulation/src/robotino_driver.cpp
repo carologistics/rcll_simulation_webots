@@ -41,7 +41,6 @@ void RobotinoDriver::init(
   wb_gps_enable(gps_, TIME_STEP);
 
   inertial_unit_ = wb_robot_get_device("inertial unit");
-  wb_inertial_unit_enable(inertial_unit_, TIME_STEP);
 
   gyro_ = wb_robot_get_device("gyro");
   wb_gyro_enable(gyro_, TIME_STEP);
