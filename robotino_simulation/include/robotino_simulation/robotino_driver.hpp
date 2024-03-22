@@ -12,10 +12,11 @@
 #include <webots_ros2_driver/WebotsNode.hpp>
 
 #include <map>
-#define TIME_STEP 64
+#define TIME_STEP 16
 namespace robotino_driver {
 class RobotinoDriver : public webots_ros2_driver::PluginInterface {
 public:
+  ~RobotinoDriver();
   using TimeStamp = builtin_interfaces::msg::Time;
   static constexpr double WHEEL_RADIUS = 0.063;
   static constexpr double WHEEL_DISTANCE = 0.1826;
@@ -72,12 +73,16 @@ private:
   std::string tf_prefix_ = "robotinobase1";
 
   std::mutex vel_msg_mutex_;
+  bool shutdown_ = false;
 
   webots_ros2_driver::WebotsNode *node_;
 
   std::vector<WbDeviceTag> motors_;
   std::vector<WbDeviceTag> motor_sensors_;
   std::vector<double> motor_pos_;
+
+  std::thread act_thread_;
+  double act_frequency_ = 10.0;
 };
 } // namespace robotino_driver
 #endif

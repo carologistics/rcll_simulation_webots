@@ -13,11 +13,14 @@
 #define HALF_DISTANCE_BETWEEN_WHEELS 0.045
 
 namespace robotino_driver {
+RobotinoDriver::~RobotinoDriver() {
+  shutdown_ = true;
+  act_thread_.join();
+}
 void RobotinoDriver::init(
     webots_ros2_driver::WebotsNode *node,
     std::unordered_map<std::string, std::string> &parameters) {
   node_ = node;
-  RCLCPP_INFO(node->get_logger(), "INIT CALLED");
   motors_ = {wb_robot_get_device("wheel0_joint"),
              wb_robot_get_device("wheel1_joint"),
              wb_robot_get_device("wheel2_joint")};
@@ -49,10 +52,10 @@ void RobotinoDriver::init(
   wb_accelerometer_enable(accelerometer_, TIME_STEP);
 
   std::string namespace_param = parameters["namespace"];
+  act_frequency_ = std::stod(parameters["frequency"]);
   cmd_vel_subscription_ = node_->create_subscription<geometry_msgs::msg::Twist>(
       namespace_param + "/cmd_vel", rclcpp::SensorDataQoS().reliable(),
       [this](const geometry_msgs::msg::Twist::SharedPtr msg) {
-        RCLCPP_INFO(node_->get_logger(), "cmd_vel");
         std::lock_guard<std::mutex> lock(vel_msg_mutex_);
         this->cmd_vel_msg = *msg;
       });
@@ -89,6 +92,24 @@ void RobotinoDriver::init(
   imu_names_ = {"imu_link"};
   imu_pos_ = {{0.0, -0.1, 0.2}};
   imu_ori_ = {{0, 0, 1, 0}};
+
+  // Create a thread and start it with a lambda function
+  act_thread_ = std::thread([&]() {
+    while (!shutdown_) {
+      auto angular_velocity = kinematics();
+      wb_motor_set_velocity(motors_[2], angular_velocity[0]);
+      wb_motor_set_velocity(motors_[0], angular_velocity[1]);
+      wb_motor_set_velocity(motors_[1], angular_velocity[2]);
+      {
+        std::lock_guard<std::mutex> lock(vel_msg_mutex_);
+        this->cmd_vel_msg.linear.x = 0.0;
+        this->cmd_vel_msg.linear.y = 0.0;
+        this->cmd_vel_msg.angular.z = 0.0;
+      }
+      std::chrono::duration<double, std::ratio<1>> period{1.0 / act_frequency_};
+      std::this_thread::sleep_for(period);
+    }
+  });
 }
 
 double RobotinoDriver::get_time() {
@@ -312,20 +333,7 @@ std::vector<double> RobotinoDriver::inverse_kinematics(const double &w0,
   return {vx, vy, omega};
 }
 
-void RobotinoDriver::step() {
-
-  RCLCPP_INFO(node_->get_logger(), "STEP");
-
-  auto angular_velocity = kinematics();
-  wb_motor_set_velocity(motors_[2], angular_velocity[0]);
-  wb_motor_set_velocity(motors_[0], angular_velocity[1]);
-  wb_motor_set_velocity(motors_[1], angular_velocity[2]);
-  publish_data();
-  std::lock_guard<std::mutex> lock(vel_msg_mutex_);
-  this->cmd_vel_msg.linear.x = 0.0;
-  this->cmd_vel_msg.linear.y = 0.0;
-  this->cmd_vel_msg.angular.z = 0.0;
-}
+void RobotinoDriver::step() { publish_data(); }
 } // namespace robotino_driver
 
 #include "pluginlib/class_list_macros.hpp"

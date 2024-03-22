@@ -43,6 +43,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
 
     # Declare launch configuration variables
     namespace = LaunchConfiguration("namespace")
+    frequency = LaunchConfiguration("frequency").perform(context)
     namespace_str = namespace.perform(context)
     joy_device_id = LaunchConfiguration("joy_device_id")
     use_sim_time = LaunchConfiguration("use_sim_time")
@@ -65,7 +66,9 @@ def launch_nodes_withconfig(context, *args, **kwargs):
         "robots",
         "robotino_" + namespace_str + "_description_plugin.urdf",
     )
-    robot_description = xacro.process_file(xacro_file_path, mappings={"namespace": namespace_str})
+    robot_description = xacro.process_file(
+        xacro_file_path, mappings={"namespace": namespace_str, "frequency": frequency}
+    )
     # Write the robot_description to the URDF file
     with open(urdf_file_path, "w") as urdf_file:
         urdf_file.write(robot_description.toxml())
@@ -189,8 +192,8 @@ def generate_launch_description():
     # Declare launch configuration variables
     declare_namespace_argument = DeclareLaunchArgument("namespace", default_value="", description="Top-level namespace")
 
-    declare_namespace_argument = DeclareLaunchArgument(
-        "namespace", default_value="0", description="Device ID of the joystick"
+    declare_frequency_argument = DeclareLaunchArgument(
+        "frequency", default_value="10.0", description="Frequency of sim controller"
     )
 
     declare_use_sim_time_argument = DeclareLaunchArgument(
@@ -216,6 +219,7 @@ def generate_launch_description():
 
     # Declare the launch options
     ld.add_action(declare_namespace_argument)
+    ld.add_action(declare_frequency_argument)
     ld.add_action(declare_use_sim_time_argument)
     ld.add_action(declare_launch_rviz_argument)
     ld.add_action(declare_launch_joynode_argument)

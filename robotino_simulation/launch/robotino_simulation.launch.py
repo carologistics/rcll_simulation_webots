@@ -48,6 +48,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
     namespace.perform(context)
     use_sim_time = LaunchConfiguration("use_sim_time")
     mps_config = LaunchConfiguration("mps_config")
+    frequency = LaunchConfiguration("frequency")
     launch_rviz = LaunchConfiguration("launch_rviz")
     launch_joynode = LaunchConfiguration("launch_joynode")
     launch_teleopnode = LaunchConfiguration("launch_teleopnode")
@@ -93,6 +94,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
                 launch_arguments={
                     "namespace": "robotinobase1",
                     "joy_device_id": "0",
+                    "frequency": frequency,
                     "use_sim_time": use_sim_time,
                     "launch_rviz": launch_rviz,
                     "launch_joynode": launch_joynode,
@@ -129,6 +131,10 @@ def generate_launch_description():
     # Declare launch configuration variables
     declare_namespace_argument = DeclareLaunchArgument("namespace", default_value="", description="Top-level namespace")
 
+    declare_frequency_argument = DeclareLaunchArgument(
+        "frequency", default_value="10.0", description="Frequency of sim controller"
+    )
+
     declare_mps_config_argument = DeclareLaunchArgument(
         "mps_config",
         default_value=os.path.join(package_dir, "config", "mps_pose.yaml"),
@@ -158,6 +164,7 @@ def generate_launch_description():
 
     # Declare the launch options
     ld.add_action(declare_namespace_argument)
+    ld.add_action(declare_frequency_argument)
     ld.add_action(declare_mps_config_argument)
     ld.add_action(declare_use_sim_time_argument)
     ld.add_action(declare_launch_rviz_argument)
