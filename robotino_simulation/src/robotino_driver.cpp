@@ -165,6 +165,7 @@ void RobotinoDriver::publish_odom_from_sensors(const TimeStamp &time_stamp) {
   nav_msgs::msg::Odometry odom_msg;
   odom_msg.header.stamp = time_stamp;
   // TODO: msg.header.stamp =
+  odom_msg.header.frame_id = tf_prefix_ + "/odom";
   odom_msg.child_frame_id = tf_prefix_ + "/base_link";
   odom_msg.twist.twist.linear.x = velocity[0];
   odom_msg.twist.twist.linear.y = velocity[1];
