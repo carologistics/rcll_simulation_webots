@@ -41,7 +41,7 @@ After installing ROS2 and creating the workspace, clone this repository in your 
 mkdir -p ~/ros2/robotino_sim_ws/src
 cd ~/ros2/robotino_sim_ws/src
 curl https://raw.githubusercontent.com/carologistics/rcll_simulation_webots/tviehmann/cleanup/dependencies.repos > dependencies.repos
-vcs import src < dependencies.repos
+vcs import . < dependencies.repos
 touch src/robotino/rto_node/AMENT_IGNORE
 ```
 Install the binary dependencies by running the following command in the root of your workspace:
