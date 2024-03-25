@@ -7,57 +7,47 @@ EXTERNPROTO "../protos/Robotino3.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/festo/robotino3/protos/Robotino3Platform.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/devices/sick/protos/SickLms291.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/apartment_structure/protos/Wall.proto"
-#EXTERNPROTO "../protos/Machine_base.proto"
 
 WorldInfo {
+  basicTimeStep 32
 }
 Viewpoint {
-  orientation 0.4849642341009622 0.25032834227702466 -0.8379411749614073 1.8762916532305556
-  position -4.258389385182237 12.024887352494277 13.389781652131953
+  orientation 0.3050437976643899 0.12934232109895974 -0.9435140939483737 1.5119154023579888
+  position -6.208022259754713 14.035281810597995 7.012105021175612
 }
 TexturedBackground {
 }
 TexturedBackgroundLight {
 }
 RectangleArena {
-  floorSize 12 8
+  floorSize 12 6
   floorTileSize 0.4 0.4
   wallHeight 0.5
 }
 Wall {
-  translation -5.3 3.25 0
+  translation -5.3 2.25 0
   rotation 0 0 1 1.57
   name "team1_defaultpose_wall1"
   size 0.04 1.4 0.5
 }
 Wall {
-  translation 5.3 3.25 0
+  translation 5.3 2.25 0
   rotation 0 0 1 1.57
   name "team2_defaultpose_wall1"
   size 0.04 1.4 0.5
 }
 Wall {
-  translation -3.7 3.6 0
+  translation -3.7 2.6 0
   name "team1_defaultpose_wall2"
   size 0.04 0.8 0.5
 }
 Wall {
-  translation -2.9 -3.3 0
-  name "partition_wall1"
-  size 0.04 1.4 0.5
-}
-Wall {
-  translation 2.9 -3.3 0
-  name "partition_wall2"
-  size 0.04 1.4 0.5
-}
-Wall {
-  translation 3.7 3.6 0
+  translation 3.7 2.6 0
   name "team2_defaultpose_wall2"
   size 0.04 0.8 0.5
 }
 Robotino3 {
-  translation -5.5 3.65 -0.000443485
+  translation -5.5 2.65 -0.000443485
   name "robotinobase1"
   controller "<extern>"
   bodySlot [
@@ -92,7 +82,7 @@ Robotino3 {
   ]
 }
 Robotino3 {
-  translation -5.0 3.65 -0.000443485
+  translation -5 2.65 -0.000443485
   name "robotinobase2"
   controller "<extern>"
   bodySlot [
@@ -127,7 +117,7 @@ Robotino3 {
   ]
 }
 Robotino3 {
-  translation -4.5 3.65 -0.000443485
+  translation -4.5 2.65 -0.000443485
   name "robotinobase3"
   controller "<extern>"
   bodySlot [
