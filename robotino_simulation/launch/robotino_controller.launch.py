@@ -86,6 +86,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
                 parameters=[
                     {"robot_description": urdf_file_path},
                     {"use_sim_time": True},
+                    {"updateRate": 60.0},
                 ],
                 respawn=True,
             ),
