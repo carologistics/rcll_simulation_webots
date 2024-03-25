@@ -12,7 +12,7 @@
 #include <webots_ros2_driver/WebotsNode.hpp>
 
 #include <map>
-#define TIME_STEP 16
+#define TIME_STEP 32
 namespace robotino_driver {
 class RobotinoDriver : public webots_ros2_driver::PluginInterface {
 public:
