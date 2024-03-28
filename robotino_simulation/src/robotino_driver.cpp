@@ -52,6 +52,7 @@ void RobotinoDriver::init(
   wb_accelerometer_enable(accelerometer_, TIME_STEP);
 
   std::string namespace_param = parameters["namespace"];
+  tf_prefix_ = namespace_param;
   act_frequency_ = std::stod(parameters["frequency"]);
   cmd_vel_subscription_ = node_->create_subscription<geometry_msgs::msg::Twist>(
       namespace_param + "/cmd_vel", rclcpp::SensorDataQoS().reliable(),
