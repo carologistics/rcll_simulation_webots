@@ -59,7 +59,6 @@ void RobotinoDriver::init(
       [this](const geometry_msgs::msg::Twist::SharedPtr msg) {
         std::lock_guard<std::mutex> lock(vel_msg_mutex_);
         this->cmd_vel_msg = *msg;
-        RCLCPP_INFO(node_->get_logger(), "Received cmd_vel message");
       });
   odom_pub_ = node_->create_publisher<nav_msgs::msg::Odometry>(
       namespace_param + "/odom", rclcpp::SensorDataQoS().reliable());
@@ -103,8 +102,6 @@ void RobotinoDriver::init(
       wb_motor_set_velocity(motors_[0], angular_velocity[1]);
       wb_motor_set_velocity(motors_[1], angular_velocity[2]);
 
-      RCLCPP_INFO(node_->get_logger(), "Angular velocity: %f %f %f",
-                  angular_velocity[0], angular_velocity[1], angular_velocity[2]);
       {
         std::lock_guard<std::mutex> lock(vel_msg_mutex_);
         this->cmd_vel_msg.linear.x = 0.0;
@@ -315,7 +312,7 @@ std::vector<double> RobotinoDriver::kinematics() {
   double v_y = this->cmd_vel_msg.linear.y;
   double omega = this->cmd_vel_msg.angular.z;
 
-  double k = (60.0*GEER_RATIO*0.150)/(2.0*M_PI*WHEEL_RADIUS);
+  double k = (60.0 * GEER_RATIO * 0.150) / (2.0 * M_PI * WHEEL_RADIUS);
 
   omega = omega * WHEEL_DISTANCE;
 
@@ -323,9 +320,9 @@ std::vector<double> RobotinoDriver::kinematics() {
   // v_y = v_y / WHEEL_RADIUS;
   // omega = (omega * WHEEL_DISTANCE) / WHEEL_RADIUS;
 
-  double m1 = (((sqrt(3.) / 2.) * v_x) - (0.5 * v_y) - omega)*k;
-  double m2 = (v_y - omega)*k;
-  double m3 = (-((sqrt(3.) / 2.) * v_x) - (0.5 * v_y) - omega)*k;
+  double m1 = (((sqrt(3.) / 2.) * v_x) - (0.5 * v_y) - omega) * k;
+  double m2 = (v_y - omega) * k;
+  double m3 = (-((sqrt(3.) / 2.) * v_x) - (0.5 * v_y) - omega) * k;
 
   return {m1, m2, m3};
 }
