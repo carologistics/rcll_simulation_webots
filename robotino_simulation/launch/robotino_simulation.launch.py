@@ -132,7 +132,7 @@ def generate_launch_description():
     declare_namespace_argument = DeclareLaunchArgument("namespace", default_value="", description="Top-level namespace")
 
     declare_frequency_argument = DeclareLaunchArgument(
-        "frequency", default_value="10.0", description="Frequency of sim controller"
+        "frequency", default_value="20.0", description="Frequency of sim controller"
     )
 
     declare_mps_config_argument = DeclareLaunchArgument(
