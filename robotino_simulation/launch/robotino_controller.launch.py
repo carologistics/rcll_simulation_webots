@@ -155,6 +155,8 @@ def launch_nodes_withconfig(context, *args, **kwargs):
                 ),
                 launch_arguments={
                     "namespace": namespace,
+                    "scanTopic1": "/SickLaser_Front_Remaped",
+                    "scanTopic2": "/SickLaser_Rear_Remaped",
                 }.items(),
             ),
             # Launch Integrate laserscan launch file
