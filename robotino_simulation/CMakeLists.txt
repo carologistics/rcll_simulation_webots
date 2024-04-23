@@ -53,6 +53,7 @@ install(TARGETS
 install(
   PROGRAMS
   robotino_simulation/mps_publisher.py
+  robotino_simulation/extract_rosbag_data.py
   robotino_simulation/robotinobase1_driver_plugin.py
   robotino_simulation/robotinobase2_driver_plugin.py
   robotino_simulation/robotinobase3_driver_plugin.py
@@ -63,7 +64,7 @@ install(
 file(MAKE_DIRECTORY "${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}")
 execute_process(
     COMMAND ${CMAKE_COMMAND} -E create_symlink
-	${mps_description_DIR}/../meshes
+    ${mps_description_DIR}/../meshes
     ${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}/mps_meshes
 )
 ament_export_dependencies(rclpy)

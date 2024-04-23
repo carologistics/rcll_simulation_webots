@@ -1,13 +1,7 @@
 repositories:
-  rcll_simulation_webots:
+  ros2-robotino:
     type: git
-    local-name: rcll_simulation_webots
-    url: git@github.com:carologistics/rcll_simulation_webots.git
-    version: tviehmann/cleanup
-  robotino:
-    type: git
-    local-name: robotino
-    url: git@github.com:carologistics/robotino-driver.git
+    url: https://github.com/robocup-logistics/ros2-robotino.git
     version: tviehmann/add_webots_description
   laser_scan_integrator:
     type: git
@@ -18,4 +12,4 @@ repositories:
     type: git
     local-name: robotino_navigation
     url: https://github.com/carologistics/robotino_navigation.git
-    version: tviehmann/simulation
+    version: master

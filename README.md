@@ -25,11 +25,11 @@ Encouraging collaboration and contributions, the repository aims to serve as a r
 
 ## Installation
 ### Installation Premise
-This repository has been tested on [ROS2 Humble] and with webots 2023b. It is recommended to use the same versions to avoid any issues;
+This repository has been tested on [ROS2 Humble] and with Webots 2023b. It is recommended to use the same versions to avoid any issues;
 
 These instructions assume that you have already installed ROS2 Humble on your machine. If not, please follow the recommended recommended ubuntu installation tutorial;
 
-Create a ros2 workspace, Once you have created the workspace, clone this repository in the source folder of your workspace.
+Create a ROS2 workspace, Once you have created the workspace, clone this repository in the source folder of your workspace.
 
 
 ### Workspace Setup:
@@ -40,9 +40,9 @@ After installing ROS2 and creating the workspace, clone this repository in your 
 ```bash
 mkdir -p ~/ros2/robotino_sim_ws/src
 cd ~/ros2/robotino_sim_ws/src
-curl https://raw.githubusercontent.com/carologistics/rcll_simulation_webots/tviehmann/cleanup/dependencies.repos > dependencies.repos
-vcs import . < dependencies.repos
-touch src/robotino/rto_node/AMENT_IGNORE
+git clone https://github.com/carologistics/rcll_simulation_webots.git
+vcs import --recursive . < rcll_simulation_webots/dependencies.repos
+touch src/ros2-robotino/rto_node/AMENT_IGNORE
 ```
 Install the binary dependencies by running the following command in the root of your workspace:
 
@@ -123,7 +123,6 @@ ros2 launch robotino_navigation robotino_bringup.launch.py namespace:=robotinoba
 
 - namespace: It's a launch configuration used to spawn the map server, amcl, nav2_stack, collision monitor, and rviz2 with predefined configs for corresponding robotinobase(1/2/3)
 - use_sim_time: to use sim time instead of system time
-- host_suffix: the robotino_navigation stack is configured for the robotino and will laut parameters accordingly. However, further adaptations may be required, usually topic and frame names might differ based on configuration. The package comes with pre-defined configurations for this project using the namespaces robotinobase(1/2/3) and suffix `_webots`
 - launch_nav2rviz: whether to launch an rviz to visualize the navigation, including tools for localization and to send poses.
 - map: yaml file for the map, if a relative path is given the map directory of the robotino_navigation package is also searched
 
@@ -146,25 +145,7 @@ ros2 launch robotino_simulation robotinocluster_simulation.launch.py launch_rviz
     - robotinobase3: device_id = 0
 
 ### Navigation with known Map
-For autonomous navigation, first launch the multiple instances of robotinobase in simulation as described above, then launch the NAV2 stack by running the following commands in different terminal instances from the root of your workspace:
-
-```bash
-ros2 launch robotino_navigation robotino_bringup.launch.py namespace:=robotinobase1
-
-ros2 launch robotino_navigation robotino_bringup.launch.py namespace:=robotinobase2
-
-ros2 launch robotino_navigation robotino_bringup.launch.py namespace:=robotinobase3
-```
-
-It will launch the map server, amcl, nav2_stack, collision monitor, and rviz2 with predefined configs for the corresponding robotinobase(1/2/3). Use Rviz2 to send a goal to the corresponding robotinobase(1/2/3).
-
-## Nodes and Topics to look into
-
-Important nodes and topics to look into for understanding the simulation environment and its working:
-
-## Contributing to this repo
-
-To contribute to this package, you can either open an issue describing the desired subject or develop the feature yourself and submit a pull request to the main branch (in this case, robot_cluster).
+For autonomous navigation, first launch the multiple instances of robotinobase in simulation as described above, then launch the different navigation stacks for each robot as done in th single-robot case.
 
 ## Research and References
 - Omnidirectional robot kinematics and dynamics:
@@ -176,7 +157,7 @@ To contribute to this package, you can either open an issue describing the desir
 
 - [Webots](https://cyberbotics.com/)
 
-- [ROS2](https://docs.ros.org/en/foxy/index.html)
+- [ROS2](https://docs.ros.org/en/humble/index.html)
 
 - [Navigation2](https://navigation.ros.org/)
 
