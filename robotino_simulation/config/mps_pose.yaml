@@ -1,0 +1,41 @@
+# Parameters to set the position and orientation of the mps machines
+
+# Origin: please refer the origin of game field from webots world for mps location in the world
+/mps_publisher:
+  ros__parameters:
+  # Position of Team-Cyan mps machines(cartesian- x,y,z)
+  # Orientation of Team-Cyan mps machines(quaternion- x,y,z,w)
+    C-BS-O_orientation: 0 0 1 1.57
+    C-BS-O_position: 1.5 2.5 0.0
+    C-CS1-O_orientation: 0 0 1 1.57
+    C-CS1-O_position: 1.5 1.5 0.0
+    C-CS2-I_orientation: 0 0 1 0.0
+    C-CS2-I_position: 1.5 -0.5 0.0
+    C-DS-I_orientation: 0 0 1 1.57
+    C-DS-I_position: 1.5 -2.5 0.0
+    C-RS1-O_orientation: 0 0 1 0.0
+    C-RS1-O_position: 4.5 0.5 0.0
+    C-RS2-O_orientation: 0 0 1 1.57
+    C-RS2-O_position: 4.5 -2.5 0.0
+    C-SS-I_orientation: 0 0 1 0.0
+    C-SS-I_position: 5.5 -0.5 0.0
+
+
+  # Position of Team-Magenta mps machines(cartesian- x,y,z)
+  # Orientation of Team-Magenta mps machines(quaternion- x,y,z,w)
+    M-BS-I_orientation: 0 0 1 1.57
+    M-BS-I_position: -1.5 2.5 0.0
+    M-CS1-I_orientation: 0 0 1 1.57
+    M-CS1-I_position: -1.5 1.5 0.0
+    M-CS2-I_orientation: 0 0 1 0.0
+    M-CS2-I_position: -1.5 -0.5 0.0
+    M-DS-O_orientation: 0 0 1 1.57
+    M-DS-O_position: -1.5 -2.5 0.0
+    M-RS1-I_orientation: 0 0 1 0.0
+    M-RS1-I_position: -4.5 0.5 0.0
+    M-RS2-O_orientation: 0 0 1 1.57
+    M-RS2-O_position: -4.5 -2.5 0.0
+    M-SS-I_orientation: 0 0 1 0.0
+    M-SS-I_position: -5.5 -0.5 0.0
+
+    use_sim_time: true
