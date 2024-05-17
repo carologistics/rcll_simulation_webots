@@ -56,6 +56,7 @@ void RobotinoDriver::init(
   std::string namespace_param = parameters["namespace"];
   tf_prefix_ = namespace_param;
   act_frequency_ = std::stod(parameters["frequency"]);
+  odom_source_ = parameters["odom_source"];
   cmd_vel_subscription_ = node_->create_subscription<geometry_msgs::msg::Twist>(
       namespace_param + "/cmd_vel", rclcpp::SensorDataQoS().reliable(),
       [this](const geometry_msgs::msg::Twist::SharedPtr msg) {
@@ -105,21 +106,23 @@ void RobotinoDriver::init(
       wb_motor_set_velocity(motors_[1], angular_velocity[2]);
 
       // Uncomment the following code to use the odometry from the wheel sensors
-
-      // double curr_time_ = wb_robot_get_time();
-      // // RCLCPP_INFO(node_->get_logger(), "Current time: %f ", curr_time_);
-      // // RCLCPP_INFO(node_->get_logger(), "Last sample time_prev: %f ", last_sample_time_);
-      // double time_diff_ = curr_time_ - last_sample_time_;
-      // // RCLCPP_INFO(node_->get_logger(), "Time difference: %f ", time_diff_);
-      // int sec_ = static_cast<int>(curr_time_);
-      // int nanosec_ = static_cast<int>((curr_time_ - sec_) * 1e9);
-      // TimeStamp time_stamp_;
-      // time_stamp_.sec = sec_;
-      // time_stamp_.nanosec = nanosec_;
-      // read_data();
-      // publish_odom(time_stamp_, time_diff_);
-      // last_sample_time_ = curr_time_;
-      // //RCLCPP_INFO(node_->get_logger(), "Last sample time_after: %f ", last_sample_time_);
+      if (odom_source_ == "encoders") {
+        double curr_time_ = wb_robot_get_time();
+        //RCLCPP_INFO(node_->get_logger(), "wea re here to publish odom");
+        // RCLCPP_INFO(node_->get_logger(), "Current time: %f ", curr_time_);
+        // RCLCPP_INFO(node_->get_logger(), "Last sample time_prev: %f ", last_sample_time_);
+        double time_diff_ = curr_time_ - last_sample_time_;
+        // RCLCPP_INFO(node_->get_logger(), "Time difference: %f ", time_diff_);
+        int sec_ = static_cast<int>(curr_time_);
+        int nanosec_ = static_cast<int>((curr_time_ - sec_) * 1e9);
+        TimeStamp time_stamp_;
+        time_stamp_.sec = sec_;
+        time_stamp_.nanosec = nanosec_;
+        read_data();
+        publish_odom(time_stamp_, time_diff_);
+        last_sample_time_ = curr_time_;
+        //RCLCPP_INFO(node_->get_logger(), "Last sample time_after: %f ", last_sample_time_);
+        }
       {
         std::lock_guard<std::mutex> lock(vel_msg_mutex_);
         this->cmd_vel_msg.linear.x = 0.0;
@@ -154,8 +157,10 @@ void RobotinoDriver::publish_data() {
   time_stamp.sec = sec;
   time_stamp.nanosec = nanosec;
 
-  //last_sample_time_ = curr_time;
-  publish_odom_from_sensors(time_stamp);
+  if (odom_source_ == "gps"){
+    publish_odom_from_sensors(time_stamp);
+  }
+  //publish_odom_from_sensors(time_stamp);
   publish_joint_state(time_stamp);
   publish_ir(time_stamp);
   publish_laser(time_stamp);
@@ -354,14 +359,6 @@ std::vector<double> RobotinoDriver::kinematics() {
 std::vector<double> RobotinoDriver::inverse_kinematics(const double &w0,
                                                        const double &w1,
                                                        const double &w2) {
-  // double k_inv = 60*GEER_RATIO*0.150/(2*M_PI*WHEEL_RADIUS);
-  // double vx = ((-w1 + w2) / sqrt(3.0)) / k_inv;
-  // double vy = (((2.0 / 3.0) * w0) - ((1.0 / 3.0) * w1)) / k_inv;
-  // double const_val = 3.0 * WHEEL_DISTANCE;
-  // double omega = (-((1.0 / const_val) * w0) - ((1.0 / const_val) * w1) -
-  //                 ((1.0 / const_val) * w2)) /
-  //                k_inv;
-
   double k_inv = (2*M_PI*WHEEL_RADIUS)/(60*GEER_RATIO*0.009375);
 
   double vx = ((w0 - w2) / sqrt(3.0)) * k_inv;
