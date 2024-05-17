@@ -86,7 +86,7 @@ private:
   std::thread act_thread_;
   double act_frequency_ = 10.0;
 
-  std::string odom_source_ = "gps";
+  std::string odom_source_ = "encoders";
 };
 } // namespace robotino_driver
 #endif
