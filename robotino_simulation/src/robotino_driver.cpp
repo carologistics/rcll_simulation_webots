@@ -108,11 +108,7 @@ void RobotinoDriver::init(
       // Uncomment the following code to use the odometry from the wheel sensors
       if (odom_source_ == "encoders") {
         double curr_time_ = wb_robot_get_time();
-        //RCLCPP_INFO(node_->get_logger(), "wea re here to publish odom");
-        // RCLCPP_INFO(node_->get_logger(), "Current time: %f ", curr_time_);
-        // RCLCPP_INFO(node_->get_logger(), "Last sample time_prev: %f ", last_sample_time_);
         double time_diff_ = curr_time_ - last_sample_time_;
-        // RCLCPP_INFO(node_->get_logger(), "Time difference: %f ", time_diff_);
         int sec_ = static_cast<int>(curr_time_);
         int nanosec_ = static_cast<int>((curr_time_ - sec_) * 1e9);
         TimeStamp time_stamp_;
@@ -121,7 +117,6 @@ void RobotinoDriver::init(
         read_data();
         publish_odom(time_stamp_, time_diff_);
         last_sample_time_ = curr_time_;
-        //RCLCPP_INFO(node_->get_logger(), "Last sample time_after: %f ", last_sample_time_);
         }
       {
         std::lock_guard<std::mutex> lock(vel_msg_mutex_);
@@ -246,18 +241,14 @@ void RobotinoDriver::publish_odom(const TimeStamp &time_stamp,
   double wheel0_ticks = motor_pos_[2];
   double wheel1_ticks = motor_pos_[0];
   double wheel2_ticks = motor_pos_[1];
-  //RCLCPP_INFO(node_->get_logger(), "wheel_ticks: %f %f %f", wheel0_ticks, wheel1_ticks, wheel2_ticks);
-  //RCLCPP_INFO(node_->get_logger(), "prev wheel_ticks: %f %f %f", prev_wheel0_ticks_, prev_wheel1_ticks_, prev_wheel2_ticks_);
 
   double w0 = (wheel0_ticks - prev_wheel0_ticks_) / (time_diff);
   double w1 = (wheel1_ticks - prev_wheel1_ticks_) / (time_diff);
   double w2 = (wheel2_ticks - prev_wheel2_ticks_) / (time_diff);
-  //RCLCPP_INFO(node_->get_logger(), "motor_velocities_invkinematics: %f %f %f", w0, w1, w2);
 
   auto velocity = inverse_kinematics(w0, w1, w2);
-  //RCLCPP_INFO(node_->get_logger(), "linear_Velocity_invkinematics: %f %f %f", velocity[0], velocity[1], velocity[2]);
+
   double phi = prev_odom_omega_ + (velocity[2] * time_diff);
-  //RCLCPP_INFO(node_->get_logger(), "position_phi: %f", phi);
   double x = prev_odom_x_ + (((velocity[0] * cos(phi)) - (velocity[1] * sin(phi))) * time_diff);
   //double x = prev_odom_x_ + (velocity[0]*time_diff);
   //RCLCPP_INFO(node_->get_logger(), "Position_x: %f ", x);
@@ -344,7 +335,6 @@ std::vector<double> RobotinoDriver::kinematics() {
   double v_y = this->cmd_vel_msg.linear.y;
   double omega = this->cmd_vel_msg.angular.z;
 
-  //RCLCPP_INFO(node_->get_logger(), "linear_velocities_kinematics: %f %f %f", v_x, v_y, omega);
   double k = (60.0*GEER_RATIO*0.009375)/(2.0*M_PI*WHEEL_RADIUS);
 
   omega = omega * WHEEL_DISTANCE;
@@ -352,7 +342,6 @@ std::vector<double> RobotinoDriver::kinematics() {
   double m2 = (v_y - omega) * k;
   double m3 = (-((sqrt(3.) / 2.) * v_x) - (0.5 * v_y) - omega) * k;
 
-  //RCLCPP_INFO(node_->get_logger(), "motor_velocities_kinematics: %f %f %f", m1, m2, m3);
   return {m1, m2, m3};
 }
 
