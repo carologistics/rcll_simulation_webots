@@ -2,12 +2,12 @@ repositories:
   ros2-robotino:
     type: git
     url: https://github.com/robocup-logistics/ros2-robotino.git
-    version: tviehmann/add_webots_description
+    version: main
   laser_scan_integrator:
     type: git
     local-name: laser_scan_integrator
     url: https://github.com/carologistics/laser_scan_integrator.git
-    version: tviehmann/minor-rename
+    version: main
   robotino_navigation:
     type: git
     local-name: robotino_navigation
