@@ -3,8 +3,8 @@
 # Origin: please refer the origin of game field from webots world for mps location in the world
 /mps_publisher:
   ros__parameters:
-  # Position of Team-Cyan mps machines(cartesian- x,y,z)
-  # Orientation of Team-Cyan mps machines(quaternion- x,y,z,w)
+    # Position of Team-Cyan mps machines(cartesian- x,y,z)
+    # Orientation of Team-Cyan mps machines(quaternion- x,y,z,w)
     C-BS-O_orientation: 0 0 1 1.57
     C-BS-O_position: 1.5 2.5 0.0
     C-CS1-O_orientation: 0 0 1 1.57
@@ -21,8 +21,8 @@
     C-SS-I_position: 5.5 -0.5 0.0
 
 
-  # Position of Team-Magenta mps machines(cartesian- x,y,z)
-  # Orientation of Team-Magenta mps machines(quaternion- x,y,z,w)
+    # Position of Team-Magenta mps machines(cartesian- x,y,z)
+    # Orientation of Team-Magenta mps machines(quaternion- x,y,z,w)
     M-BS-I_orientation: 0 0 1 1.57
     M-BS-I_position: -1.5 2.5 0.0
     M-CS1-I_orientation: 0 0 1 1.57
