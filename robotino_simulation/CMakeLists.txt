@@ -53,7 +53,7 @@ install(TARGETS
 install(
   PROGRAMS
   robotino_simulation/mps_publisher.py
-  robotino_simulation/extract_rosbag_data.py
+  # robotino_simulation/extract_rosbag_data.py
   robotino_simulation/robotinobase1_driver_plugin.py
   robotino_simulation/robotinobase2_driver_plugin.py
   robotino_simulation/robotinobase3_driver_plugin.py
