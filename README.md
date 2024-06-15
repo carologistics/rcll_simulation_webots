@@ -42,7 +42,7 @@ mkdir -p ~/ros2/robotino_sim_ws/src
 cd ~/ros2/robotino_sim_ws/src
 git clone https://github.com/carologistics/rcll_simulation_webots.git
 vcs import --recursive . < rcll_simulation_webots/dependencies.repos
-touch src/ros2-robotino/rto_node/AMENT_IGNORE
+touch ros2-robotino/rto_node/AMENT_IGNORE
 ```
 Install the binary dependencies by running the following command in the root of your workspace:
 
