@@ -3,7 +3,7 @@ This Git repository encompasses a comprehensive collection of code files designe
 
 Encouraging collaboration and contributions, the repository aims to serve as a reliable resource for researchers, developers, and enthusiasts in the fields of robotics and simulation. Regular updates ensure compatibility with evolving dependencies, making it a sustainable and valuable tool for the robotics community.
 
-## Table of content
+## Table of Contents
 - Installation Premise
 - Installation
     - Dependencies
@@ -14,7 +14,7 @@ Encouraging collaboration and contributions, the repository aims to serve as a r
     - Spawning simulation with multiple instances
     - Testing the simulation
 - Launch SLAM toolbox
-- Launch NAV2 stack
+- Launch Nav2 stack
     - Navigation with a single instance of robotinobase
     - Navigation with multiple instances of robotinobases
 - Nodes and Topics to look into
@@ -25,11 +25,11 @@ Encouraging collaboration and contributions, the repository aims to serve as a r
 
 ## Installation
 ### Installation Premise
-This repository has been tested on [ROS2 Humble] and with Webots 2023b. It is recommended to use the same versions to avoid any issues;
+This repository has been tested on [ROS2 Humble] and with Webots 2023b. It is recommended to use the same versions to avoid any issues.
 
-These instructions assume that you have already installed ROS2 Humble on your machine. If not, please follow the recommended recommended ubuntu installation tutorial;
+These instructions assume that you have already installed ROS2 Humble on your machine. If not, please follow the recommended ubuntu installation tutorial.
 
-Create a ROS2 workspace, Once you have created the workspace, clone this repository in the source folder of your workspace.
+Create a ROS2 workspace. Once you have created the workspace, clone this repository in the source folder of your workspace.
 
 
 ### Workspace Setup:
@@ -69,7 +69,7 @@ colcon build --symlink-install
 source install/setup.bash
 ```
 ## Basic Usage
-First, the steps to run the simulation with a single robot is outlined.
+First, the steps to run the simulation with a single robot are outlined.
 ### Spawning simulation with one instance of robot
 
 ```bash
@@ -83,7 +83,7 @@ ros2 launch robotino_simulation robotino_simulation.launch.py namespace:=robotin
 
 ### Launch SLAM toolbox
 
-For mapping the environment, first launch the single instance of robotinobase in simulation, ensure the joystick device is connected with correct device ID (by default, device_id=0).
+For mapping the environment, first launch the single instance of robotinobase in simulation, ensure the joystick device is connected with the correct device ID (by default, device_id=0).
 
 To check the currently recognized joysticks run:
 
@@ -101,7 +101,7 @@ Available devices:
 /dev/input/event15:	Xbox 360 Wireless Receiver
 ```
 
-then launch the SLAM toolbox by running the following command after sourcing the workspace:
+Then launch the SLAM toolbox by running the following command after sourcing the workspace:
 
 ```bash
 ros2 launch robotino_slamtoolbox robotino_slam.launch.py namespace:=robotinobase1 use_sim_type:=true
@@ -115,15 +115,15 @@ ros2 run nav2_map_server map_saver_cli -f <path-where-to-store-file>
 
 ### Navigating on a known Map:
 
-For autonomous navigation, first launch the single instance of robotinobase in simulation as described above, then launch the NAV2 stack by running the following command in the root of your workspace:
+For autonomous navigation, first launch the single instance of robotinobase in simulation as described above, then launch the Nav2 stack by running the following command in the root of your workspace:
 
 ```bash
 ros2 launch robotino_navigation robotino_bringup.launch.py namespace:=robotinobase1 use_sim_time:=true launch_nav2rviz:=true map:=map_webots.yaml
 ```
 
-- namespace: It's a launch configuration used to spawn the map server, amcl, nav2_stack, collision monitor, and rviz2 with predefined configs for corresponding robotinobase(1/2/3)
-- use_sim_time: to use sim time instead of system time
-- launch_nav2rviz: whether to launch an rviz to visualize the navigation, including tools for localization and to send poses.
+- namespace: It's a launch configuration used to spawn the map server, amcl, nav2_stack, collision monitor, and Rviz2 with predefined configs for corresponding robotinobase(1/2/3)
+- use_sim_time: To use sim time instead of system time
+- launch_nav2rviz: Whether to launch an rviz to visualize the navigation, including tools for localization and to send poses
 - map: yaml file for the map, if a relative path is given the map directory of the robotino_navigation package is also searched
 
 Once the robot is localized, use the 2D Nav Goal tool in Rviz2 to send a goal to the robot.
@@ -136,16 +136,16 @@ This project also has pre-configured support to run 3 robotinos at once using th
 ros2 launch robotino_simulation robotinocluster_simulation.launch.py launch_rviz:=true
 ```
 
-- launch_rviz: Its a launch configuration for starting the Rviz2 with the predefined config file, parse 'false' when using nav2_stack
+- launch_rviz: It's a launch configuration for starting the Rviz2 with the predefined config file, parse 'false' when using nav2_stack
 
-- Connect a joystick to your machine and operate the robot using the joystick., by default device_id associated with the joystick is 0 (no need to change for a single instance of robotinobase spawn in simulation), in case of multiple instances of robotinobase spawn in simulation, change the device_id to 0 or 1 or 2 accordingly.
+- Connect a joystick to your machine and operate the robot using the joystick. By default device_id associated with the joystick is 0 (no need to change for a single instance of robotinobase spawn in simulation), in case of multiple instances of robotinobase spawn in simulation, change the device_id to 0 or 1 or 2 accordingly.
 - by default:
     - robotinobase1: device_id = 1
     - robotinobase2: device_id = 2
     - robotinobase3: device_id = 0
 
 ### Navigation with known Map
-For autonomous navigation, first launch the multiple instances of robotinobase in simulation as described above, then launch the different navigation stacks for each robot as done in th single-robot case.
+For autonomous navigation, first launch the multiple instances of robotinobase in simulation as described above, then launch the different navigation stacks for each robot as done in the single-robot case.
 
 ## Research and References
 - Omnidirectional robot kinematics and dynamics:
@@ -159,8 +159,8 @@ For autonomous navigation, first launch the multiple instances of robotinobase i
 
 - [ROS2](https://docs.ros.org/en/humble/index.html)
 
-- [Navigation2](https://navigation.ros.org/)
+- [Navigation2](https://docs.nav2.org/)
 
 ## Bugs and Issues
 
-Please report bugs and request features using the Issue Tracker
+Please report bugs and request features using the Issue Tracker.
