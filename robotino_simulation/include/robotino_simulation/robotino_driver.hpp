@@ -1,3 +1,5 @@
+// Licensed under MIT. See LICENSE file. Copyright Carologistics.
+
 #ifndef ROBOTINO_DRIVER_WEBOTS_PLUGIN_HPP
 #define ROBOTINO_DRIVER_WEBOTS_PLUGIN_HPP
 

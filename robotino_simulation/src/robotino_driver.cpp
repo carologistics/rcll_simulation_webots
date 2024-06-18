@@ -1,3 +1,5 @@
+// Licensed under MIT. See LICENSE file. Copyright Carologistics.
+
 #include "robotino_simulation/robotino_driver.hpp"
 
 #include <cstdio>

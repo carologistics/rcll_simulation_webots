@@ -19,12 +19,12 @@ omnidirectional_controller:
 
     robot_radius: 0.1826
     wheel_radius: 0.060
-    gamma: 30.0 # angle between body fixed y axis and the normal of wheel3
+    gamma: 30.0  # angle between body fixed y axis and the normal of wheel3
 
     publish_rate: 50.0
     odom_frame_id: odom
     base_frame_id: base_link
-    pose_covariance_diagonal : [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
+    pose_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
     twist_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
     odom_numeric_integration_method: runge_kutta2
 
