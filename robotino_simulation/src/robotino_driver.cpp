@@ -105,8 +105,7 @@ void RobotinoDriver::init(
       wb_motor_set_velocity(motors_[0], angular_velocity[1]);
       wb_motor_set_velocity(motors_[1], angular_velocity[2]);
 
-      // Uncomment the following code to use the odometry from the wheel sensors
-      if (odom_source_ == "encoders") {
+      if (odom_source_ == "encoder") {
         double curr_time_ = wb_robot_get_time();
         double time_diff_ = curr_time_ - last_sample_time_;
         int sec_ = static_cast<int>(curr_time_);
@@ -115,7 +114,9 @@ void RobotinoDriver::init(
         time_stamp_.sec = sec_;
         time_stamp_.nanosec = nanosec_;
         read_data();
-        publish_odom(time_stamp_, time_diff_);
+        if (time_diff_ != 0.0) {
+          publish_odom(time_stamp_, time_diff_);
+        }
         last_sample_time_ = curr_time_;
         }
       {
@@ -247,7 +248,6 @@ void RobotinoDriver::publish_odom(const TimeStamp &time_stamp,
   double w2 = (wheel2_ticks - prev_wheel2_ticks_) / (time_diff);
 
   auto velocity = inverse_kinematics(w0, w1, w2);
-
   double phi = prev_odom_omega_ + (velocity[2] * time_diff);
   double x = prev_odom_x_ + (((velocity[0] * cos(phi)) - (velocity[1] * sin(phi))) * time_diff);
   //double x = prev_odom_x_ + (velocity[0]*time_diff);
