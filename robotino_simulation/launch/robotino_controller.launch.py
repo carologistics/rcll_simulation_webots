@@ -27,6 +27,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
     # Declare launch configuration variables
     namespace = LaunchConfiguration("namespace")
     frequency = LaunchConfiguration("frequency").perform(context)
+    odom_source = LaunchConfiguration("odom_source").perform(context)
     namespace_str = namespace.perform(context)
     joy_device_id = LaunchConfiguration("joy_device_id")
     use_sim_time = LaunchConfiguration("use_sim_time")
@@ -50,7 +51,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
         "robotino_" + namespace_str + "_description_plugin.urdf",
     )
     robot_description = xacro.process_file(
-        xacro_file_path, mappings={"namespace": namespace_str, "frequency": frequency}
+        xacro_file_path, mappings={"namespace": namespace_str, "frequency": frequency, "odom_source": odom_source}
     )
     # Write the robot_description to the URDF file
     with open(urdf_file_path, "w") as urdf_file:
@@ -182,6 +183,10 @@ def generate_launch_description():
         "frequency", default_value="10.0", description="Frequency of sim controller"
     )
 
+    declare_odom_source_argument = DeclareLaunchArgument(
+        "odom_source", default_value="gps", description="source of odometry data"
+    )
+
     declare_use_sim_time_argument = DeclareLaunchArgument(
         "use_sim_time", default_value="true", description="Use simulation clock if true"
     )
@@ -206,6 +211,7 @@ def generate_launch_description():
     # Declare the launch options
     ld.add_action(declare_namespace_argument)
     ld.add_action(declare_frequency_argument)
+    ld.add_action(declare_odom_source_argument)
     ld.add_action(declare_use_sim_time_argument)
     ld.add_action(declare_launch_rviz_argument)
     ld.add_action(declare_launch_joynode_argument)

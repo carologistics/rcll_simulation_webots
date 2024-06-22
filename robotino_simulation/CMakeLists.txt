@@ -58,6 +58,7 @@ install(
   robotino_simulation/robotinobase2_driver_plugin.py
   robotino_simulation/robotinobase3_driver_plugin.py
   robotino_simulation/robotino_driver_plugin.py
+  robotino_simulation/extract_rosbag_data.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

@@ -22,7 +22,7 @@ public:
   using TimeStamp = builtin_interfaces::msg::Time;
   static constexpr double WHEEL_RADIUS = 0.063;
   static constexpr double WHEEL_DISTANCE = 0.1826;
-  static constexpr double GEER_RATIO = 1.0;
+  static constexpr double GEER_RATIO = 16.0;
   void step() override;
   void init(webots_ros2_driver::WebotsNode *node,
             std::unordered_map<std::string, std::string> &parameters) override;
@@ -85,6 +85,8 @@ private:
 
   std::thread act_thread_;
   double act_frequency_ = 10.0;
+
+  std::string odom_source_ = "gps";
 };
 } // namespace robotino_driver
 #endif
