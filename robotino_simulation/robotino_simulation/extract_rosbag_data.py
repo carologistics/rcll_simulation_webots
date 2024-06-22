@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-# Licensed under GPLv2. See LICENSE file. Copyright Carologistics.
+# Licensed under MIT. See LICENSE file. Copyright Carologistics.
 from decimal import Decimal
 
 import matplotlib.pyplot as plt
