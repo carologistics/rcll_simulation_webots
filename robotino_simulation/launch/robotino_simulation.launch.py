@@ -76,7 +76,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
                     ]
                 ),
                 launch_arguments={
-                    "namespace": "robotinobase1",
+                    "namespace": namespace,
                     "joy_device_id": "0",
                     "frequency": frequency,
                     "odom_source": odom_source,
