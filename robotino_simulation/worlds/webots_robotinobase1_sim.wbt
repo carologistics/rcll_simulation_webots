@@ -9,11 +9,10 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/project
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/apartment_structure/protos/Wall.proto"
 
 WorldInfo {
-  basicTimeStep 32
 }
 Viewpoint {
-  orientation 0.5847744123857989 0.44863110180843624 -0.6758468917654296 1.817859808388655
-  position -2.6403623296388323 5.009176693762332 16.010214963739138
+  orientation -0.4632579562260106 -0.7691076900684122 0.4403015183609191 4.942561935549969
+  position -10.873563060116151 4.577910319542992 14.322779690274793
 }
 TexturedBackground {
 }

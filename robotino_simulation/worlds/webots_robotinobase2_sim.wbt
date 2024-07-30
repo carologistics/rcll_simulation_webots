@@ -9,11 +9,10 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/project
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/apartment_structure/protos/Wall.proto"
 
 WorldInfo {
-  basicTimeStep 32
 }
 Viewpoint {
-  orientation 0.4849642341009622 0.25032834227702466 -0.8379411749614073 1.8762916532305556
-  position -4.282339525193255 15.000082241006274 16.950068851864945
+  orientation 0.5023988140492214 -0.6792001994610464 -0.5350537549573976 4.051832978039206
+  position 8.501921558551734 4.8319919752254625 25.897833356369773
 }
 TexturedBackground {
 }
@@ -25,29 +24,29 @@ RectangleArena {
   wallHeight 0.5
 }
 Wall {
-  translation -5.3 2.25 0
+  translation -5 2 0
   rotation 0 0 1 1.57
   name "team1_defaultpose_wall1"
-  size 0.04 1.4 0.5
+  size 0.04 2 0.5
 }
 Wall {
-  translation 5.3 2.25 0
+  translation 5 2 0
   rotation 0 0 1 1.57
   name "team2_defaultpose_wall1"
-  size 0.04 1.4 0.5
+  size 0.04 2 0.5
 }
 Wall {
-  translation -3.7 2.6 0
+  translation -3 2.5 0
   name "team1_defaultpose_wall2"
-  size 0.04 0.8 0.5
+  size 0.04 1 0.5
 }
 Wall {
-  translation 3.7 2.6 0
+  translation 3 2.5 0
   name "team2_defaultpose_wall2"
-  size 0.04 0.8 0.5
+  size 0.04 1 0.5
 }
 Robotino3 {
-  translation -5 2.65 -0.000443485
+  translation -5 2.5 -0.000443485
   name "robotinobase2"
   controller "<extern>"
   bodySlot [
