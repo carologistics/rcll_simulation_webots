@@ -81,7 +81,7 @@ Robotino3 {
   ]
 }
 Robotino3 {
-  translation -5 2.5 -0.000443485
+  translation -4.5 2.5 -0.000443485
   name "robotinobase2"
   controller "<extern>"
   bodySlot [
