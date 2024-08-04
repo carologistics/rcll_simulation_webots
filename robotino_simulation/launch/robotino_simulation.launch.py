@@ -36,6 +36,8 @@ def launch_nodes_withconfig(context, *args, **kwargs):
     launch_rviz = LaunchConfiguration("launch_rviz")
     launch_joynode = LaunchConfiguration("launch_joynode")
     launch_teleopnode = LaunchConfiguration("launch_teleopnode")
+    LaunchConfiguration("launch_mps")
+    LaunchConfiguration("webots_world")
 
     launch_configuration = {}
     for argname, argval in context.launch_configurations.items():
@@ -46,15 +48,18 @@ def launch_nodes_withconfig(context, *args, **kwargs):
         package="robotino_simulation",
         executable="mps_publisher.py",
         name="mps_publisher",
-        parameters=[mps_config, {"webots_world": "webots_" + launch_configuration["namespace"] + "_sim.wbt"}],
+        parameters=[mps_config, {"webots_world": "webots_" + launch_configuration["webots_world"] + "_sim.wbt"}],
         output="log",
     )
 
+    world = (
+        f"modified_webots_{launch_configuration["webots_world"]}_sim.wbt"
+        if launch_configuration["launch_mps"] == "true"
+        else f"webots_{launch_configuration["webots_world"]}_sim.wbt"
+    )
     # Starts Webots simulation and superwisor nodes
     webots = WebotsLauncher(
-        world=PathJoinSubstitution(
-            [package_dir, "worlds", "modified_webots_" + launch_configuration["namespace"] + "_sim.wbt"]
-        ),
+        world=PathJoinSubstitution([package_dir, "worlds", world]),
         mode="realtime",
         ros2_supervisor=True,
     )
@@ -135,7 +140,7 @@ def generate_launch_description():
     )
 
     declare_launch_rviz_argument = DeclareLaunchArgument(
-        "launch_rviz", default_value="true", description="Wheather to start Rvizor not based on launch environment"
+        "launch_rviz", default_value="false", description="Wheather to start Rvizor not based on launch environment"
     )
 
     declare_launch_joynode_argument = DeclareLaunchArgument(
@@ -146,6 +151,18 @@ def generate_launch_description():
         "launch_teleopnode",
         default_value="true",
         description="Wheather to start Rvizor not based on launch environment",
+    )
+
+    declare_launch_mps_argument = DeclareLaunchArgument(
+        "launch_mps",
+        default_value="true",
+        description="Wheather to spawn mps in simulation or not based on launch environment",
+    )
+
+    declare_webots_world_argument = DeclareLaunchArgument(
+        "webots_world",
+        default_value="robotinobase1",
+        description="Wheather to spawn mps in simulation or not based on launch environment",
     )
 
     # Create the launch description and populate
@@ -160,6 +177,8 @@ def generate_launch_description():
     ld.add_action(declare_launch_rviz_argument)
     ld.add_action(declare_launch_joynode_argument)
     ld.add_action(declare_launch_teleopnode_argument)
+    ld.add_action(declare_launch_mps_argument)
+    ld.add_action(declare_webots_world_argument)
 
     # Add the actions to launch all nodes
     ld.add_action(OpaqueFunction(function=launch_nodes_withconfig))

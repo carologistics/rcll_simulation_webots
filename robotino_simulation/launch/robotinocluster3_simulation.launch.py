@@ -33,6 +33,8 @@ def launch_nodes_withconfig(context, *args, **kwargs):
     launch_teleopnode = LaunchConfiguration("launch_teleopnode")
     frequency = LaunchConfiguration("frequency")
     odom_source = LaunchConfiguration("odom_source")
+    LaunchConfiguration("launch_mps")
+    LaunchConfiguration("webots_world")
 
     launch_configuration = {}
     for argname, argval in context.launch_configurations.items():
@@ -43,13 +45,18 @@ def launch_nodes_withconfig(context, *args, **kwargs):
         package="robotino_simulation",
         executable="mps_publisher.py",
         name="mps_publisher",
-        parameters=[mps_config, {"webots_world": "webots_robotinocluster_sim.wbt"}],
+        parameters=[mps_config, {"webots_world": launch_configuration["webots_world"]}],
         output="log",
     )
 
+    world = (
+        f"modified_{launch_configuration['webots_world']}"
+        if launch_configuration["launch_mps"] == "true"
+        else launch_configuration["webots_world"]
+    )
     # Starts Webots simulation and superwisor nodes
     webots = WebotsLauncher(
-        world=PathJoinSubstitution([package_dir, "worlds", "modified_webots_robotinocluster_sim.wbt"]),
+        world=PathJoinSubstitution([package_dir, "worlds", world]),
         mode="realtime",
         ros2_supervisor=True,
     )
@@ -161,7 +168,7 @@ def generate_launch_description():
     )
     declare_mps_config_argument = DeclareLaunchArgument(
         "mps_config",
-        default_value=os.path.join(package_dir, "config", "mps_pose.yaml"),
+        default_value=os.path.join(package_dir, "config", "mps_pose_corri2.yaml"),
         description="Full path to mps_config.yaml file to load",
     )
 
@@ -183,6 +190,18 @@ def generate_launch_description():
         description="Wheather to start Rvizor not based on launch environment",
     )
 
+    declare_launch_mps_argument = DeclareLaunchArgument(
+        "launch_mps",
+        default_value="true",
+        description="Wheather to spawn mps in simulation or not based on launch environment",
+    )
+
+    declare_webots_world_argument = DeclareLaunchArgument(
+        "webots_world",
+        default_value="webots_robotinocluster3_corri2_sim.wbt",
+        description="Wheather to spawn mps in simulation or not based on launch environment",
+    )
+
     # Create the launch description and populate
     ld = LaunchDescription()
 
@@ -195,6 +214,8 @@ def generate_launch_description():
     ld.add_action(declare_launch_teleopnode_argument)
     ld.add_action(declare_frequency_argument)
     ld.add_action(declare_odom_source_argument)
+    ld.add_action(declare_launch_mps_argument)
+    ld.add_action(declare_webots_world_argument)
 
     # Add the actions to launch webots, controllers and rviz
     ld.add_action(OpaqueFunction(function=launch_nodes_withconfig))
