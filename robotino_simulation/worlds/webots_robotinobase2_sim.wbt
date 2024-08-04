@@ -46,7 +46,7 @@ Wall {
   size 0.04 1 0.5
 }
 Robotino3 {
-  translation -5 2.5 -0.000443485
+  translation -4.75 2.5 -0.000443485
   name "robotinobase2"
   controller "<extern>"
   bodySlot [

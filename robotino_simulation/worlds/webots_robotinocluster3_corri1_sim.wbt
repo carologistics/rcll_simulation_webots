@@ -30,6 +30,18 @@ Wall {
   size 0.04 2 0.5
 }
 Wall {
+  translation 0 0.6 0
+  rotation 0 0 1 1.57
+  name "team1_defaultpose_wall1(1)"
+  size 0.04 3 0.5
+}
+Wall {
+  translation 0 -0.6 0
+  rotation 0 0 1 1.57
+  name "team1_defaultpose_wall1(2)"
+  size 0.04 3 0.5
+}
+Wall {
   translation 5 2 0
   rotation 0 0 1 1.57
   name "team2_defaultpose_wall1"
@@ -81,7 +93,7 @@ Robotino3 {
   ]
 }
 Robotino3 {
-  translation -5 2.5 -0.000443485
+  translation -4.75 2.5 -0.000443485
   name "robotinobase2"
   controller "<extern>"
   bodySlot [
@@ -116,7 +128,7 @@ Robotino3 {
   ]
 }
 Robotino3 {
-  translation -4.5 2.5 -0.000443485
+  translation -4.0 2.5 -0.000443485
   name "robotinobase3"
   controller "<extern>"
   bodySlot [
