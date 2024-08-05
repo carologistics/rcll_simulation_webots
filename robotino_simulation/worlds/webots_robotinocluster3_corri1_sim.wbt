@@ -12,7 +12,7 @@ WorldInfo {
 }
 Viewpoint {
   orientation -0.606600696213534 0.43893584926081763 0.6628505982398603 2.0388229664230155
-  position -4.944895826921547 -0.8942030266720209 6.017367585807838
+  position -5.787197527896079 -2.9806478324308783 15.933513298499363
 }
 TexturedBackground {
 }
@@ -30,13 +30,13 @@ Wall {
   size 0.04 2 0.5
 }
 Wall {
-  translation 0 0.6 0
+  translation 0 0.5 0
   rotation 0 0 1 1.57
   name "team1_defaultpose_wall1(1)"
   size 0.04 3 0.5
 }
 Wall {
-  translation 0 -0.6 0
+  translation 0 -0.5 0
   rotation 0 0 1 1.57
   name "team1_defaultpose_wall1(2)"
   size 0.04 3 0.5
@@ -128,7 +128,7 @@ Robotino3 {
   ]
 }
 Robotino3 {
-  translation -4.0 2.5 -0.000443485
+  translation -4 2.5 -0.000443485
   name "robotinobase3"
   controller "<extern>"
   bodySlot [

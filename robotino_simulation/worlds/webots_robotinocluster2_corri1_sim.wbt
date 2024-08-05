@@ -12,7 +12,7 @@ WorldInfo {
 }
 Viewpoint {
   orientation -0.6068796905215393 0.5235904659552152 0.5979549023072571 1.9676385088437074
-  position -2.928440483324925 -1.810244678661821 21.125056314267166
+  position -1.7485183152544714 -0.7560953606342353 11.753455764290013
 }
 TexturedBackground {
 }
@@ -30,13 +30,13 @@ Wall {
   size 0.04 2 0.5
 }
 Wall {
-  translation 0 0.6 0
+  translation 0 0.5 0
   rotation 0 0 1 1.57
   name "team1_defaultpose_wall1(1)"
   size 0.04 3 0.5
 }
 Wall {
-  translation 0 -0.6 0
+  translation 0 -0.5 0
   rotation 0 0 1 1.57
   name "team1_defaultpose_wall1(2)"
   size 0.04 3 0.5
