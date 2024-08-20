@@ -12,7 +12,7 @@ WorldInfo {
 }
 Viewpoint {
   orientation -0.606600696213534 0.43893584926081763 0.6628505982398603 2.0388229664230155
-  position -4.944895826921547 -0.8942030266720209 6.017367585807838
+  position -5.519168344973445 -2.3167193423735832 12.778092348928231
 }
 TexturedBackground {
 }
@@ -116,7 +116,7 @@ Robotino3 {
   ]
 }
 Robotino3 {
-  translation -4.0 2.5 -0.000443485
+  translation -4 2.5 -0.000443485
   name "robotinobase3"
   controller "<extern>"
   bodySlot [
