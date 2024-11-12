@@ -10,6 +10,15 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/project
 
 WorldInfo {
   basicTimeStep 32
+  contactProperties [
+    ContactProperties {
+      material1 "WheelMat"
+      coulombFriction [
+        0, 2, 0
+      ]
+      bounce 0
+    }
+  ]
 }
 Viewpoint {
   orientation 0.5847744123857989 0.44863110180843624 -0.6758468917654296 1.817859808388655
