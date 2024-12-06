@@ -1,0 +1,9 @@
+<library path="rviz_plugins">
+  <class name="custom_rviz_plugins/PoseServicePanel"
+         type="custom_rviz_plugins::PoseServicePanel"
+         base_class_type="rviz_common::Panel">
+    <description>
+      A custom RViz panel for interacting with robot pose services.
+    </description>
+  </class>
+</library>
