@@ -64,6 +64,11 @@ void RobotinoDriver::init(
       });
   odom_pub_ = node_->create_publisher<nav_msgs::msg::Odometry>(
       namespace_param + "/odom", rclcpp::SensorDataQoS().reliable());
+  getPose_service_ =
+      node_->create_service<robotino_interface::srv::GetInitPose>(
+          namespace_param + "/getInit_pose",
+          std::bind(&RobotinoDriver::getInit_pose, this, std::placeholders::_1,
+                    std::placeholders::_2));
 
   tf_broadcaster_ = std::make_unique<tf2_ros::TransformBroadcaster>(node_);
   joint_state_pub_ = node->create_publisher<sensor_msgs::msg::JointState>(
@@ -114,6 +119,23 @@ void RobotinoDriver::init(
       std::this_thread::sleep_for(period);
     }
   });
+}
+
+void RobotinoDriver::getInit_pose(
+    const std::shared_ptr<robotino_interface::srv::GetInitPose::Request>
+        request,
+    std::shared_ptr<robotino_interface::srv::GetInitPose::Response> response) {
+  if (request->request) {
+    auto gps_pose = wb_gps_get_values(gps_);
+    auto imu_quat = wb_inertial_unit_get_quaternion(inertial_unit_);
+    response->robot_pose.position.x = gps_pose[0];
+    response->robot_pose.position.y = gps_pose[1];
+    response->robot_pose.position.z = gps_pose[2];
+    response->robot_pose.orientation.x = imu_quat[0];
+    response->robot_pose.orientation.y = imu_quat[1];
+    response->robot_pose.orientation.z = imu_quat[2];
+    response->robot_pose.orientation.w = imu_quat[3];
+  }
 }
 
 double RobotinoDriver::get_time() {

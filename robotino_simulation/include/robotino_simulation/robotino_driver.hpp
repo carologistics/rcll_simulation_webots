@@ -8,6 +8,7 @@
 #include <nav_msgs/msg/odometry.hpp>
 #include <rclcpp/macros.hpp>
 #include <rclcpp/rclcpp.hpp>
+#include <robotino_interface/srv/get_init_pose.hpp>
 #include <sensor_msgs/msg/joint_state.hpp>
 #include <tf2_ros/transform_broadcaster.h>
 #include <webots_ros2_driver/PluginInterface.hpp>
@@ -40,6 +41,10 @@ private:
   std::vector<double> inverse_kinematics(const double &w0, const double &w1,
                                          const double &w2);
   std::vector<double> kinematics();
+  void getInit_pose(
+      const std::shared_ptr<robotino_interface::srv::GetInitPose::Request>
+          request,
+      std::shared_ptr<robotino_interface::srv::GetInitPose::Response> response);
 
   double get_time();
 
@@ -49,6 +54,8 @@ private:
   rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr joint_state_pub_;
   std::unique_ptr<tf2_ros::TransformBroadcaster> tf_broadcaster_;
   geometry_msgs::msg::Twist cmd_vel_msg;
+  rclcpp::Service<robotino_interface::srv::GetInitPose>::SharedPtr
+      getPose_service_;
 
   WbDeviceTag gps_;
   WbDeviceTag inertial_unit_;
