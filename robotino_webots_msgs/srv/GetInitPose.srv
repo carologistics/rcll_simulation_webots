@@ -1,0 +1,6 @@
+# Request: A boolean value
+bool request
+
+---
+# Response:
+geometry_msgs/Pose robot_pose

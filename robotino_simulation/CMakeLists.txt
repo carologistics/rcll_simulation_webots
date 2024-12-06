@@ -14,6 +14,7 @@ find_package(geometry_msgs REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(webots_ros2_driver REQUIRED)
+find_package(robotino_interface REQUIRED)
 
 pluginlib_export_plugin_description_file(webots_ros2_driver robotino_driver.xml)
 # MyRobotDriver library
@@ -35,6 +36,7 @@ ament_target_dependencies(
   nav_msgs
   tf2_ros
   sensor_msgs
+  robotino_webots_msgs
 )
 
 ament_auto_find_build_dependencies()
