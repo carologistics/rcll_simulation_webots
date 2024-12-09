@@ -124,9 +124,9 @@ void RobotinoDriver::init(
               static_cast<int>((curr_time_ - time_stamp_.sec) * 1e9);
           read_data();
           publish_odom(time_stamp_, time_diff_);
-          last_sample_time_ = curr_time_;
+          // last_sample_time_ = curr_time_;
         }
-        // last_sample_time_ = curr_time_;
+        last_sample_time_ = curr_time_;
       }
       std::chrono::duration<double, std::ratio<1>> period{1.0 / act_frequency_};
       std::this_thread::sleep_for(period);
