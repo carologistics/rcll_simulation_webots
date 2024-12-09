@@ -256,7 +256,6 @@ void RobotinoDriver::publish_odom(const TimeStamp &time_stamp,
 
   auto velocity = inverse_kinematics(w0, w1, w2);
   double omega = prev_odom_omega_ + (velocity[2] * time_diff);
-
   double avg_omega = prev_odom_omega_ + (velocity[2] * time_diff / 2.0);
   double x =
       prev_odom_x_ +
