@@ -252,18 +252,30 @@ void RobotinoDriver::publish_odom(const TimeStamp &time_stamp,
   prev_wheel0_ticks_ = wheel0_ticks;
   prev_wheel1_ticks_ = wheel1_ticks;
   prev_wheel2_ticks_ = wheel2_ticks;
+  double w0 = (wheel0_ticks - prev_wheel0_ticks_) / time_diff;
+  double w1 = (wheel1_ticks - prev_wheel1_ticks_) / time_diff;
+  double w2 = (wheel2_ticks - prev_wheel2_ticks_) / time_diff;
+  prev_wheel0_ticks_ = wheel0_ticks;
+  prev_wheel1_ticks_ = wheel1_ticks;
+  prev_wheel2_ticks_ = wheel2_ticks;
 
   auto velocity = inverse_kinematics(w0, w1, w2);
+  double omega = prev_odom_omega_ + (velocity[2] * time_diff);
+
+  double avg_omega = prev_odom_omega_ + (velocity[2] * time_diff / 2.0);
   double omega = prev_odom_omega_ + (velocity[2] * time_diff);
 
   double avg_omega = prev_odom_omega_ + (velocity[2] * time_diff / 2.0);
   double x =
       prev_odom_x_ +
       (velocity[0] * cos(avg_omega) - velocity[1] * sin(avg_omega)) * time_diff;
+  (velocity[0] * cos(avg_omega) - velocity[1] * sin(avg_omega)) * time_diff;
   double y =
       prev_odom_y_ +
       (velocity[0] * sin(avg_omega) + velocity[1] * cos(avg_omega)) * time_diff;
+  (velocity[0] * sin(avg_omega) + velocity[1] * cos(avg_omega)) * time_diff;
 
+  std::vector<double> q = {0.0, 0.0, sin(omega / 2), cos(omega / 2)};
   std::vector<double> q = {0.0, 0.0, sin(omega / 2), cos(omega / 2)};
   nav_msgs::msg::Odometry odom_msg;
   odom_msg.header.stamp = time_stamp;
@@ -280,6 +292,10 @@ void RobotinoDriver::publish_odom(const TimeStamp &time_stamp,
   odom_msg.pose.pose.orientation.w = q[3];
 
   odom_pub_->publish(odom_msg);
+
+  prev_odom_x_ = x;
+  prev_odom_y_ = y;
+  prev_odom_omega_ = omega;
 
   prev_odom_x_ = x;
   prev_odom_y_ = y;
@@ -327,6 +343,7 @@ std::vector<double> RobotinoDriver::kinematics() {
   double omega = this->cmd_vel_msg.angular.z;
 
   double k = (60.0 * GEER_RATIO * 0.150) / (2.0 * M_PI * WHEEL_RADIUS);
+  double k = (60.0 * GEER_RATIO * 0.150) / (2.0 * M_PI * WHEEL_RADIUS);
 
   omega = omega * WHEEL_DISTANCE;
   double m1 = (((sqrt(3.) / 2.) * v_x) - (0.5 * v_y) - omega) * k;
@@ -339,6 +356,11 @@ std::vector<double> RobotinoDriver::kinematics() {
 std::vector<double> RobotinoDriver::inverse_kinematics(const double &w0,
                                                        const double &w1,
                                                        const double &w2) {
+
+  double k = (60.0 * GEER_RATIO * 0.150) / (2.0 * M_PI * WHEEL_RADIUS);
+  double vx = (2.0 / std::sqrt(3.0)) * (w0 - w2) / k;
+  double vy = (1.0 / 3.0) * (2.0 * w1 - w0 - w2) / k;
+  double omega = -(1.0 / (3.0 * k * WHEEL_DISTANCE)) * (w0 + w1 + w2);
 
   double k = (60.0 * GEER_RATIO * 0.150) / (2.0 * M_PI * WHEEL_RADIUS);
   double vx = (2.0 / std::sqrt(3.0)) * (w0 - w2) / k;
