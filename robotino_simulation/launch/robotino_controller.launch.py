@@ -61,10 +61,6 @@ def launch_nodes_withconfig(context, *args, **kwargs):
     def load_file(filename):
         return pathlib.Path(os.path.join(description_dir, "urdf/robots", filename)).read_text()
 
-    # Create a list of nodes to launch
-    # urdf_file_path = os.path.join(
-    #     get_package_share_directory("rto_description"), "urdf", "robots", "robotino_description.urdf"
-    # )
     load_nodes = GroupAction(
         actions=[
             # Start Webots Controller
@@ -74,6 +70,10 @@ def launch_nodes_withconfig(context, *args, **kwargs):
                     {"robot_description": urdf_file_path},
                     {"use_sim_time": True},
                     {"updateRate": 60.0},
+                ],
+                remappings=[
+                    ("/tf", "/" + launch_configuration["namespace"] + "/tf"),
+                    ("/tf_static", "/" + launch_configuration["namespace"] + "/tf_static"),
                 ],
                 respawn=True,
             ),
@@ -85,6 +85,10 @@ def launch_nodes_withconfig(context, *args, **kwargs):
                 parameters=[
                     {"robot_description": load_file("robotino_description.urdf")},
                     {"use_sim_time": use_sim_time},
+                ],
+                remappings=[
+                    ("/tf", "tf"),
+                    ("/tf_static", "tf_static"),
                 ],
             ),
             # Joy node to enable joystick teleop
