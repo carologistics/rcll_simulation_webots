@@ -86,7 +86,6 @@ def launch_nodes_withconfig(context, *args, **kwargs):
                     {"robot_description": load_file("robotino_description.urdf")},
                     {"use_sim_time": use_sim_time},
                 ],
-                namespace=namespace,
             ),
             # Joy node to enable joystick teleop
             Node(
@@ -94,7 +93,6 @@ def launch_nodes_withconfig(context, *args, **kwargs):
                 executable="joy_node",
                 name="joy_node",
                 output="log",
-                namespace=namespace,
                 parameters=[
                     {
                         "device_id": joy_device_id,
@@ -109,7 +107,6 @@ def launch_nodes_withconfig(context, *args, **kwargs):
                 executable="robotino_joyteleop.py",
                 name="robotino_joyteleop",
                 output="log",
-                namespace=namespace,
                 condition=IfCondition(launch_teleopnode),
             ),
             # Laserscan republisher node
@@ -118,7 +115,6 @@ def launch_nodes_withconfig(context, *args, **kwargs):
                 executable="robotino_laserscan_republisher.py",
                 name="robotino_laserscan_republisher",
                 output="log",
-                namespace=namespace,
             ),
             # Irscan merge node
             Node(
@@ -126,7 +122,6 @@ def launch_nodes_withconfig(context, *args, **kwargs):
                 executable="robotino_irscanmerger.py",
                 name="robotino_irscanmerger",
                 output="log",
-                namespace=namespace,
             ),
             # Launch Integrate laserscan launch file
             IncludeLaunchDescription(
