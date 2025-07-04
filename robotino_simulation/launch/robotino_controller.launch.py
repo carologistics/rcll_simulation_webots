@@ -62,6 +62,9 @@ def launch_nodes_withconfig(context, *args, **kwargs):
         return pathlib.Path(os.path.join(description_dir, "urdf/robots", filename)).read_text()
 
     # Create a list of nodes to launch
+    # urdf_file_path = os.path.join(
+    #     get_package_share_directory("rto_description"), "urdf", "robots", "robotino_description.urdf"
+    # )
     load_nodes = GroupAction(
         actions=[
             # Start Webots Controller
@@ -82,7 +85,6 @@ def launch_nodes_withconfig(context, *args, **kwargs):
                 parameters=[
                     {"robot_description": load_file("robotino_description.urdf")},
                     {"use_sim_time": use_sim_time},
-                    {"frame_prefix": launch_configuration["namespace"] + "/"},
                 ],
                 namespace=namespace,
             ),
@@ -116,7 +118,6 @@ def launch_nodes_withconfig(context, *args, **kwargs):
                 executable="robotino_laserscan_republisher.py",
                 name="robotino_laserscan_republisher",
                 output="log",
-                parameters=[{"frame_prefix": namespace}],
                 namespace=namespace,
             ),
             # Irscan merge node
@@ -125,7 +126,6 @@ def launch_nodes_withconfig(context, *args, **kwargs):
                 executable="robotino_irscanmerger.py",
                 name="robotino_irscanmerger",
                 output="log",
-                parameters=[{"frame_prefix": namespace}],
                 namespace=namespace,
             ),
             # Launch Integrate laserscan launch file

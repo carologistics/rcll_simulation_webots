@@ -58,17 +58,17 @@ void RobotinoDriver::init(
   act_frequency_ = std::stod(parameters["frequency"]);
   odom_source_ = parameters["odom_source"];
   cmd_vel_subscription_ = node_->create_subscription<geometry_msgs::msg::Twist>(
-      namespace_param + "/cmd_vel", rclcpp::SensorDataQoS().reliable(),
+      "/cmd_vel", rclcpp::SensorDataQoS().reliable(),
       [this](const geometry_msgs::msg::Twist::SharedPtr msg) {
         std::lock_guard<std::mutex> lock(vel_msg_mutex_);
         this->cmd_vel_msg = *msg;
       });
   odom_pub_ = node_->create_publisher<nav_msgs::msg::Odometry>(
-      namespace_param + "/odom", rclcpp::SensorDataQoS().reliable());
+      "/odom", rclcpp::SensorDataQoS().reliable());
 
   tf_broadcaster_ = std::make_unique<tf2_ros::TransformBroadcaster>(node_);
   joint_state_pub_ = node->create_publisher<sensor_msgs::msg::JointState>(
-      namespace_param + "/joint_states", 1);
+      "/joint_states", 1);
 
   ir_sensor_names_ = {
       "ir1_sensor", "ir2_sensor", "ir3_sensor", "ir4_sensor", "ir5_sensor",
@@ -172,8 +172,8 @@ void RobotinoDriver::publish_laser(const TimeStamp &time_stamp) {
   for (size_t i = 0; i < laser_names_.size(); ++i) {
     geometry_msgs::msg::TransformStamped tf;
     tf.header.stamp = time_stamp;
-    tf.header.frame_id = tf_prefix_ + "/base_link";
-    tf.child_frame_id = tf_prefix_ + "/" + laser_names_[i];
+    tf.header.frame_id = "/base_link";
+    tf.child_frame_id = "/" + laser_names_[i];
     tf.transform.translation.x = laser_pos_[i][0];
     tf.transform.translation.y = laser_pos_[i][1];
     tf.transform.translation.z = laser_pos_[i][2];
@@ -189,8 +189,8 @@ void RobotinoDriver::publish_imu(const TimeStamp &time_stamp) {
   for (size_t i = 0; i < imu_names_.size(); ++i) {
     geometry_msgs::msg::TransformStamped tf;
     tf.header.stamp = time_stamp;
-    tf.header.frame_id = tf_prefix_ + "/base_link";
-    tf.child_frame_id = tf_prefix_ + "/" + imu_names_[i];
+    tf.header.frame_id = "/base_link";
+    tf.child_frame_id = "/" + imu_names_[i];
     tf.transform.translation.x = this->imu_pos_[i][0];
     tf.transform.translation.y = this->imu_pos_[i][1];
     tf.transform.translation.z = this->imu_pos_[i][2];
@@ -210,8 +210,8 @@ void RobotinoDriver::publish_odom_from_sensors(const TimeStamp &time_stamp) {
 
   nav_msgs::msg::Odometry odom_msg;
   odom_msg.header.stamp = time_stamp;
-  odom_msg.header.frame_id = tf_prefix_ + "/odom";
-  odom_msg.child_frame_id = tf_prefix_ + "/base_link";
+  odom_msg.header.frame_id = "/odom";
+  odom_msg.child_frame_id = "/base_link";
   odom_msg.twist.twist.linear.x = velocity[0];
   odom_msg.twist.twist.linear.y = velocity[1];
   odom_msg.twist.twist.linear.z = velocity[2];
@@ -229,8 +229,8 @@ void RobotinoDriver::publish_odom_from_sensors(const TimeStamp &time_stamp) {
   odom_pub_->publish(odom_msg);
   // geometry_msgs::msg::TransformStamped tf_msg;
   // tf_msg.header.stamp = time_stamp;
-  // tf_msg.header.frame_id = (tf_prefix_ + "/odom");
-  // tf_msg.child_frame_id = (tf_prefix_ + "/base_link");
+  // tf_msg.header.frame_id = ("/odom");
+  // tf_msg.child_frame_id = ("/base_link");
   // tf_msg.transform.translation.x = pose[0];
   // tf_msg.transform.translation.y = pose[1];
   // tf_msg.transform.translation.z = pose[2];
@@ -267,8 +267,8 @@ void RobotinoDriver::publish_odom(const TimeStamp &time_stamp,
   std::vector<double> q = {0.0, 0.0, sin(omega / 2), cos(omega / 2)};
   nav_msgs::msg::Odometry odom_msg;
   odom_msg.header.stamp = time_stamp;
-  odom_msg.header.frame_id = tf_prefix_ + "/odom";
-  odom_msg.child_frame_id = tf_prefix_ + "/base_link";
+  odom_msg.header.frame_id = "/odom";
+  odom_msg.child_frame_id = "/base_link";
   odom_msg.twist.twist.linear.x = velocity[0];
   odom_msg.twist.twist.linear.y = velocity[1];
   odom_msg.twist.twist.angular.z = velocity[2];
@@ -290,10 +290,8 @@ void RobotinoDriver::publish_ir(const TimeStamp &time_stamp) {
   for (size_t i = 0; i < ir_sensor_names_.size(); ++i) {
     geometry_msgs::msg::TransformStamped tf;
     tf.header.stamp = time_stamp;
-    tf.header.frame_id =
-        tf_prefix_ +
-        "/base_link"; // Assuming the frame_id is fixed as "base_link"
-    tf.child_frame_id = tf_prefix_ + "/" + ir_sensor_names_[i];
+    tf.header.frame_id = "/base_link"; // Assuming the frame_id is fixed as "base_link"
+    tf.child_frame_id = "/" + ir_sensor_names_[i];
     tf.transform.translation.x = ir_sensor_pos_[i][0];
     tf.transform.translation.y = ir_sensor_pos_[i][1];
     tf.transform.translation.z = ir_sensor_pos_[i][2];

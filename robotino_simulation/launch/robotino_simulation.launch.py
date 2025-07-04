@@ -19,6 +19,7 @@ from launch.substitutions import PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 from webots_ros2_driver.webots_launcher import WebotsLauncher
+from launch_ros.actions import PushROSNamespace
 
 
 def launch_nodes_withconfig(context, *args, **kwargs):
@@ -66,6 +67,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
     # Create a list of nodes to launch
     load_nodes = GroupAction(
         actions=[
+            PushROSNamespace(namespace),
             # Launch robotinobase1 controller
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(
@@ -76,7 +78,6 @@ def launch_nodes_withconfig(context, *args, **kwargs):
                     ]
                 ),
                 launch_arguments={
-                    "namespace": "robotinobase1",
                     "joy_device_id": "0",
                     "frequency": frequency,
                     "odom_source": odom_source,

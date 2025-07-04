@@ -77,7 +77,7 @@ Visualization Manager:
         Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Best Effort
-        Value: /robotinobase1/SickLaser_Front_Remaped
+        Value: /SickLaser_Front_Remaped
       Use Fixed Frame: true
       Use rainbow: true
       Value: false
@@ -111,7 +111,7 @@ Visualization Manager:
         Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Best Effort
-        Value: /robotinobase1/SickLaser_Rear_Remaped
+        Value: /SickLaser_Rear_Remaped
       Use Fixed Frame: true
       Use rainbow: true
       Value: false
@@ -145,7 +145,7 @@ Visualization Manager:
         Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /robotinobase1/scan
+        Value: /scan
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
@@ -154,47 +154,47 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: true
-        robotinobase1/Inertial_Unit:
+        Inertial_Unit:
           Value: true
-        robotinobase1/SickLaser_Front:
+        SickLaser_Front:
           Value: true
-        robotinobase1/SickLaser_Rear:
+        SickLaser_Rear:
           Value: true
-        robotinobase1/anglebracketusb_link:
+        anglebracketusb_link:
           Value: true
-        robotinobase1/base_link:
+        base_link:
           Value: true
-        robotinobase1/command_bridge_link:
+        command_bridge_link:
           Value: true
-        robotinobase1/ir1_sensor:
+        ir1_sensor:
           Value: true
-        robotinobase1/ir2_sensor:
+        ir2_sensor:
           Value: true
-        robotinobase1/ir3_sensor:
+        ir3_sensor:
           Value: true
-        robotinobase1/ir4_sensor:
+        ir4_sensor:
           Value: true
-        robotinobase1/ir5_sensor:
+        ir5_sensor:
           Value: true
-        robotinobase1/ir6_sensor:
+        ir6_sensor:
           Value: true
-        robotinobase1/ir7_sensor:
+        ir7_sensor:
           Value: true
-        robotinobase1/ir8_sensor:
+        ir8_sensor:
           Value: true
-        robotinobase1/ir9_sensor:
+        ir9_sensor:
           Value: true
-        robotinobase1/irsensor_merge:
+        irsensor_merge:
           Value: true
-        robotinobase1/laser_link:
+        laser_link:
           Value: true
-        robotinobase1/odom:
+        odom:
           Value: true
-        robotinobase1/wheel0_link:
+        wheel0_link:
           Value: true
-        robotinobase1/wheel1_link:
+        wheel1_link:
           Value: true
-        robotinobase1/wheel2_link:
+        wheel2_link:
           Value: true
       Marker Scale: 1
       Name: TF
@@ -202,46 +202,46 @@ Visualization Manager:
       Show Axes: true
       Show Names: false
       Tree:
-        robotinobase1/base_link:
-          robotinobase1/Inertial_Unit:
+        base_link:
+          Inertial_Unit:
             {}
-          robotinobase1/SickLaser_Front:
+          SickLaser_Front:
             {}
-          robotinobase1/SickLaser_Rear:
+          SickLaser_Rear:
             {}
-          robotinobase1/anglebracketusb_link:
+          anglebracketusb_link:
             {}
-          robotinobase1/command_bridge_link:
+          command_bridge_link:
             {}
-          robotinobase1/ir1_sensor:
+          ir1_sensor:
             {}
-          robotinobase1/ir2_sensor:
+          ir2_sensor:
             {}
-          robotinobase1/ir3_sensor:
+          ir3_sensor:
             {}
-          robotinobase1/ir4_sensor:
+          ir4_sensor:
             {}
-          robotinobase1/ir5_sensor:
+          ir5_sensor:
             {}
-          robotinobase1/ir6_sensor:
+          ir6_sensor:
             {}
-          robotinobase1/ir7_sensor:
+          ir7_sensor:
             {}
-          robotinobase1/ir8_sensor:
+          ir8_sensor:
             {}
-          robotinobase1/ir9_sensor:
+          ir9_sensor:
             {}
-          robotinobase1/irsensor_merge:
+          irsensor_merge:
             {}
-          robotinobase1/laser_link:
+          laser_link:
             {}
-          robotinobase1/wheel0_link:
+          wheel0_link:
             {}
-          robotinobase1/wheel1_link:
+          wheel1_link:
             {}
-          robotinobase1/wheel2_link:
+          wheel2_link:
             {}
-        robotinobase1/odom:
+        odom:
           {}
       Update Interval: 0
       Value: true
@@ -275,7 +275,7 @@ Visualization Manager:
         Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Best Effort
-        Value: /robotinobase1/ir_scan_merged
+        Value: /ir_scan_merged
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
@@ -289,7 +289,7 @@ Visualization Manager:
         Durability Policy: Volatile
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /robotinobase1/robot_description
+        Value: /robot_description
       Enabled: true
       Links:
         All Links Enabled: true
@@ -331,14 +331,14 @@ Visualization Manager:
         Inertia: false
         Mass: false
       Name: RobotModel
-      TF Prefix: robotinobase1
+      TF Prefix: 
       Update Interval: 0
       Value: true
       Visual Enabled: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
-    Fixed Frame: robotinobase1/base_link
+    Fixed Frame: base_link
     Frame Rate: 30
   Name: root
   Tools:
