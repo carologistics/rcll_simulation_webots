@@ -187,9 +187,9 @@ void RobotinoDriver::publish_odom_from_sensors(const TimeStamp &time_stamp) {
   auto velocity = wb_gps_get_speed_vector(gps_);
   auto pose = wb_gps_get_values(gps_);
   auto gyro = wb_gyro_get_values(gyro_);
+
   nav_msgs::msg::Odometry odom_msg;
   odom_msg.header.stamp = time_stamp;
-  // TODO: msg.header.stamp =
   odom_msg.header.frame_id = tf_prefix_ + "/odom";
   odom_msg.child_frame_id = tf_prefix_ + "/base_link";
   odom_msg.twist.twist.linear.x = velocity[0];
@@ -224,9 +224,9 @@ void RobotinoDriver::publish_odom_from_sensors(const TimeStamp &time_stamp) {
 
 void RobotinoDriver::publish_odom(const TimeStamp &time_stamp,
                                   const double &time_diff) {
-  double wheel0_ticks = motor_pos_[0];
-  double wheel1_ticks = motor_pos_[1];
-  double wheel2_ticks = motor_pos_[2];
+  double wheel0_ticks = motor_pos_[2];
+  double wheel1_ticks = motor_pos_[0];
+  double wheel2_ticks = motor_pos_[1];
   double w0 = (wheel0_ticks - prev_wheel0_ticks_) / time_diff;
   double w1 = (wheel1_ticks - prev_wheel1_ticks_) / time_diff;
   double w2 = (wheel2_ticks - prev_wheel2_ticks_) / time_diff;
@@ -242,16 +242,19 @@ void RobotinoDriver::publish_odom(const TimeStamp &time_stamp,
   double y = prev_odom_y_ + ((velocity[0] * sin(omega)) +
                              (velocity[1] * cos(omega)) * time_diff);
   std::vector<double> q = {0.0, 0.0, sin(omega / 2), cos(omega / 2)};
+
   prev_odom_x_ = x;
   prev_odom_y_ = y;
   prev_odom_omega_ = omega;
+
   nav_msgs::msg::Odometry odom_msg;
   odom_msg.header.stamp = time_stamp;
-  // TODO: msg.header.stamp =
+
+  odom_msg.header.frame_id = tf_prefix_ + "/odom";
   odom_msg.child_frame_id = tf_prefix_ + "/base_link";
   odom_msg.twist.twist.linear.x = velocity[0];
   odom_msg.twist.twist.linear.y = velocity[1];
-  odom_msg.twist.twist.linear.z = velocity[2];
+  odom_msg.twist.twist.angular.z = velocity[2];
   odom_msg.pose.pose.position.x = x;
   odom_msg.pose.pose.position.y = y;
   odom_msg.pose.pose.orientation.x = q[0];
@@ -260,20 +263,8 @@ void RobotinoDriver::publish_odom(const TimeStamp &time_stamp,
   odom_msg.pose.pose.orientation.w = q[3];
 
   odom_pub_->publish(odom_msg);
-  geometry_msgs::msg::TransformStamped tf_msg;
-  tf_msg.header.stamp = time_stamp;
-  tf_msg.header.frame_id = (tf_prefix_ + "/odom");
-  tf_msg.child_frame_id = (tf_prefix_ + "/base_link");
-  tf_msg.transform.translation.x = x;
-  tf_msg.transform.translation.y = y;
-  tf_msg.transform.translation.z = 0.0;
-  tf_msg.transform.rotation.x = q[0];
-  tf_msg.transform.rotation.y = q[1];
-  tf_msg.transform.rotation.z = q[2];
-  tf_msg.transform.rotation.w = q[3];
-
-  tf_broadcaster_->sendTransform(tf_msg);
 }
+
 void RobotinoDriver::publish_ir(const TimeStamp &time_stamp) {
   for (size_t i = 0; i < ir_sensor_names_.size(); ++i) {
     geometry_msgs::msg::TransformStamped tf;
@@ -317,11 +308,6 @@ std::vector<double> RobotinoDriver::kinematics() {
   double k = (60.0 * GEER_RATIO * 0.150) / (2.0 * M_PI * WHEEL_RADIUS);
 
   omega = omega * WHEEL_DISTANCE;
-
-  // v_x = v_x / WHEEL_RADIUS;
-  // v_y = v_y / WHEEL_RADIUS;
-  // omega = (omega * WHEEL_DISTANCE) / WHEEL_RADIUS;
-
   double m1 = (((sqrt(3.) / 2.) * v_x) - (0.5 * v_y) - omega) * k;
   double m2 = (v_y - omega) * k;
   double m3 = (-((sqrt(3.) / 2.) * v_x) - (0.5 * v_y) - omega) * k;
@@ -332,12 +318,13 @@ std::vector<double> RobotinoDriver::kinematics() {
 std::vector<double> RobotinoDriver::inverse_kinematics(const double &w0,
                                                        const double &w1,
                                                        const double &w2) {
-  double vx = ((-w1 + w2) / sqrt(3.0)) * WHEEL_RADIUS;
-  double vy = (((2.0 / 3.0) * w0) - ((1.0 / 3.0) * w1)) * WHEEL_RADIUS;
-  double const_val = 3.0 * WHEEL_DISTANCE;
-  double omega = (-((1.0 / const_val) * w0) - ((1.0 / const_val) * w1) -
-                  ((1.0 / const_val) * w2)) *
-                 WHEEL_RADIUS;
+  // Algorithm2: Inverse kinematic model for omniwheel drive (Linear velocity
+  // from angular velocity)
+  double k = (60.0 * GEER_RATIO * 0.150) / (2.0 * M_PI * WHEEL_RADIUS);
+  double vx = (2.0 / std::sqrt(3.0)) * (w0 - w2) / k;
+  double vy = (1.0 / 3.0) * (2.0 * w1 - w0 - w2) / k;
+  double omega = -(1.0 / (3.0 * k * WHEEL_DISTANCE)) * (w0 + w1 + w2);
+
   return {vx, vy, omega};
 }
 
