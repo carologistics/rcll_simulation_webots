@@ -1,0 +1,136 @@
+#VRML_SIM R2025a utf8
+
+EXTERNPROTO "../protos/Machine_delivery.proto"
+EXTERNPROTO "../protos/Machine_ring.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/floors/protos/RectangleArena.proto"
+EXTERNPROTO "../protos/Robotino3.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/festo/robotino3/protos/Robotino3Platform.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/devices/sick/protos/SickLms291.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/apartment_structure/protos/Wall.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "../protos/Machine_base.proto"
+
+WorldInfo {
+  contactProperties [
+    ContactProperties {
+      material1 "WheelMat"
+      coulombFriction [
+        0, 2, 0
+      ]
+      bounce 0
+    }
+  ]
+}
+Viewpoint {
+  orientation 0.5408321906741668 0.6287580027113765 -0.5587163104447394 2.0298586741232483
+  position -1.075522341369534 0.2944894425864095 14.728888038430599
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+Machine_ring {
+  translation 1.5 -1.5 0
+  rotation 0 0 1 -1.5707953071795862
+  name "machine8"
+}
+Machine_ring {
+  translation -2.6 0 0.1
+  rotation 0 0 1 3.14159
+  name "machine8(1)"
+}
+RectangleArena {
+  rotation 0 0 -1 0
+  floorSize 6 6
+  wallHeight 0.5
+}
+Machine_base {
+  translation -1.5 -1.5 0
+  rotation 0 0 1 -1.5707953071795862
+  name "Machine_base(1)"
+}
+Wall {
+  translation 1.3 0 0
+  rotation 0 0 1 1.57
+  name "team1_defaultpose_wall1(1)"
+  size 0.04 1.8 0.5
+}
+Wall {
+  translation -1.3 0 0
+  rotation 0 0 1 1.57
+  name "team1_defaultpose_wall1(2)"
+  size 0.04 1.8 0.5
+}
+Wall {
+  translation 0.4 0 0
+  rotation 0 0 1 3.1408
+  name "team1_defaultpose_wall1(3)"
+  size 0.04 2.5 0.5
+}
+Wall {
+  translation -0.4 0 0
+  rotation 0 0 1 3.1408
+  name "team1_defaultpose_wall1(4)"
+  size 0.04 2.5 0.5
+}
+Wall {
+  translation -2 2 0
+  rotation 0 0 1 1.57
+  name "team1_defaultpose_wall1"
+  size 0.04 2 0.5
+}
+Robotino3 {
+  translation -2.5 2.5 -0.000443485
+  name "robotinobase1"
+  controller "<extern>"
+  bodySlot [
+    Robotino3Platform {
+    }
+  ]
+  cameraSlot [
+    InertialUnit {
+      translation 0 -0.1 0.2
+      rotation 0 0 1 -1.570795
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0 0 1
+          }
+          geometry Box {
+            size 0.05 0.05 0.02
+          }
+        }
+      ]
+    }
+    SickLms291 {
+      translation 0 0.13 0.35
+      rotation 0 0 1 1.5719
+      name "SickLaser_Front"
+    }
+    SickLms291 {
+      translation 0 -0.12 0.3
+      rotation 0 0 1 -1.5719
+      name "SickLaser_Rear"
+    }
+  ]
+}
+Robot {
+  name "Ros2Supervisor"
+  controller "<extern>"
+}
+Machine_delivery {
+  translation -1.35984 0.249018 0
+  rotation 0 0 1 -0.000795307179585869
+  name "machine10"
+}
+Machine_ring {
+  translation 2.6 0 0
+  rotation 0 0 1 -3.1415853071795863
+  name "machine12"
+}
+Machine_ring {
+  translation 1.5 1.5 0
+  rotation 0 0 1 1.57
+  name "machine13"
+}
