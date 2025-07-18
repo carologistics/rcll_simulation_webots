@@ -7,8 +7,13 @@
   <maintainer email="saurabh.borse@alumni.fh-aachen.de">saurabh-borse</maintainer>
   <license>Apache-2.0</license>
   <depend>rclpy</depend>
+  <depend>rclcpp</depend>
+  <depend>rclcpp_action</depend>
+  <depend>nav2_msgs</depend>
   <depend>mps_description</depend>
   <depend>geometry_msgs</depend>
+  <depend>tf2</depend>
+  <depend>tf2_geometry_msgs</depend>
   <depend>webots_ros2_driver</depend>
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>

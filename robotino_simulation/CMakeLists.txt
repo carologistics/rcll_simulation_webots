@@ -7,12 +7,16 @@ find_package(rclpy REQUIRED)
 find_package(mps_description REQUIRED)
 
 find_package(rclcpp REQUIRED)
+find_package(rclcpp_action REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
+find_package(nav2_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(tf2_ros REQUIRED)
+find_package(tf2 REQUIRED)
+find_package(tf2_geometry_msgs REQUIRED)
 find_package(webots_ros2_driver REQUIRED)
 
 pluginlib_export_plugin_description_file(webots_ros2_driver robotino_driver.xml)
@@ -37,6 +41,18 @@ ament_target_dependencies(
   sensor_msgs
 )
 
+# MAPF Executer executable
+add_executable(mapf_executer src/mapf_executer.cpp)
+ament_target_dependencies(
+  mapf_executer
+  rclcpp
+  rclcpp_action
+  nav2_msgs
+  geometry_msgs
+  tf2
+  tf2_geometry_msgs
+)
+
 ament_auto_find_build_dependencies()
 ament_python_install_package(${PROJECT_NAME})
 
@@ -46,9 +62,10 @@ install(
 )
 install(TARGETS
   ${PROJECT_NAME}
+  mapf_executer
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
-  RUNTIME DESTINATION bin
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 install(
   PROGRAMS
