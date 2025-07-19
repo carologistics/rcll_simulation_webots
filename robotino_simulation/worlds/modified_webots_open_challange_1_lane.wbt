@@ -10,6 +10,7 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/project
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/apartment_structure/protos/Wall.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
 EXTERNPROTO "../protos/Machine_base.proto"
+EXTERNPROTO "../protos/Machine_cap.proto"
 
 WorldInfo {
   contactProperties [
@@ -23,32 +24,37 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation 0.5408321906741668 0.6287580027113765 -0.5587163104447394 2.0298586741232483
-  position -1.075522341369534 0.2944894425864095 14.728888038430599
+  orientation 0.21141879893556775 0.24171672271023747 -0.9470349082366838 1.6468732524638676
+  position 1.048931523817048 18.324522617538666 10.940246575985444
 }
 TexturedBackground {
 }
 TexturedBackgroundLight {
 }
 Machine_ring {
-  translation 1.5 -1.5 0
-  rotation 0 0 1 -1.5707953071795862
-  name "machine8"
-}
-Machine_ring {
   translation -2.6 0 0.1
   rotation 0 0 1 3.14159
-  name "machine8(1)"
+  name "machine_1"
 }
 RectangleArena {
   rotation 0 0 -1 0
   floorSize 6 6
   wallHeight 0.5
 }
+Machine_cap {
+  translation 1.5 -1.5 0
+  rotation 0 0 1 -1.5707953071795862
+  name "Machine_cap_1"
+}
+Machine_cap {
+  translation 1.5 1.5 0.1
+  rotation 0 0 1 -1.5707953071795862
+  name "Machine_cap_2"
+}
 Machine_base {
   translation -1.5 -1.5 0
   rotation 0 0 1 -1.5707953071795862
-  name "Machine_base(1)"
+  name "Machine_base"
 }
 Wall {
   translation 1.3 0 0
@@ -122,15 +128,10 @@ Robot {
 Machine_delivery {
   translation -1.35984 0.249018 0
   rotation 0 0 1 -0.000795307179585869
-  name "machine10"
+  name "machine_delivery"
 }
 Machine_ring {
   translation 2.6 0 0
   rotation 0 0 1 -3.1415853071795863
-  name "machine12"
-}
-Machine_ring {
-  translation 1.5 1.5 0
-  rotation 0 0 1 1.57
-  name "machine13"
+  name "machine_ring_2"
 }
