@@ -62,6 +62,8 @@ public:
         robot2_finished_ = !single_robot_mode_; // If single robot mode, robot2 is "finished"
         robot1_last_waypoint_ = -1;
         robot2_last_waypoint_ = -1;
+        robot1_retry_count_ = 0;
+        robot2_retry_count_ = 0;
         
         sendWaypointsToRobots();
         
@@ -88,6 +90,11 @@ private:
     // Track last reported waypoint to reduce spam
     int robot1_last_waypoint_;
     int robot2_last_waypoint_;
+    
+    // Retry tracking
+    int robot1_retry_count_;
+    int robot2_retry_count_;
+    static const int MAX_RETRIES = 5;  // Maximum number of retries before giving up
 
     void initializeWaypoints()
     {
@@ -236,22 +243,29 @@ private:
 
         // Result callback
         send_goal_options.result_callback =
-            [this, robot_name](const GoalHandleFollowWaypoints::WrappedResult & result) {
+            [this, robot_name, client, waypoints](const GoalHandleFollowWaypoints::WrappedResult & result) {
                 switch (result.code) {
                     case rclcpp_action::ResultCode::SUCCEEDED:
                         RCLCPP_INFO(this->get_logger(), "%s completed all waypoints successfully!", robot_name.c_str());
+                        // Reset retry count on success
+                        if (robot_name == "Robot1") {
+                            robot1_retry_count_ = 0;
+                        } else if (robot_name == "Robot2") {
+                            robot2_retry_count_ = 0;
+                        }
                         markRobotFinished(robot_name);
                         break;
                     case rclcpp_action::ResultCode::ABORTED:
-                        RCLCPP_ERROR(this->get_logger(), "%s waypoint following was aborted - stopping execution", robot_name.c_str());
-                        markRobotFinished(robot_name);
+                        RCLCPP_WARN(this->get_logger(), "%s waypoint following was aborted - attempting retry", robot_name.c_str());
+                        retryWaypoints(robot_name, client, waypoints);
                         break;
                     case rclcpp_action::ResultCode::CANCELED:
-                        RCLCPP_ERROR(this->get_logger(), "%s waypoint following was canceled", robot_name.c_str());
-                        markRobotFinished(robot_name);
+                        RCLCPP_WARN(this->get_logger(), "%s waypoint following was canceled - attempting retry", robot_name.c_str());
+                        retryWaypoints(robot_name, client, waypoints);
                         break;
                     default:
-                        RCLCPP_ERROR(this->get_logger(), "%s unknown result code", robot_name.c_str());
+                        RCLCPP_ERROR(this->get_logger(), "%s unknown result code - attempting retry", robot_name.c_str());
+                        retryWaypoints(robot_name, client, waypoints);
                         break;
                 }
             };
@@ -279,6 +293,27 @@ private:
             } else {
                 RCLCPP_INFO(this->get_logger(), "Both robots finished their waypoints!");
             }
+        }
+    }
+
+    void retryWaypoints(const std::string& robot_name,
+                       rclcpp_action::Client<FollowWaypoints>::SharedPtr client,
+                       const std::vector<geometry_msgs::msg::PoseStamped>& waypoints)
+    {
+        int* retry_count = (robot_name == "Robot1") ? &robot1_retry_count_ : &robot2_retry_count_;
+        
+        (*retry_count)++;
+        
+        if (*retry_count <= MAX_RETRIES) {
+            RCLCPP_INFO(this->get_logger(), "%s retry attempt %d/%d - restarting waypoint following", 
+                       robot_name.c_str(), *retry_count, MAX_RETRIES);
+            
+            // Retry immediately
+            sendWaypointsToRobot(robot_name, client, waypoints);
+        } else {
+            RCLCPP_ERROR(this->get_logger(), "%s exceeded maximum retries (%d) - marking as finished", 
+                        robot_name.c_str(), MAX_RETRIES);
+            markRobotFinished(robot_name);
         }
     }
 };
