@@ -56,7 +56,6 @@ void RobotinoDriver::init(
   std::string namespace_param = parameters["namespace"];
   tf_prefix_ = namespace_param;
   act_frequency_ = std::stod(parameters["frequency"]);
-  odom_source_ = parameters["odom_source"];
   cmd_vel_subscription_ = node_->create_subscription<geometry_msgs::msg::Twist>(
       namespace_param + "/cmd_vel", rclcpp::SensorDataQoS().reliable(),
       [this](const geometry_msgs::msg::Twist::SharedPtr msg) {
@@ -105,20 +104,6 @@ void RobotinoDriver::init(
       wb_motor_set_velocity(motors_[0], angular_velocity[1]);
       wb_motor_set_velocity(motors_[1], angular_velocity[2]);
 
-      if (odom_source_ == "encoder") {
-        double curr_time_ = wb_robot_get_time();
-        double time_diff_ = curr_time_ - last_sample_time_;
-        int sec_ = static_cast<int>(curr_time_);
-        int nanosec_ = static_cast<int>((curr_time_ - sec_) * 1e9);
-        TimeStamp time_stamp_;
-        time_stamp_.sec = sec_;
-        time_stamp_.nanosec = nanosec_;
-        read_data();
-        if (time_diff_ != 0.0) {
-          publish_odom(time_stamp_, time_diff_);
-        }
-        last_sample_time_ = curr_time_;
-      }
       {
         std::lock_guard<std::mutex> lock(vel_msg_mutex_);
         this->cmd_vel_msg.linear.x = 0.0;
@@ -143,20 +128,19 @@ void RobotinoDriver::read_data() {
 }
 
 void RobotinoDriver::publish_data() {
-  // read_data();
+  read_data();
   double curr_time = wb_robot_get_time();
 
   // Convert double time to seconds and nanoseconds
   int sec = static_cast<int>(curr_time);
   int nanosec = static_cast<int>((curr_time - sec) * 1e9);
+
+  double time_diff = curr_time - last_sample_time_;
   TimeStamp time_stamp;
   time_stamp.sec = sec;
   time_stamp.nanosec = nanosec;
 
-  if (odom_source_ == "gps") {
-    publish_odom_from_sensors(time_stamp);
-  }
-  // publish_odom_from_sensors(time_stamp);
+  publish_odom_from_sensors(time_stamp);
   publish_joint_state(time_stamp);
   publish_ir(time_stamp);
   publish_laser(time_stamp);
@@ -203,6 +187,7 @@ void RobotinoDriver::publish_odom_from_sensors(const TimeStamp &time_stamp) {
   auto velocity = wb_gps_get_speed_vector(gps_);
   auto pose = wb_gps_get_values(gps_);
   auto gyro = wb_gyro_get_values(gyro_);
+
   nav_msgs::msg::Odometry odom_msg;
   odom_msg.header.stamp = time_stamp;
   odom_msg.header.frame_id = tf_prefix_ + "/odom";
@@ -242,30 +227,29 @@ void RobotinoDriver::publish_odom(const TimeStamp &time_stamp,
   double wheel0_ticks = motor_pos_[2];
   double wheel1_ticks = motor_pos_[0];
   double wheel2_ticks = motor_pos_[1];
-
-  double w0 = (wheel0_ticks - prev_wheel0_ticks_) / (time_diff);
-  double w1 = (wheel1_ticks - prev_wheel1_ticks_) / (time_diff);
-  double w2 = (wheel2_ticks - prev_wheel2_ticks_) / (time_diff);
+  double w0 = (wheel0_ticks - prev_wheel0_ticks_) / time_diff;
+  double w1 = (wheel1_ticks - prev_wheel1_ticks_) / time_diff;
+  double w2 = (wheel2_ticks - prev_wheel2_ticks_) / time_diff;
+  prev_wheel0_ticks_ = wheel0_ticks;
+  prev_wheel1_ticks_ = wheel1_ticks;
+  prev_wheel2_ticks_ = wheel2_ticks;
 
   auto velocity = inverse_kinematics(w0, w1, w2);
-  double phi = prev_odom_omega_ + (velocity[2] * time_diff);
-  double x =
-      prev_odom_x_ +
-      (((velocity[0] * cos(phi)) - (velocity[1] * sin(phi))) * time_diff);
-  // double x = prev_odom_x_ + (velocity[0]*time_diff);
-  // RCLCPP_INFO(node_->get_logger(), "Position_x: %f ", x);
-  double y =
-      prev_odom_y_ +
-      (((velocity[0] * sin(phi)) + (velocity[1] * cos(phi))) * time_diff);
-  // double y = prev_odom_y_ + (velocity[1]*time_diff);
-  // RCLCPP_INFO(node_->get_logger(), "Position_y: %f", y);
+  double omega = prev_odom_omega_ + (velocity[2] * time_diff);
 
-  std::vector<double> q = {0.0, 0.0, sin(phi / 2.), cos(phi / 2.)};
+  double x = prev_odom_x_ + ((velocity[0] * cos(omega)) -
+                             (velocity[1] * sin(omega)) * time_diff);
+  double y = prev_odom_y_ + ((velocity[0] * sin(omega)) +
+                             (velocity[1] * cos(omega)) * time_diff);
+  std::vector<double> q = {0.0, 0.0, sin(omega / 2), cos(omega / 2)};
+
   prev_odom_x_ = x;
   prev_odom_y_ = y;
-  prev_odom_omega_ = phi;
+  prev_odom_omega_ = omega;
+
   nav_msgs::msg::Odometry odom_msg;
   odom_msg.header.stamp = time_stamp;
+
   odom_msg.header.frame_id = tf_prefix_ + "/odom";
   odom_msg.child_frame_id = tf_prefix_ + "/base_link";
   odom_msg.twist.twist.linear.x = velocity[0];
@@ -279,24 +263,6 @@ void RobotinoDriver::publish_odom(const TimeStamp &time_stamp,
   odom_msg.pose.pose.orientation.w = q[3];
 
   odom_pub_->publish(odom_msg);
-  prev_wheel0_ticks_ = wheel0_ticks;
-  prev_wheel1_ticks_ = wheel1_ticks;
-  prev_wheel2_ticks_ = wheel2_ticks;
-
-  // odom_pub_->publish(odom_msg);
-  // geometry_msgs::msg::TransformStamped tf_msg;
-  // tf_msg.header.stamp = time_stamp;
-  // tf_msg.header.frame_id = (tf_prefix_ + "/odom");
-  // tf_msg.child_frame_id = (tf_prefix_ + "/base_link");
-  // tf_msg.transform.translation.x = x;
-  // tf_msg.transform.translation.y = y;
-  // tf_msg.transform.translation.z = 0.0;
-  // tf_msg.transform.rotation.x = q[0];
-  // tf_msg.transform.rotation.y = q[1];
-  // tf_msg.transform.rotation.z = q[2];
-  // tf_msg.transform.rotation.w = q[3];
-
-  // tf_broadcaster_->sendTransform(tf_msg);
 }
 
 void RobotinoDriver::publish_ir(const TimeStamp &time_stamp) {
@@ -339,7 +305,7 @@ std::vector<double> RobotinoDriver::kinematics() {
   double v_y = this->cmd_vel_msg.linear.y;
   double omega = this->cmd_vel_msg.angular.z;
 
-  double k = (60.0 * GEER_RATIO * 0.009375) / (2.0 * M_PI * WHEEL_RADIUS);
+  double k = (60.0 * GEER_RATIO * 0.150) / (2.0 * M_PI * WHEEL_RADIUS);
 
   omega = omega * WHEEL_DISTANCE;
   double m1 = (((sqrt(3.) / 2.) * v_x) - (0.5 * v_y) - omega) * k;
@@ -352,15 +318,13 @@ std::vector<double> RobotinoDriver::kinematics() {
 std::vector<double> RobotinoDriver::inverse_kinematics(const double &w0,
                                                        const double &w1,
                                                        const double &w2) {
-  double k_inv = (2 * M_PI * WHEEL_RADIUS) / (60 * GEER_RATIO * 0.009375);
+  // Algorithm2: Inverse kinematic model for omniwheel drive (Linear velocity
+  // from angular velocity)
+  double k = (60.0 * GEER_RATIO * 0.150) / (2.0 * M_PI * WHEEL_RADIUS);
+  double vx = (2.0 / std::sqrt(3.0)) * (w0 - w2) / k;
+  double vy = (1.0 / 3.0) * (2.0 * w1 - w0 - w2) / k;
+  double omega = -(1.0 / (3.0 * k * WHEEL_DISTANCE)) * (w0 + w1 + w2);
 
-  double vx = ((w0 - w2) / sqrt(3.0)) * k_inv;
-  double vy =
-      (-((1.0 / 3.0) * w0) + ((2.0 / 3.0) * w1) - ((1.0 / 3.0) * w2)) * k_inv;
-  double const_val = 3.0 * WHEEL_DISTANCE;
-  double omega = (-((1.0 / const_val) * w0) - ((1.0 / const_val) * w1) -
-                  ((1.0 / const_val) * w2)) *
-                 k_inv;
   return {vx, vy, omega};
 }
 
