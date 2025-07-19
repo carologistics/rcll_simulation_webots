@@ -17,27 +17,49 @@ class MapfExecuter : public rclcpp::Node
 public:
     MapfExecuter() : Node("mapf_executer")
     {
-        // Initialize action clients for both robots  
-        robot1_client_ = rclcpp_action::create_client<FollowWaypoints>(
-            this, "robotinobase1/follow_waypoints");
-        robot2_client_ = rclcpp_action::create_client<FollowWaypoints>(
-            this, "robotinobase2/follow_waypoints");
-
-        // Wait for action servers to be available
-        while (!robot1_client_->wait_for_action_server(1s) || 
-               !robot2_client_->wait_for_action_server(1s)) {
-            if (!rclcpp::ok()) {
-                return;
-            }
-            RCLCPP_INFO(this->get_logger(), "Waiting for waypoint follower servers to be available...");
+        // Declare parameter for single robot mode
+        this->declare_parameter("single_robot_mode", false);
+        single_robot_mode_ = this->get_parameter("single_robot_mode").as_bool();
+        
+        if (single_robot_mode_) {
+            RCLCPP_INFO(this->get_logger(), "Running in SINGLE ROBOT MODE (robotinobase1 only)");
+        } else {
+            RCLCPP_INFO(this->get_logger(), "Running in DUAL ROBOT MODE (robotinobase1 and robotinobase2)");
         }
 
-        // Initialize waypoints and send to both robots
+        // Initialize action clients
+        robot1_client_ = rclcpp_action::create_client<FollowWaypoints>(
+            this, "robotinobase1/follow_waypoints");
+        
+        if (!single_robot_mode_) {
+            robot2_client_ = rclcpp_action::create_client<FollowWaypoints>(
+                this, "robotinobase2/follow_waypoints");
+        }
+
+        // Wait for action servers to be available
+        if (single_robot_mode_) {
+            while (!robot1_client_->wait_for_action_server(1s)) {
+                if (!rclcpp::ok()) {
+                    return;
+                }
+                RCLCPP_INFO(this->get_logger(), "Waiting for robotinobase1 waypoint follower server...");
+            }
+        } else {
+            while (!robot1_client_->wait_for_action_server(1s) || 
+                   !robot2_client_->wait_for_action_server(1s)) {
+                if (!rclcpp::ok()) {
+                    return;
+                }
+                RCLCPP_INFO(this->get_logger(), "Waiting for waypoint follower servers to be available...");
+            }
+        }
+
+        // Initialize waypoints and send to robots
         initializeWaypoints();
         
         // Initialize timing variables
         robot1_finished_ = false;
-        robot2_finished_ = false;
+        robot2_finished_ = !single_robot_mode_; // If single robot mode, robot2 is "finished"
         
         sendWaypointsToRobots();
         
@@ -59,6 +81,7 @@ private:
     std::chrono::steady_clock::time_point start_time_;
     bool robot1_finished_;
     bool robot2_finished_;
+    bool single_robot_mode_;
 
     void initializeWaypoints()
     {
@@ -131,8 +154,12 @@ private:
         };
 
         RCLCPP_INFO(this->get_logger(), "Initialized waypoints for both robots based on machine positions");
-        RCLCPP_INFO(this->get_logger(), "Robot 1 has %zu waypoints (Cap1 + Ring1 + Base + Delivery)", robot1_waypoints_.size());
-        RCLCPP_INFO(this->get_logger(), "Robot 2 has %zu waypoints (Cap2 + Ring2 + Base + Delivery)", robot2_waypoints_.size());
+        if (single_robot_mode_) {
+            RCLCPP_INFO(this->get_logger(), "Robot 1 has %zu waypoints (Cap1 + Ring1 + Base + Delivery)", robot1_waypoints_.size());
+        } else {
+            RCLCPP_INFO(this->get_logger(), "Robot 1 has %zu waypoints (Cap1 + Ring1 + Base + Delivery)", robot1_waypoints_.size());
+            RCLCPP_INFO(this->get_logger(), "Robot 2 has %zu waypoints (Cap2 + Ring2 + Base + Delivery)", robot2_waypoints_.size());
+        }
     }
 
     geometry_msgs::msg::PoseStamped createPoseStamped(double x, double y, double yaw)
@@ -157,10 +184,16 @@ private:
         // Send all waypoints to Robot 1
         sendWaypointsToRobot("Robot1", robot1_client_, robot1_waypoints_);
         
-        // Send all waypoints to Robot 2
-        sendWaypointsToRobot("Robot2", robot2_client_, robot2_waypoints_);
+        // Send all waypoints to Robot 2 (only if not in single robot mode)
+        if (!single_robot_mode_) {
+            sendWaypointsToRobot("Robot2", robot2_client_, robot2_waypoints_);
+        }
         
-        RCLCPP_INFO(this->get_logger(), "Sent all waypoints to both robots");
+        if (single_robot_mode_) {
+            RCLCPP_INFO(this->get_logger(), "Sent waypoints to Robot1 (single robot mode)");
+        } else {
+            RCLCPP_INFO(this->get_logger(), "Sent all waypoints to both robots");
+        }
     }
 
     void sendWaypointsToRobot(const std::string& robot_name,
@@ -223,14 +256,18 @@ private:
             robot2_finished_ = true;
         }
 
-        // Check if both robots are finished
+        // Check if both robots are finished (or just robot1 in single robot mode)
         if (robot1_finished_ && robot2_finished_) {
             auto end_time = std::chrono::steady_clock::now();
             auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time_);
             
             RCLCPP_INFO(this->get_logger(), "=== NAVIGATION COMPLETE ===");
             RCLCPP_INFO(this->get_logger(), "Total navigation time: %.3f seconds", duration.count() / 1000.0);
-            RCLCPP_INFO(this->get_logger(), "Both robots finished their waypoints!");
+            if (single_robot_mode_) {
+                RCLCPP_INFO(this->get_logger(), "Robot1 finished its waypoints!");
+            } else {
+                RCLCPP_INFO(this->get_logger(), "Both robots finished their waypoints!");
+            }
         }
     }
 };
@@ -241,8 +278,8 @@ int main(int argc, char** argv)
     
     auto node = std::make_shared<MapfExecuter>();
     
-    RCLCPP_INFO(node->get_logger(), "Starting MAPF Executer for 2 robots");
-    RCLCPP_INFO(node->get_logger(), "This will send navigation goals to robotinobase1 and robotinobase2");
+    RCLCPP_INFO(node->get_logger(), "Starting MAPF Executer");
+    RCLCPP_INFO(node->get_logger(), "Use parameter 'single_robot_mode:=true' for single robot operation");
     
     rclcpp::spin(node);
     
