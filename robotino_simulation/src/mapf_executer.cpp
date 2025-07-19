@@ -60,6 +60,8 @@ public:
         // Initialize timing variables
         robot1_finished_ = false;
         robot2_finished_ = !single_robot_mode_; // If single robot mode, robot2 is "finished"
+        robot1_last_waypoint_ = -1;
+        robot2_last_waypoint_ = -1;
         
         sendWaypointsToRobots();
         
@@ -82,6 +84,10 @@ private:
     bool robot1_finished_;
     bool robot2_finished_;
     bool single_robot_mode_;
+    
+    // Track last reported waypoint to reduce spam
+    int robot1_last_waypoint_;
+    int robot2_last_waypoint_;
 
     void initializeWaypoints()
     {
@@ -219,8 +225,13 @@ private:
         send_goal_options.feedback_callback =
             [this, robot_name](GoalHandleFollowWaypoints::SharedPtr,
                               const std::shared_ptr<const FollowWaypoints::Feedback> feedback) {
-                RCLCPP_INFO(this->get_logger(), "%s is following waypoint %d", 
-                           robot_name.c_str(), feedback->current_waypoint);
+                // Only log when waypoint changes to reduce spam
+                int* last_waypoint = (robot_name == "Robot1") ? &robot1_last_waypoint_ : &robot2_last_waypoint_;
+                if (feedback->current_waypoint != *last_waypoint) {
+                    *last_waypoint = feedback->current_waypoint;
+                    RCLCPP_INFO(this->get_logger(), "%s started following waypoint %d", 
+                               robot_name.c_str(), feedback->current_waypoint);
+                }
             };
 
         // Result callback
@@ -232,7 +243,7 @@ private:
                         markRobotFinished(robot_name);
                         break;
                     case rclcpp_action::ResultCode::ABORTED:
-                        RCLCPP_ERROR(this->get_logger(), "%s waypoint following was aborted", robot_name.c_str());
+                        RCLCPP_ERROR(this->get_logger(), "%s waypoint following was aborted - stopping execution", robot_name.c_str());
                         markRobotFinished(robot_name);
                         break;
                     case rclcpp_action::ResultCode::CANCELED:
