@@ -131,7 +131,7 @@ def generate_launch_description():
 
     declare_mps_config_argument = DeclareLaunchArgument(
         "mps_config",
-        default_value=os.path.join(package_dir, "config", "mps_pose_open_challenge_1_lane.yaml"),
+        default_value=os.path.join(package_dir, "config", "mps_pose_robotinobase1.yaml"),
         description="Full path to mps_config.yaml file to load",
     )
 
@@ -161,7 +161,7 @@ def generate_launch_description():
 
     declare_webots_world_argument = DeclareLaunchArgument(
         "webots_world",
-        default_value="open_challange_1_lane",
+        default_value="robotinobase1",
         description="Wheather to spawn mps in simulation or not based on launch environment",
     )
 
