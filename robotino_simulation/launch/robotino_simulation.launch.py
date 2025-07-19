@@ -131,7 +131,7 @@ def generate_launch_description():
 
     declare_mps_config_argument = DeclareLaunchArgument(
         "mps_config",
-        default_value=os.path.join(package_dir, "config", "mps_pose.yaml"),
+        default_value=os.path.join(package_dir, "config", "mps_pose_open_challenge_1_lane.yaml"),
         description="Full path to mps_config.yaml file to load",
     )
 

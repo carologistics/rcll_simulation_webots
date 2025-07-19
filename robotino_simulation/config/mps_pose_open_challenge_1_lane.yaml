@@ -1,0 +1,36 @@
+# Parameters to set the position and orientation of the mps machines
+# Configuration for open challenge 1-lane scenario
+
+# Origin: please refer the origin of game field from webots world for mps location in the world
+/mps_publisher:
+  ros__parameters:
+    # Position of Team-Cyan mps machines(cartesian- x,y,z)
+    # Orientation of Team-Cyan mps machines(quaternion- x,y,z,w)
+    # Note: Rotation values converted from Webots rotation format to quaternions
+    
+    # Cap Station 1 - was at (1.5, -1.5, 0) with rotation -1.5707953071795862 around Z
+    C-CS1-O_orientation: [0, 0, -0.7071068, 0.7071068]  # -90 degrees around Z
+    C-CS1-O_position: [1.5, -1.5, 0.0]
+    
+    # Cap Station 2 - was at (1.5, 1.5, 0.1) with rotation -1.5707953071795862 around Z  
+    C-CS2-I_orientation: [0, 0, -0.7071068, 0.7071068]  # -90 degrees around Z
+    C-CS2-I_position: [1.5, 1.5, 0.1]
+    
+    # Base Station - was at (-1.5, -1.5, 0) with rotation -1.5707953071795862 around Z
+    C-BS-O_orientation: [0, 0, -0.7071068, 0.7071068]  # -90 degrees around Z
+    C-BS-O_position: [-1.5, -1.5, 0.0]
+    
+    # Ring Station 1 - was at (-1.5, 1.5, 0) with rotation -1.5707953071795862 around Z
+    C-RS1-O_orientation: [0, 0, -0.7071068, 0.7071068]  # -90 degrees around Z
+    C-RS1-O_position: [-1.5, 1.5, 0.0]
+    
+    # Ring Station 2 - was at (0, 0, 0) with rotation -1.5707953071795862 around Z
+    C-RS2-O_orientation: [0, 0, -0.7071068, 0.7071068]  # -90 degrees around Z
+    C-RS2-O_position: [0.0, 0.0, 0.0]
+    
+    # Delivery Station - was at (0, -2.5, 0) with rotation -1.5707953071795862 around Z
+    C-DS-I_orientation: [0, 0, -0.7071068, 0.7071068]  # -90 degrees around Z
+    C-DS-I_position: [0.0, -2.5, 0.0]
+
+    # Simulation parameters
+    use_sim_time: true

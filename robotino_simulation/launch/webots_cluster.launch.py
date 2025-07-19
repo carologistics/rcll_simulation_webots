@@ -17,7 +17,7 @@ def generate_launch_description():
     package_dir = get_package_share_directory("robotino_simulation")
 
     # Declare launch configuration variables
-    mps_config = os.path.join(package_dir, "config", "mps_pose.yaml")
+    mps_config = os.path.join(package_dir, "config", "mps_pose_corri2.yaml")
 
     # Initialize mpspawner node
     mpspawner = Node(
