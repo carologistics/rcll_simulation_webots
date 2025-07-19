@@ -19,6 +19,7 @@ from launch.substitutions import PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 from webots_ros2_driver.webots_launcher import WebotsLauncher
+from launch_ros.actions import PushRosNamespace
 
 
 def launch_nodes_withconfig(context, *args, **kwargs):
@@ -27,8 +28,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
     description_dir = get_package_share_directory("rto_description")
 
     # Declare launch configuration variables
-    namespace = LaunchConfiguration("namespace")
-    namespace.perform(context)
+    namespace = LaunchConfiguration("namespace").perform(context)
     use_sim_time = LaunchConfiguration("use_sim_time")
     mps_config = LaunchConfiguration("mps_config")
     frequency = LaunchConfiguration("frequency")
@@ -36,23 +36,19 @@ def launch_nodes_withconfig(context, *args, **kwargs):
     launch_joynode = LaunchConfiguration("launch_joynode")
     launch_teleopnode = LaunchConfiguration("launch_teleopnode")
 
-    launch_configuration = {}
-    for argname, argval in context.launch_configurations.items():
-        launch_configuration[argname] = argval
-
     # Load mps spawn node
     mpspawner = Node(
         package="robotino_simulation",
         executable="mps_publisher.py",
         name="mps_publisher",
-        parameters=[mps_config, {"webots_world": "webots_" + launch_configuration["namespace"] + "_sim.wbt"}],
+        parameters=[mps_config, {"webots_world": "webots_" + namespace+ "_sim.wbt"}],
         output="log",
     )
 
     # Starts Webots simulation and superwisor nodes
     webots = WebotsLauncher(
         world=PathJoinSubstitution(
-            [package_dir, "worlds", "modified_webots_" + launch_configuration["namespace"] + "_sim.wbt"]
+            [package_dir, "worlds", "modified_webots_" + namespace + "_sim.wbt"]
         ),
         mode="realtime",
         ros2_supervisor=True,
@@ -66,6 +62,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
     load_nodes = GroupAction(
         actions=[
             # Launch robotinobase1 controller
+            PushRosNamespace(namespace),
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(
                     [
@@ -75,7 +72,6 @@ def launch_nodes_withconfig(context, *args, **kwargs):
                     ]
                 ),
                 launch_arguments={
-                    "namespace": "robotinobase1",
                     "joy_device_id": "0",
                     "frequency": frequency,
                     "use_sim_time": use_sim_time,

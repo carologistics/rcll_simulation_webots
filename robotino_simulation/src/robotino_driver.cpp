@@ -11,6 +11,7 @@
 #include <webots/motor.h>
 #include <webots/position_sensor.h>
 #include <webots/robot.h>
+#include <webots/device.h>
 
 #define HALF_DISTANCE_BETWEEN_WHEELS 0.045
 
@@ -42,10 +43,19 @@ void RobotinoDriver::init(
     wb_motor_set_position(motor, INFINITY);
     wb_motor_set_velocity(motor, 0.0);
   }
+
+  int count = wb_robot_get_number_of_devices();
+  for (int i = 0; i < count; i++) {
+    WbDeviceTag device = wb_robot_get_device_by_index(i);
+    const char *name = wb_device_get_name(device);
+    printf("Device [%d]: Name = %s\n", i, name);
+  }
+  
   gps_ = wb_robot_get_device("gps");
   wb_gps_enable(gps_, TIME_STEP);
 
   inertial_unit_ = wb_robot_get_device("inertial unit");
+  wb_inertial_unit_enable(inertial_unit_, TIME_STEP);
 
   gyro_ = wb_robot_get_device("gyro");
   wb_gyro_enable(gyro_, TIME_STEP);

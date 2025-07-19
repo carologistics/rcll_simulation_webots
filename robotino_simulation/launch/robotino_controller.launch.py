@@ -83,7 +83,6 @@ def launch_nodes_withconfig(context, *args, **kwargs):
                     {"use_sim_time": use_sim_time},
                     {"frame_prefix": launch_configuration["namespace"] + "/"},
                 ],
-                namespace=namespace,
             ),
             # Joy node to enable joystick teleop
             Node(
@@ -91,7 +90,6 @@ def launch_nodes_withconfig(context, *args, **kwargs):
                 executable="joy_node",
                 name="joy_node",
                 output="log",
-                namespace=namespace,
                 parameters=[
                     {
                         "device_id": joy_device_id,
@@ -106,7 +104,6 @@ def launch_nodes_withconfig(context, *args, **kwargs):
                 executable="robotino_joyteleop.py",
                 name="robotino_joyteleop",
                 output="log",
-                namespace=namespace,
                 condition=IfCondition(launch_teleopnode),
             ),
             # Laserscan republisher node
@@ -116,7 +113,6 @@ def launch_nodes_withconfig(context, *args, **kwargs):
                 name="robotino_laserscan_republisher",
                 output="log",
                 parameters=[{"frame_prefix": namespace}],
-                namespace=namespace,
             ),
             # Irscan merge node
             Node(
@@ -125,7 +121,6 @@ def launch_nodes_withconfig(context, *args, **kwargs):
                 name="robotino_irscanmerger",
                 output="log",
                 parameters=[{"frame_prefix": namespace}],
-                namespace=namespace,
             ),
             # Launch Integrate laserscan launch file
             IncludeLaunchDescription(
@@ -137,7 +132,6 @@ def launch_nodes_withconfig(context, *args, **kwargs):
                     ]
                 ),
                 launch_arguments={
-                    "namespace": namespace,
                     "scanTopic1": "/SickLaser_Front_Remaped",
                     "scanTopic2": "/SickLaser_Rear_Remaped",
                 }.items(),
@@ -152,7 +146,6 @@ def launch_nodes_withconfig(context, *args, **kwargs):
                     ]
                 ),
                 launch_arguments={
-                    "namespace": namespace,
                     "use_sim_time": use_sim_time,
                 }.items(),
             ),
