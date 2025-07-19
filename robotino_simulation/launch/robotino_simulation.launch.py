@@ -161,7 +161,7 @@ def generate_launch_description():
 
     declare_webots_world_argument = DeclareLaunchArgument(
         "webots_world",
-        default_value="robotinobase1",
+        default_value="open_challange_1_lane",
         description="Wheather to spawn mps in simulation or not based on launch environment",
     )
 
