@@ -34,29 +34,29 @@ RectangleArena {
   wallHeight 0.5
 }
 Wall {
-  translation -5.3 2.25 0
+  translation -5 2 0
   rotation 0 0 1 1.57
   name "team1_defaultpose_wall1"
-  size 0.04 1.4 0.5
+  size 0.04 2 0.5
 }
 Wall {
-  translation 5.3 2.25 0
+  translation 5 2 0
   rotation 0 0 1 1.57
   name "team2_defaultpose_wall1"
-  size 0.04 1.4 0.5
+  size 0.04 2 0.5
 }
 Wall {
-  translation -3.7 2.6 0
+  translation -3 2.5 0
   name "team1_defaultpose_wall2"
-  size 0.04 0.8 0.5
+  size 0.04 1 0.5
 }
 Wall {
-  translation 3.7 2.6 0
+  translation 3 2.5 0
   name "team2_defaultpose_wall2"
-  size 0.04 0.8 0.5
+  size 0.04 1 0.5
 }
 Robotino3 {
-  translation -4.5 2.65 -0.000443485
+  translation -4.5 2.5 -0.000443485
   name "robotinobase3"
   controller "<extern>"
   bodySlot [
@@ -92,5 +92,6 @@ Robotino3 {
 }
 Robot {
   name "Ros2Supervisor"
+  supervisor TRUE
   controller "<extern>"
 }

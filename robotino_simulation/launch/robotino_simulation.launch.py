@@ -11,6 +11,7 @@ from launch.actions import IncludeLaunchDescription
 from launch.actions import LogInfo
 from launch.actions import OpaqueFunction
 from launch.actions import RegisterEventHandler
+from launch.actions import SetEnvironmentVariable
 from launch.actions import TimerAction
 from launch.event_handlers import OnProcessStart
 from launch.launch_description_sources import PythonLaunchDescriptionSource
@@ -28,7 +29,6 @@ def launch_nodes_withconfig(context, *args, **kwargs):
 
     # Declare launch configuration variables
     namespace = LaunchConfiguration("namespace")
-    namespace.perform(context)
     use_sim_time = LaunchConfiguration("use_sim_time")
     mps_config = LaunchConfiguration("mps_config")
     frequency = LaunchConfiguration("frequency")
@@ -45,14 +45,14 @@ def launch_nodes_withconfig(context, *args, **kwargs):
         package="robotino_simulation",
         executable="mps_publisher.py",
         name="mps_publisher",
-        parameters=[mps_config, {"webots_world": "webots_" + launch_configuration["namespace"] + "_sim.wbt"}],
+        parameters=[mps_config, {"webots_world": "webots_" + namespace.perform(context) + "_sim.wbt"}],
         output="log",
     )
 
     # Starts Webots simulation and superwisor nodes
     webots = WebotsLauncher(
         world=PathJoinSubstitution(
-            [package_dir, "worlds", "modified_webots_" + launch_configuration["namespace"] + "_sim.wbt"]
+            [package_dir, "worlds", "modified_webots_" + namespace.perform(context) + "_sim.wbt"]
         ),
         mode="realtime",
         ros2_supervisor=True,
@@ -75,7 +75,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
                     ]
                 ),
                 launch_arguments={
-                    "namespace": "robotinobase1",
+                    "namespace": namespace,
                     "joy_device_id": "0",
                     "frequency": frequency,
                     "use_sim_time": use_sim_time,
@@ -144,6 +144,14 @@ def generate_launch_description():
 
     # Create the launch description and populate
     ld = LaunchDescription()
+
+    # Set WEBOTS_HOME if not already set to suppress the fallback warning
+    ld.add_action(
+        SetEnvironmentVariable(
+            "WEBOTS_HOME",
+            os.environ.get("WEBOTS_HOME", "/usr/local/webots"),
+        )
+    )
 
     # Declare the launch options
     ld.add_action(declare_namespace_argument)

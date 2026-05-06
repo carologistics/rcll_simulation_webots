@@ -92,5 +92,6 @@ Robotino3 {
 }
 Robot {
   name "Ros2Supervisor"
+  supervisor TRUE
   controller "<extern>"
 }
