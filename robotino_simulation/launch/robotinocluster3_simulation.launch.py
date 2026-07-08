@@ -11,6 +11,7 @@ from launch.actions import IncludeLaunchDescription
 from launch.actions import LogInfo
 from launch.actions import OpaqueFunction
 from launch.actions import RegisterEventHandler
+from launch.actions import SetEnvironmentVariable
 from launch.actions import TimerAction
 from launch.event_handlers import OnProcessStart
 from launch.launch_description_sources import PythonLaunchDescriptionSource
@@ -31,28 +32,22 @@ def launch_nodes_withconfig(context, *args, **kwargs):
     launch_rviz = LaunchConfiguration("launch_rviz")
     launch_joynode = LaunchConfiguration("launch_joynode")
     launch_teleopnode = LaunchConfiguration("launch_teleopnode")
-    frequency = LaunchConfiguration("frequency")
-    odom_source = LaunchConfiguration("odom_source")
-    LaunchConfiguration("launch_mps")
-    LaunchConfiguration("webots_world")
-
-    launch_configuration = {}
-    for argname, argval in context.launch_configurations.items():
-        launch_configuration[argname] = argval  #
+    launch_mps = LaunchConfiguration("launch_mps")
+    webots_world = LaunchConfiguration("webots_world")
 
     # Initialize mpspawner node
     mpspawner = Node(
         package="robotino_simulation",
         executable="mps_publisher.py",
         name="mps_publisher",
-        parameters=[mps_config, {"webots_world": launch_configuration["webots_world"]}],
+        parameters=[mps_config, {"webots_world": webots_world.perform(context)}],
         output="log",
     )
 
     world = (
-        f"modified_{launch_configuration['webots_world']}"
-        if launch_configuration["launch_mps"] == "true"
-        else launch_configuration["webots_world"]
+        f"modified_{webots_world.perform(context)}"
+        if launch_mps.perform(context) == "true"
+        else webots_world.perform(context)
     )
     # Starts Webots simulation and superwisor nodes
     webots = WebotsLauncher(
@@ -80,8 +75,6 @@ def launch_nodes_withconfig(context, *args, **kwargs):
                 launch_arguments={
                     "namespace": "robotinobase1",
                     "joy_device_id": "1",
-                    "frequency": frequency,
-                    "odom_source": odom_source,
                     "use_sim_time": use_sim_time,
                     "launch_rviz": launch_rviz,
                     "launch_joynode": launch_joynode,
@@ -100,8 +93,6 @@ def launch_nodes_withconfig(context, *args, **kwargs):
                 launch_arguments={
                     "namespace": "robotinobase2",
                     "joy_device_id": "2",
-                    "frequency": frequency,
-                    "odom_source": odom_source,
                     "use_sim_time": use_sim_time,
                     "launch_rviz": launch_rviz,
                     "launch_joynode": launch_joynode,
@@ -120,8 +111,6 @@ def launch_nodes_withconfig(context, *args, **kwargs):
                 launch_arguments={
                     "namespace": "robotinobase3",
                     "joy_device_id": "0",
-                    "frequency": frequency,
-                    "odom_source": odom_source,
                     "use_sim_time": use_sim_time,
                     "launch_rviz": launch_rviz,
                     "launch_joynode": launch_joynode,
@@ -159,13 +148,6 @@ def generate_launch_description():
     # Declare launch configuration variables
     declare_namespace_argument = DeclareLaunchArgument("namespace", default_value="", description="Top-level namespace")
 
-    declare_frequency_argument = DeclareLaunchArgument(
-        "frequency", default_value="20.0", description="Frequency of sim controller"
-    )
-
-    declare_odom_source_argument = DeclareLaunchArgument(
-        "odom_source", default_value="gps", description="source of odometry data"
-    )
     declare_mps_config_argument = DeclareLaunchArgument(
         "mps_config",
         default_value=os.path.join(package_dir, "config", "mps_pose_corri2.yaml"),
@@ -205,6 +187,14 @@ def generate_launch_description():
     # Create the launch description and populate
     ld = LaunchDescription()
 
+    # Set WEBOTS_HOME if not already set to suppress the fallback warning
+    ld.add_action(
+        SetEnvironmentVariable(
+            "WEBOTS_HOME",
+            os.environ.get("WEBOTS_HOME", "/usr/local/webots"),
+        )
+    )
+
     # Declare the launch options
     ld.add_action(declare_namespace_argument)
     ld.add_action(declare_mps_config_argument)
@@ -212,8 +202,6 @@ def generate_launch_description():
     ld.add_action(declare_launch_rviz_argument)
     ld.add_action(declare_launch_joynode_argument)
     ld.add_action(declare_launch_teleopnode_argument)
-    ld.add_action(declare_frequency_argument)
-    ld.add_action(declare_odom_source_argument)
     ld.add_action(declare_launch_mps_argument)
     ld.add_action(declare_webots_world_argument)
 

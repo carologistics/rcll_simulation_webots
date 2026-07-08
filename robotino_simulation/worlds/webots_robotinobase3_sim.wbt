@@ -9,6 +9,16 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/project
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/apartment_structure/protos/Wall.proto"
 
 WorldInfo {
+  basicTimeStep 32
+  contactProperties [
+    ContactProperties {
+      material1 "WheelMat"
+      coulombFriction [
+        0, 2, 0
+      ]
+      bounce 0
+    }
+  ]
 }
 Viewpoint {
   orientation 0.6472742241383052 0.46499812312629124 -0.603997371066449 2.0022251544765566
@@ -82,5 +92,6 @@ Robotino3 {
 }
 Robot {
   name "Ros2Supervisor"
+  supervisor TRUE
   controller "<extern>"
 }

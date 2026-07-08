@@ -11,6 +11,7 @@ from launch.actions import IncludeLaunchDescription
 from launch.actions import LogInfo
 from launch.actions import OpaqueFunction
 from launch.actions import RegisterEventHandler
+from launch.actions import SetEnvironmentVariable
 from launch.actions import TimerAction
 from launch.event_handlers import OnProcessStart
 from launch.launch_description_sources import PythonLaunchDescriptionSource
@@ -28,34 +29,28 @@ def launch_nodes_withconfig(context, *args, **kwargs):
 
     # Declare launch configuration variables
     namespace = LaunchConfiguration("namespace")
-    namespace.perform(context)
     use_sim_time = LaunchConfiguration("use_sim_time")
     mps_config = LaunchConfiguration("mps_config")
     frequency = LaunchConfiguration("frequency")
-    odom_source = LaunchConfiguration("odom_source")
     launch_rviz = LaunchConfiguration("launch_rviz")
     launch_joynode = LaunchConfiguration("launch_joynode")
     launch_teleopnode = LaunchConfiguration("launch_teleopnode")
-    LaunchConfiguration("launch_mps")
-    LaunchConfiguration("webots_world")
-
-    launch_configuration = {}
-    for argname, argval in context.launch_configurations.items():
-        launch_configuration[argname] = argval
+    launch_mps = LaunchConfiguration("launch_mps")
+    webots_world = LaunchConfiguration("webots_world")
 
     # Load mps spawn node
     mpspawner = Node(
         package="robotino_simulation",
         executable="mps_publisher.py",
         name="mps_publisher",
-        parameters=[mps_config, {"webots_world": "webots_" + launch_configuration["webots_world"] + "_sim.wbt"}],
+        parameters=[mps_config, {"webots_world": "webots_" + webots_world.perform(context) + "_sim.wbt"}],
         output="log",
     )
 
     world = (
-        f"modified_webots_{launch_configuration["webots_world"]}_sim.wbt"
-        if launch_configuration["launch_mps"] == "true"
-        else f"webots_{launch_configuration["webots_world"]}_sim.wbt"
+        f"modified_webots_{webots_world.perform(context)}_sim.wbt"
+        if launch_mps.perform(context) == "true"
+        else f"webots_{webots_world.perform(context)}_sim.wbt"
     )
     # Starts Webots simulation and superwisor nodes
     webots = WebotsLauncher(
@@ -84,7 +79,6 @@ def launch_nodes_withconfig(context, *args, **kwargs):
                     "namespace": namespace,
                     "joy_device_id": "0",
                     "frequency": frequency,
-                    "odom_source": odom_source,
                     "use_sim_time": use_sim_time,
                     "launch_rviz": launch_rviz,
                     "launch_joynode": launch_joynode,
@@ -123,10 +117,6 @@ def generate_launch_description():
 
     declare_frequency_argument = DeclareLaunchArgument(
         "frequency", default_value="20.0", description="Frequency of sim controller"
-    )
-
-    declare_odom_source_argument = DeclareLaunchArgument(
-        "odom_source", default_value="gps", description="source of odometry data"
     )
 
     declare_mps_config_argument = DeclareLaunchArgument(
@@ -168,10 +158,17 @@ def generate_launch_description():
     # Create the launch description and populate
     ld = LaunchDescription()
 
+    # Set WEBOTS_HOME if not already set to suppress the fallback warning
+    ld.add_action(
+        SetEnvironmentVariable(
+            "WEBOTS_HOME",
+            os.environ.get("WEBOTS_HOME", "/usr/local/webots"),
+        )
+    )
+
     # Declare the launch options
     ld.add_action(declare_namespace_argument)
     ld.add_action(declare_frequency_argument)
-    ld.add_action(declare_odom_source_argument)
     ld.add_action(declare_mps_config_argument)
     ld.add_action(declare_use_sim_time_argument)
     ld.add_action(declare_launch_rviz_argument)
