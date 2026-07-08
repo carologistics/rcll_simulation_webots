@@ -35,12 +35,14 @@ def launch_nodes_withconfig(context, *args, **kwargs):
     launch_mps = LaunchConfiguration("launch_mps")
     webots_world = LaunchConfiguration("webots_world")
 
+    mps_config_path = os.path.join(package_dir, "config", mps_config.perform(context))
+
     # Initialize mpspawner node
     mpspawner = Node(
         package="robotino_simulation",
         executable="mps_publisher.py",
         name="mps_publisher",
-        parameters=[mps_config, {"webots_world": webots_world.perform(context)}],
+        parameters=[mps_config_path, {"webots_world": webots_world.perform(context)}],
         output="log",
     )
 
@@ -125,14 +127,13 @@ def launch_nodes_withconfig(context, *args, **kwargs):
 
 
 def generate_launch_description():
-    package_dir = get_package_share_directory("robotino_simulation")
 
     # Declare launch configuration variables
     declare_namespace_argument = DeclareLaunchArgument("namespace", default_value="", description="Top-level namespace")
 
     declare_mps_config_argument = DeclareLaunchArgument(
         "mps_config",
-        default_value=os.path.join(package_dir, "config", "mps_pose_corri2.yaml"),
+        default_value="mps_pose.yaml",
         description="Full path to mps_config.yaml file to load",
     )
 
@@ -162,7 +163,7 @@ def generate_launch_description():
 
     declare_webots_world_argument = DeclareLaunchArgument(
         "webots_world",
-        default_value="webots_robotinocluster2_corri2_sim.wbt",
+        default_value="webots_robotinocluster2_sim.wbt",
         description="Wheather to spawn mps in simulation or not based on launch environment",
     )
 
